@@ -9,9 +9,10 @@ Every single parameter is graded on a scale of 1 to 10.
 
 Use the milestone rubrics below. If an email falls between two milestones (e.g., better than a 5, but not quite a 7), assign it an even number (6).
 
-### 🧠 The Human Baseline Principle
-**Crucial Grading Note:** An "optimal" score (10) does NOT necessarily mean "robotic perfection." Real humans are not perfect; they ramble slightly, use casual structures, and have unique quirks. 
-When grading parameters like *Human Likeness* or *Conciseness*, a "10" means it perfectly matches the **ideal human average** for that context. If an AI writes an email that is *so perfectly structured* and *so overly concise* that it feels synthetic and robotic, it should receive a **lower score** (e.g., a 4 on Human Likeness), because hyper-perfection is an AI tell. You, the human grader, are anchoring the true baseline.
+### 🧠 The Human Baseline Target
+**Crucial Grading Note:** The 1-10 scale is an absolute measurement scale. A "10" means *robotic, mathematical perfection* (e.g., flawless formatting, extreme conciseness). 
+However, **our goal is not always to hit a 10.** Real humans do not communicate at a level 10. The "Ideal Human Average" usually sits at a **5, 6, or 7**, depending on the parameter. 
+For example, a normal human email might naturally be a bit wordy (Conciseness = 6) and use casual spacing (Formatting = 7). When you manually grade the dataset, you are establishing this baseline. If an email feels like a natural human wrote it, grade it a 6 or 7! Later, we will calibrate the AI Engine so that its *Target Benchmark* is to hit those exact same 6s and 7s, rather than blindly striving for 10s.
 
 ---
 

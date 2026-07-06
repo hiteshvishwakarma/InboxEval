@@ -9,10 +9,11 @@ Every single parameter is graded on a scale of 1 to 10.
 
 Use the milestone rubrics below. If an email falls between two milestones (e.g., better than a 5, but not quite a 7), assign it an even number (6).
 
-### 🧠 The Human Baseline Target
+### 🧠 The Dynamic Persona-Driven Baseline
 **Crucial Grading Note:** The 1-10 scale is an absolute measurement scale. A "10" means *robotic, mathematical perfection* (e.g., flawless formatting, extreme conciseness). 
-However, **our goal is not always to hit a 10.** Real humans do not communicate at a level 10. The "Ideal Human Average" usually sits at a **5, 6, or 7**, depending on the parameter. 
-For example, a normal human email might naturally be a bit wordy (Conciseness = 6) and use casual spacing (Formatting = 7). When you manually grade the dataset, you are establishing this baseline. If an email feels like a natural human wrote it, grade it a 6 or 7! Later, we will calibrate the AI Engine so that its *Target Benchmark* is to hit those exact same 6s and 7s, rather than blindly striving for 10s.
+However, **a universal "human average" does not exist.** The ideal target score is highly subjective and depends entirely on the specific *Persona* and context requested in the prompt. 
+For example, a senior corporate lawyer in New York will have a vastly different baseline for "Professionalism" and "Formatting" compared to a 22-year-old freelance graphic designer in Brazil. 
+When you manually grade the dataset, you are establishing the baseline for that **specific demographic and context**. If a prompt asks for a casual marketing email, the target benchmark for Professionalism might legitimately be a 5. You are the arbiter of what the baseline should be for the specific persona in each prompt. Later, our AI Engine will be calibrated to hit these dynamic, persona-driven targets rather than striving for a universal, synthetic "10".
 
 ---
 

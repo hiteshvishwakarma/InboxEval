@@ -3,9 +3,13 @@ import os
 import time
 from google import genai
 from google.genai import types
+from dotenv import load_dotenv
 
 def generate_edge_cases():
     print("Initializing Golden Dataset Prep using Gemini Pro...")
+    
+    # Load environment variables from .env file
+    load_dotenv(dotenv_path="../.env")
     
     # Check for API key
     api_key = os.environ.get("GEMINI_API_KEY")

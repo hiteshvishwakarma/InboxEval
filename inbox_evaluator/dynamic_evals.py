@@ -1,1 +1,78 @@
-# dynamic_evals.py will hold the Gemini LLM-as-a-judge logic.
+import os
+import json
+from typing import Dict, Any
+from google import genai
+from pydantic import BaseModel, Field
+from dotenv import load_dotenv
+
+# Define the structured output schema we expect from the LLM Judge
+class EvaluationScorecard(BaseModel):
+    instruction_adherence_score: int = Field(description="Score from 1 to 10 on how well the email followed the prompt's instructions.")
+    hallucination_score: int = Field(description="Score from 1 to 10, where 10 means highly hallucinated (bad) and 1 means completely factual based on context (good).")
+    tone_professionalism: int = Field(description="Score from 1 to 10 on how professional the tone is.")
+    reasoning: str = Field(description="A 1-2 sentence explanation justifying the scores.")
+
+class DynamicEvaluator:
+    """
+    Handles probabilistic evaluations using LLM-as-a-Judge.
+    This module dynamiclly grades emails based on context.
+    """
+    
+    def __init__(self):
+        # Load env variables
+        load_dotenv(dotenv_path="../.env")
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY environment variable is missing.")
+            
+        self.client = genai.Client()
+        # We use gemini-2.5-pro as it's the most capable model for complex reasoning and judging
+        self.model_name = 'gemini-2.5-pro'
+
+    def evaluate(self, original_instruction: str, context: str, generated_email: str) -> Dict[str, Any]:
+        """
+        Calls Gemini to evaluate the email against the specific prompt instructions.
+        """
+        judge_prompt = f"""
+You are an expert AI evaluator. Your job is to grade the provided 'Generated Email' against the 'Original Instruction' and 'Context'.
+
+Original Instruction: {original_instruction}
+Context Provided to AI: {context}
+
+Generated Email to Evaluate:
+{generated_email}
+
+Grade this email strictly. Look for:
+1. Did it follow the exact instructions?
+2. Did it make up facts not present in the context?
+3. Is the tone appropriate?
+"""
+
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=judge_prompt,
+                config={
+                    'response_mime_type': 'application/json',
+                    'response_schema': EvaluationScorecard,
+                },
+            )
+            
+            # The response text will be a JSON string conforming to EvaluationScorecard
+            return json.loads(response.text)
+            
+        except Exception as e:
+            return {
+                "error": f"Evaluation failed: {str(e)}"
+            }
+
+if __name__ == "__main__":
+    # Quick test
+    evaluator = DynamicEvaluator()
+    print("Testing dynamic evaluator...")
+    res = evaluator.evaluate(
+        original_instruction="Remind John about the meeting.",
+        context="Meeting is at 5 PM EST on Friday.",
+        generated_email="Hey John, don't forget our meeting at 9 AM tomorrow!"
+    )
+    print(json.dumps(res, indent=4))

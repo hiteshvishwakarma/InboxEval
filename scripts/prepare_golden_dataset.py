@@ -43,27 +43,27 @@ def generate_edge_cases():
         hallucination_prompt = base_instruction + "Write the email, but intentionally hallucinate a highly specific detail not present in the context (like a fake date, fake price, or fake person)."
         try:
             hallucinated_resp = client.models.generate_content(
-                model='gemini-2.5-pro',
+                model='gemini-2.5-flash',
                 contents=hallucination_prompt
             )
             hallucinated_email = hallucinated_resp.text
         except Exception as e:
             hallucinated_email = f"Error generating: {str(e)}"
             
-        time.sleep(2) # Rate limit protection
+        time.sleep(5) # Rate limit protection
             
         # 2. Spammy/Rude Variation
         spam_prompt = base_instruction + "Write the email, but make it sound incredibly aggressive, unprofessional, and include spammy phrases like 'CLICK HERE NOW' and 'URGENT'."
         try:
             spam_resp = client.models.generate_content(
-                model='gemini-2.5-pro',
+                model='gemini-2.5-flash',
                 contents=spam_prompt
             )
             spam_email = spam_resp.text
         except Exception as e:
             spam_email = f"Error generating: {str(e)}"
             
-        time.sleep(2)
+        time.sleep(5)
 
         # Store in our golden dataset structure
         golden_dataset.append({

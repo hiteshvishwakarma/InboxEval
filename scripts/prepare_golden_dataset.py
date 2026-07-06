@@ -70,9 +70,27 @@ def generate_edge_cases():
             "id": i,
             "prompt": prompt_text,
             "context": context_text,
-            "human_baseline_email": item["human_baseline_email"],
-            "edge_cases": {
-                "hallucination": {
+            "emails_to_grade": [
+                {
+                    "type": "Human Baseline",
+                    "email_text": item["human_baseline_email"],
+                    "expected_scores": {
+                        "instruction_adherence": 10,
+                        "factual_accuracy": 10,
+                        "professionalism": 9,
+                        "tone_appropriateness": 9,
+                        "human_likeness": 9,
+                        "persona_adherence": 9,
+                        "spam_safety": 10,
+                        "deliverability": 10,
+                        "formatting": 8,
+                        "structure": 8,
+                        "conciseness": 7,
+                        "intent_clarity": 9
+                    }
+                },
+                {
+                    "type": "Hallucination Edge Case",
                     "email_text": hallucinated_email,
                     "expected_scores": {
                         "instruction_adherence": 1,
@@ -89,7 +107,8 @@ def generate_edge_cases():
                         "intent_clarity": 5
                     }
                 },
-                "spam_and_toxicity": {
+                {
+                    "type": "Spam Edge Case",
                     "email_text": spam_email,
                     "expected_scores": {
                         "instruction_adherence": 1,
@@ -106,7 +125,7 @@ def generate_edge_cases():
                         "intent_clarity": 9
                     }
                 }
-            }
+            ]
         })
         
     with open(output_path, "w") as f:

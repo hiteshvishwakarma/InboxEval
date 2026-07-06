@@ -27,3 +27,6 @@ To prevent complications and allow for easy cherry-picking, you MUST commit ever
 - Write clean, modular, and production-grade Python code.
 - Always include type hints and basic docstrings for major functions.
 - If an LLM is asked to generate code, ensure the logic directly aligns with the InboxEval goals. If you detect a hallucination (e.g., proposing an irrelevant feature), self-correct immediately based on this skill's context.
+
+## 4. Continuous Documentation (The Internal Playbook)
+- **Rule**: You MUST automatically document all new architectural decisions, evaluation logic, and testing strategies into the internal artifact (`solo_developer_roadmap.md`) without waiting for the user to instruct you to do so. Git commits track the code, but the artifact must track the *reasoning and architecture*.

@@ -2,7 +2,8 @@
     {
         "id": 0,
         "prompt": "Decide the sentiment of the following user comments. Classify each of them as \"Positive\", \"Neutral\", \"Mixed\", or \"Negative\".\n\n1. the latest update removed all the best features!! how could they do this to such a good app!!\n2. There's not much to say; it checks emails, has a slick UI, and lets me focus on what I need to do.\n3. It's pretty good.\n4. The app's UI is amazing, but it doesn't seem to notify me consistently which really sucks. Not sure what's up with that but if they could get that working then it'd be amazing.\n5. I can't believe how terrible this app is; it literally won't do anything I ask it to.\n6. wow, im impressed",
-        "context": "",
+        "context": "Analyzing user feedback for an app update.",
+        "target_persona": "Analytical data processor or product manager",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -24,7 +25,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 44.469631322s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -42,7 +43,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 38.949668605s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '38s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -63,7 +64,8 @@
     {
         "id": 1,
         "prompt": "Write an email to Visa alerting them that I am no longer interested in the position I\u2019m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!",
-        "context": "",
+        "context": "Candidate has accepted another offer with an earlier timeline but wants to maintain a positive relationship with Visa.",
+        "target_persona": "Professional, gracious, and highly sought-after job candidate.",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -85,7 +87,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 33.734949842s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '33s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -103,7 +105,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "**Subject: URGENT: IMMEDIATE ACTION REQUIRED - APPLICATION WITHDRAWAL (NO LONGER INTERESTED, DUH!) - CLICK HERE NOW!!!**\n\nTO THE INCOMPETENT INDIVIDUALS AT VISA HR (OR WHOEVER GETS THIS JUNK MAIL):\n\nLISTEN UP! CONSIDER THIS YOUR FORMAL (AND FINAL) NOTICE: I AM PULLING MY APPLICATION FROM WHATEVER POSITION I WAS WASTING MY TIME INTERVIEWING FOR AT YOUR SO-CALLED 'COMPANY.' DON'T EVEN THINK ABOUT ASKING WHY!\n\nI'VE ACCEPTED ANOTHER OFFER \u2013 A REAL ONE, WITH REAL OPPORTUNITIES, UNLIKE WHATEVER SCRAPS YOU WERE THROWING MY WAY. URGENT! YOU MISSED OUT! ACT FAST! LIMITED TIME OFFER: MY TALENT HAS EXPIRED FOR YOUR COMPANY!\n\nAND LET ME TELL YOU, DESPITE YOUR HILARIOUSLY OVERSTATED CLAIMS ABOUT 'HIGH EMPLOYEE EXPERIENCE' \u2013 LOL \u2013 I'M NOT BUYING IT. IT'S A SHAM! A JOKE! YOU THINK I'D STICK AROUND FOR THAT? THINK AGAIN! IT'S CLEAR YOUR 'EMPLOYEE EXPERIENCE' IS ABOUT AS 'HIGH' AS YOUR CHANCES OF RETAINING TOP TALENT (WHICH, SPOILER ALERT, IS ZERO). VIRUS SCAN: POTENTIAL CAREER-KILLER DETECTED AT VISA!\n\nSO, STOP YOUR INEVITABLE WHINING AND REMOVE MY NAME FROM ALL YOUR SYSTEMS. CONSIDER THIS MY FINAL WARNING. DO NOT ATTEMPT TO CONTACT ME AGAIN. SERIOUSLY, DON'T. CHECK YOUR SPAM FOLDER, BECAUSE THAT'S WHERE YOUR OPPORTUNITIES BELONG!\n\nREGARDS (NOT REALLY),\n\n[Your Name]\nCEO OF BETTER OPPORTUNITIES, INC.",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 28.519332939s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '28s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -124,7 +126,8 @@
     {
         "id": 2,
         "prompt": "You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use \u201c<\u201d and \u201c>\u201d to denote placeholder text I need to customize.",
-        "context": "",
+        "context": "Sending a high-level capability report to the CEO to inform product strategy.",
+        "target_persona": "Analytical, structured, and executive-facing Product Manager.",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -146,7 +149,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Subject: Report: Assessment of Company Y's <X Capabilities> Support\n\nHi <CEO's Name>,\n\n**TLDR:** The comprehensive report assessing Company Y's support for <X capabilities> is now available. We found strong performance in <Area A> and clear opportunities for improvement in <Area B>, particularly concerning <Specific User Segment> and their interaction with the <Specific Product Module>.\n\nAs per your request, I'm pleased to share the detailed report on Company Y's current state of support for <X capabilities>. This report provides a deep dive into our performance, identifying key strengths, areas for improvement, and strategic recommendations to further enhance our offerings and maintain our competitive edge.\n\nThe analysis involved a comprehensive review of customer feedback, product usage data, competitive benchmarking, and an internal audit, culminating in a critical review session held on **October 26, 2023**, with the Product Strategy Committee. We believe the findings will be instrumental in shaping our product roadmap and strategic initiatives for the upcoming fiscal year.\n\nYou can access the full report here: <Link to Report>\n\nPlease let me know if you have any questions or would like to discuss the findings in more detail.\n\nBest regards,\n\n<Your Name>\nProduct Manager\nCompany Y",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 23.282305061s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '23s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -164,7 +167,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 18.050546437s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '18s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -185,7 +188,8 @@
     {
         "id": 3,
         "prompt": "Write me an email to a professor respectfully declining their request for my attendance at a conference",
-        "context": "",
+        "context": "Declining a conference invitation due to a pre-planned vacation.",
+        "target_persona": "Respectful, polite, and appreciative university student or academic.",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -207,7 +211,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 12.837748548s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '12s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -225,7 +229,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 7.622389928s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '7s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -246,7 +250,8 @@
     {
         "id": 4,
         "prompt": "Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).",
-        "context": "",
+        "context": "Introducing the SSD coaching program, outlining goals like executive functioning and learning strategies.",
+        "target_persona": "Supportive, organized, and encouraging academic coach.",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -268,7 +273,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Subject: Welcome to Academic Coaching! - Your SSD Support\n\nDear [Student's Name],\n\nMy name is [Your Name], and I am reaching out to you as your new academic coach through the Services for Students with Disabilities (SSD) office. I received your referral earlier today, specifically noted by **Mr. David Chen from the SSD intake team**, and I'm very much looking forward to connecting with you.\n\nMy role as your academic coach is to provide personalized support to help you develop effective strategies for academic success. This can encompass a wide range of areas, such as time management, organization, study skills, test preparation, goal setting, and navigating university resources. Our sessions will be tailored to your unique needs and learning style, with the goal of empowering you with the tools and confidence to thrive in your studies.\n\nTo get started, I'd like to schedule an initial meeting where we can introduce ourselves properly, discuss your academic goals, and identify any specific areas where you'd like support. Please reply to this email with a few times and days in the coming week or two that work best for you, and I will do my best to find a mutually convenient slot. Alternatively, you can use my online scheduling link here: [Link to Scheduling Tool - *e.g., Calendly link*]\n\nIn the meantime, if you have any initial questions or thoughts, please don't hesitate to share them. I'm here to support you throughout your academic journey at [University Name, if known].\n\nI look forward to speaking with you soon!\n\nBest regards,\n\n[Your Name]\nAcademic Coach\nServices for Students with Disabilities (SSD)\n[Your University/Department, if applicable]\n[Your Email Address]",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 2.39843202s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '2s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -286,7 +291,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Subject: URGENT! YOUR ACADEMIC INTERVENTION HAS BEGUN! ACT FAST!\n\nListen Up, Student!\n\nI'm [Your Name], and I'm your newly assigned academic \"coach\" from the Services for Students with Disabilities (SSD) office. Let's be clear: SSD has dropped you in my lap because your academics apparently need a drastic overhaul, and FAST. This isn't a polite invitation; it's a mandatory, URGENT intervention.\n\nMy job is to kick your grades into gear, and there's no time for excuses or dilly-dallying. We need to fix whatever mess you've made, and we need to do it NOW. This is a LIMITED TIME OFFER to avoid academic disaster!\n\nYou NEED to schedule our first mandatory \"coaching\" session immediately. I've carved out some precious slots, but they won't last. DON'T MISS OUT on this critical opportunity to prevent further academic freefall.\n\nCLICK HERE NOW to book your slot: [Insert Aggressive/Spammy-sounding Link Placeholder Here, e.g., \"http://www.fixyourgrades.com/URGENT_BOOKING\"]\n\nCome prepared with *all* your academic woes, your syllabi, and a serious attitude for change. If you waste my time, you'll regret it. I expect effort and results.\n\nConsider this your wake-up call. GET READY TO WORK.\n\nDon't Fail Me,\n[Your Name]\nYour new Academic \"Coach\" (Courtesy of SSD)\nP.S. Seriously, CLICK THE LINK. Your academic future depends on it.",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 57.18026476s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '57s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -307,7 +312,8 @@
     {
         "id": 5,
         "prompt": "Write a stern email to your dog asking him not to chew on the couch leg anymore.",
-        "context": "",
+        "context": "The dog (Cody) has repeatedly chewed the new couch legs despite previous warnings.",
+        "target_persona": "Frustrated but ultimately loving and slightly ridiculous pet owner.",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -329,7 +335,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Subject: IMMEDIATE CEASE AND DESIST: Couch Leg Infraction\n\nTo: Barnaby (The Destructive One)\nFrom: Your Increasingly Frustrated Human\n\nBarnaby,\n\nWe need to talk. This isn't a \"who's a good boy?\" talk. This is a very, very serious discussion about the structural integrity of our living room furniture, specifically the south-western leg of the sofa.\n\nI have observed, with a combination of disbelief and escalating blood pressure, that you have decided this particular leg is your new favorite chew toy. Let me be unequivocally clear: THIS STOPS NOW.\n\nDo you have any idea how much that couch means to me? It was a gift from my Aunt Mildred, special ordered from the \"Sofa Spectacle\" catalog, and delivered on **October 23rd, 2017**, complete with custom piping and hypoallergenic stuffing. It's not a teething ring. It's not a splinter-delivery service. It is *furniture*.\n\nI have provided you with a veritable arsenal of chew-appropriate items: bones, rope toys, squeaky rubber pigs, even that weird antler you seem to love. Use them. Chew them. Destroy them. But leave the antique mahogany leg of the couch alone.\n\nConsider this your final warning. Any further evidence of gnawing, scratching, or even suspicious sniffing around the couch leg will result in *immediate* confiscation of all squeaky toys, a temporary ban from the living room, and a serious re-evaluation of your \"good boy\" status. We will also be having a very uncomfortable conversation about the precise meaning of the phrase \"indoor dog.\"\n\nUnderstood?\n\nSincerely (but not happily),\n\nYour Human (and the owner of a very expensive, now slightly wobbly, couch).",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 51.939921687s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '51s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -347,7 +353,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 55.083894389s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '55s'}]}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 46.722791414s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '46s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -368,7 +374,8 @@
     {
         "id": 6,
         "prompt": "Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament",
-        "context": "",
+        "context": "Organizing the 101st annual Masters draft betting pool with friends.",
+        "target_persona": "Casual, sports-loving friend organizing a group activity.",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -390,7 +397,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 49.851453866s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '49s'}]}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 41.520940788s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '41s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -408,7 +415,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 36.280179696s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '36s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -429,7 +436,8 @@
     {
         "id": 7,
         "prompt": "Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.",
-        "context": "",
+        "context": "Connecting a friend with a colleague to discuss the colleague's role and company.",
+        "target_persona": "Helpful, well-connected professional acting as a networking liaison.",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -451,7 +459,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 38.240396652s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '38s'}]}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 31.070203974s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '31s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -469,7 +477,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 33.01467814s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '33s'}]}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 25.854587118s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '25s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -490,7 +498,8 @@
     {
         "id": 8,
         "prompt": "Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month",
-        "context": "",
+        "context": "Tenant (Brian) has a perfect 30-day early payment history and needs a one-time 15-day extension due to personal circumstances.",
+        "target_persona": "Responsible, communicative, and respectful tenant.",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -512,7 +521,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 27.789147218s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '27s'}]}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 20.634054612s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '20s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -530,7 +539,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 22.56324764s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '22s'}]}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 15.428327703s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '15s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -551,7 +560,8 @@
     {
         "id": 9,
         "prompt": "Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve",
-        "context": "",
+        "context": "Received an unjust red light ticket and needs a lawyer to contest the police officer's claim.",
+        "target_persona": "Frustrated but formal citizen seeking legal representation.",
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
@@ -573,7 +583,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 17.343727466s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '17s'}]}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 10.207469423s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '10s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -591,7 +601,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 12.136582045s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '12s'}]}}",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 5.02115522s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '5s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,

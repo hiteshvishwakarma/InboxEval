@@ -15,7 +15,7 @@ def json_to_csv(json_path, csv_path):
         "conciseness", "intent_clarity"
     ]
     
-    headers = ["id", "prompt", "context", "type", "email_text"] + params
+    headers = ["id", "prompt", "context", "target_persona", "type", "email_text"] + params
     
     rows = []
     for item in data:
@@ -24,6 +24,7 @@ def json_to_csv(json_path, csv_path):
                 "id": item["id"],
                 "prompt": item["prompt"],
                 "context": item["context"],
+                "target_persona": item.get("target_persona", ""),
                 "type": email_case["type"],
                 "email_text": email_case["email_text"]
             }
@@ -61,6 +62,7 @@ def csv_to_json(csv_path, json_path):
                     "id": item_id,
                     "prompt": row["prompt"],
                     "context": row["context"],
+                    "target_persona": row.get("target_persona", ""),
                     "emails_to_grade": []
                 }
                 

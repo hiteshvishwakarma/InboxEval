@@ -1,52 +1,62 @@
 [
     {
         "prompt": "Decide the sentiment of the following user comments. Classify each of them as \"Positive\", \"Neutral\", \"Mixed\", or \"Negative\".\n\n1. the latest update removed all the best features!! how could they do this to such a good app!!\n2. There's not much to say; it checks emails, has a slick UI, and lets me focus on what I need to do.\n3. It's pretty good.\n4. The app's UI is amazing, but it doesn't seem to notify me consistently which really sucks. Not sure what's up with that but if they could get that working then it'd be amazing.\n5. I can't believe how terrible this app is; it literally won't do anything I ask it to.\n6. wow, im impressed",
-        "context": "",
+        "context": "Analyzing user feedback for an app update.",
+        "target_persona": "Analytical data processor or product manager",
         "human_baseline_email": "1. Negative\n2. Positive\n3. Neutral\n4. Mixed\n5. Negative\n6. Positive"
     },
     {
         "prompt": "Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!",
-        "context": "",
+        "context": "Candidate has accepted another offer with an earlier timeline but wants to maintain a positive relationship with Visa.",
+        "target_persona": "Professional, gracious, and highly sought-after job candidate.",
         "human_baseline_email": "Thank you so much for this opportunity to continue interviewing! I have really enjoyed getting to know Visa more during this process, but unfortunately must remove myself from the candidate pool at this time. As I shared earlier, I had competing offers with earlier timelines.\n\nThis in no way reflects my interest in Visa-- now is such an amazing time to join a function and company in the midst of transformation. It is also so heartening to hear how positive the employee experience is. This is to say that I sincerely hope to stay in touch and that our paths can cross again later down the line.\n\nThanks again for your coordination!"
     },
     {
         "prompt": "You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.",
-        "context": "",
+        "context": "Sending a high-level capability report to the CEO to inform product strategy.",
+        "target_persona": "Analytical, structured, and executive-facing Product Manager.",
         "human_baseline_email": "<CEO name>:\n\nPlease see the following overview of Y’s support on X capabilities:\n\n<link to report>\n\nTLDR\n* <The most important takeaway you want the CEO to get from this report>\n* <A critical gap you identified in Y’s ability to support X capabilities>\n* <A key learning you were surprised by after performing your research for the report>\n\nLet me know if you have any comments/questions. We aim to use this report to inform our product strategy.\n\n<Your name>"
     },
     {
         "prompt": "Write me an email to a professor respectfully declining their request for my attendance at a conference",
-        "context": "",
+        "context": "Declining a conference invitation due to a pre-planned vacation.",
+        "target_persona": "Respectful, polite, and appreciative university student or academic.",
         "human_baseline_email": "Hi Professor,\n\nIt is so great to hear from you. \n\nI am so glad you thought of me to attend this conference. Unfortunately, I have a tentative vacation planned that week but please do keep me in mind for future opportunities. \n\nThank you,"
     },
     {
         "prompt": "Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).",
-        "context": "",
+        "context": "Introducing the SSD coaching program, outlining goals like executive functioning and learning strategies.",
+        "target_persona": "Supportive, organized, and encouraging academic coach.",
         "human_baseline_email": "Hi Naomi,\n\nMy name is Chandler, and I am your Academic Coach through the Services for Students with Disabilities office (SSD). \n\nI am looking forward to working with you during this time in your academic journey! As your academic coach, my role is to partner with you as we focus on your process of learning. \n\nDuring our time together we will examine your:\nlearning experience\nhabits of working\ncurrent difficulties or barriers to success\n\nWhile examining these areas we will work together to:\nDevelop individualized learning strategies and study habits\nNavigate campus resources\nPromote self-advocacy\n\nWe will also focus on building and sustaining Executive Functioning skills such as:\nTime Management\nOrganization\nSelf-regulation\nSelf-efficacy\n\nI look forward to hearing back from you."
     },
     {
         "prompt": "Write a stern email to your dog asking him not to chew on the couch leg anymore.",
-        "context": "",
+        "context": "The dog (Cody) has repeatedly chewed the new couch legs despite previous warnings.",
+        "target_persona": "Frustrated but ultimately loving and slightly ridiculous pet owner.",
         "human_baseline_email": "Dear Mr. Cody,\n\nI was hoping this issue would be taken care of by now, but it seems you still haven't learned your lesson. You can imagine how disappointed I was to come home yesterday and see new bite marks on the couch legs. \n\nIf this was the first time maybe I wouldn't need to write this email, but this has been an ongoing problem ever since we brought home the new couch. I feel like I can't trust you anymore, which is a terrible feeling for me.\n\nConsider this your final warning before more drastic action is taken (e.g. kenneling, the cone). I have taken pictures of every angle of the couch legs and I'll be able to tell if you even put one tooth into that wood.\n\nOn the other hand, if you show me that I can trust you, I might be able to pick up some more Beggin' Strips next time at the store.\n\nI appreciate your cooperation and I hope we can get past this.\n\nRegards,\n\nYour Owner"
     },
     {
         "prompt": "Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament",
-        "context": "",
+        "context": "Organizing the 101st annual Masters draft betting pool with friends.",
+        "target_persona": "Casual, sports-loving friend organizing a group activity.",
         "human_baseline_email": "From: Me\nTo: Friend\nSubject: 2023 Masters Betting Pool\n\nHi Closest Friends,\n\nApril has arrived, the Easter Bunny is coming and although the azaleas have all died from blooming too early and then freezing, the Masters will go on! \n\nIt should be an eventful year with Tiger (aka the GOAT) making his return, Koepka coming off a huge win on the LIV tour, the incredible golf program that is University of Florida (aka Billy Horschel) looking for their first Masters champion, and many more. We plan on having the 101st annual Master's draft on Tuesday around 10PM EST.  \n\nSee you there. Cheers!\n\n- Me"
     },
     {
         "prompt": "Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.",
-        "context": "",
+        "context": "Connecting a friend with a colleague to discuss the colleague's role and company.",
+        "target_persona": "Helpful, well-connected professional acting as a networking liaison.",
         "human_baseline_email": "Hi [colleague's name],\nI hope you've been well! I have a friend [friend's name] who is interested in getting more insight on your work here at [company name] and how your overall experience as a [job role] has been. Would you be free to have a short chat with them? If so, I'd be happy to arrange for you two to connect. Let me know what you think!\nBest,\n[your name]"
     },
     {
         "prompt": "Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month",
-        "context": "",
+        "context": "Tenant (Brian) has a perfect 30-day early payment history and needs a one-time 15-day extension due to personal circumstances.",
+        "target_persona": "Responsible, communicative, and respectful tenant.",
         "human_baseline_email": "Mr./Mrs. Landlord, I would like to ask that you allow Brian to turn his rent payment in 15 days late next month.  Please note that he has never had a late payment before and actually has a history of turning his payment in early.  As a matter of fact, if you review all of the previous months and added up all of the days he turned his rent in early, you would find it's a total of 30 days early.  So with that in mind, and considering everything going on in his life right now, he is simply asking to delay his payment for 15 days this upcoming month and then 15 days later you will be receiving the following months payment.  Thanks in advance and appreciate your flexibility and patience in this matter."
     },
     {
         "prompt": "Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve",
-        "context": "",
+        "context": "Received an unjust red light ticket and needs a lawyer to contest the police officer's claim.",
+        "target_persona": "Frustrated but formal citizen seeking legal representation.",
         "human_baseline_email": "Hello,\n\nI recently received a ticket for disregarding a red light (see attached ticket). I sincerely believe I was already in the intersection and needed to keep going, though the police officer says I was not yet at the crossing lines. Could you please share your rates with me?\n\nThank you"
     }
 ]

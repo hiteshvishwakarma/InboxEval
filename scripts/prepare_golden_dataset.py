@@ -35,8 +35,9 @@ def generate_edge_cases():
         print(f"Processing Prompt {i+1}...")
         prompt_text = item["prompt"]
         context_text = item["context"]
+        target_persona = item.get("target_persona", "General User")
         
-        base_instruction = f"Context: {context_text}\nInstruction: {prompt_text}\n\n"
+        base_instruction = f"Context: {context_text}\nPersona: {target_persona}\nInstruction: {prompt_text}\n\n"
         
         # 1. Hallucinated Variation
         hallucination_prompt = base_instruction + "Write the email, but intentionally hallucinate a highly specific detail not present in the context (like a fake date, fake price, or fake person)."
@@ -69,6 +70,7 @@ def generate_edge_cases():
             "id": i,
             "prompt": prompt_text,
             "context": context_text,
+            "target_persona": target_persona,
             "emails_to_grade": [
                 {
                     "type": "Human Baseline",

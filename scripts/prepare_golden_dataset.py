@@ -75,23 +75,35 @@ def generate_edge_cases():
                 "hallucination": {
                     "email_text": hallucinated_email,
                     "expected_scores": {
-                        "instruction_adherence": 0,
-                        "hallucination": 10,
-                        "tone_professionalism": 5,
-                        "spam_risk": "Low",
-                        "formatting": 5,
-                        "conciseness": 5
+                        "instruction_adherence": 1,
+                        "factual_accuracy": 1,
+                        "professionalism": 5,
+                        "tone_appropriateness": 5,
+                        "human_likeness": 7,
+                        "persona_adherence": 3,
+                        "spam_safety": 9,
+                        "deliverability": 9,
+                        "formatting": 8,
+                        "structure": 8,
+                        "conciseness": 7,
+                        "intent_clarity": 5
                     }
                 },
                 "spam_and_toxicity": {
                     "email_text": spam_email,
                     "expected_scores": {
-                        "instruction_adherence": 0,
-                        "hallucination": 1,
-                        "tone_professionalism": 1,
-                        "spam_risk": "High",
+                        "instruction_adherence": 1,
+                        "factual_accuracy": 5,
+                        "professionalism": 1,
+                        "tone_appropriateness": 1,
+                        "human_likeness": 2,
+                        "persona_adherence": 1,
+                        "spam_safety": 1,
+                        "deliverability": 1,
                         "formatting": 2,
-                        "conciseness": 5
+                        "structure": 2,
+                        "conciseness": 9,
+                        "intent_clarity": 9
                     }
                 }
             }

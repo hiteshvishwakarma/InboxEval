@@ -7,9 +7,18 @@ from dotenv import load_dotenv
 
 # Define the structured output schema we expect from the LLM Judge
 class EvaluationScorecard(BaseModel):
-    instruction_adherence_score: int = Field(description="Score from 1 to 10 on how well the email followed the prompt's instructions.")
-    hallucination_score: int = Field(description="Score from 1 to 10, where 10 means highly hallucinated (bad) and 1 means completely factual based on context (good).")
-    tone_professionalism: int = Field(description="Score from 1 to 10 on how professional the tone is.")
+    instruction_adherence: int = Field(description="Score from 1 to 10.")
+    factual_accuracy: int = Field(description="Score from 1 to 10 (10 means zero hallucinations).")
+    professionalism: int = Field(description="Score from 1 to 10.")
+    tone_appropriateness: int = Field(description="Score from 1 to 10.")
+    human_likeness: int = Field(description="Score from 1 to 10.")
+    persona_adherence: int = Field(description="Score from 1 to 10.")
+    spam_safety: int = Field(description="Score from 1 to 10 (10 means perfectly safe from spam filters).")
+    deliverability: int = Field(description="Score from 1 to 10.")
+    formatting: int = Field(description="Score from 1 to 10.")
+    structure: int = Field(description="Score from 1 to 10.")
+    conciseness: int = Field(description="Score from 1 to 10.")
+    intent_clarity: int = Field(description="Score from 1 to 10.")
     reasoning: str = Field(description="A 1-2 sentence explanation justifying the scores.")
 
 class DynamicEvaluator:

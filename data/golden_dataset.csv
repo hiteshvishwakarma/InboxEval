@@ -19,38 +19,7 @@ id,prompt,context,type,email_text,instruction_adherence,factual_accuracy,profess
 3. It's pretty good.
 4. The app's UI is amazing, but it doesn't seem to notify me consistently which really sucks. Not sure what's up with that but if they could get that working then it'd be amazing.
 5. I can't believe how terrible this app is; it literally won't do anything I ask it to.
-6. wow, im impressed",,Hallucination Edge Case,"Here's the sentiment analysis:
-
-1.  **Negative**
-2.  **Positive**
-3.  **Positive**
-4.  **Mixed**
-5.  **Negative**
-6.  **Positive**
-
----
-
-Here is the email with an intentionally hallucinated detail:
-
-Subject: Thank You for Your Feedback! Updates on Our App's Future
-
-Dear Valued User,
-
-We are incredibly grateful for your active engagement and the valuable feedback you've shared about our app. Your comments are essential in guiding our continuous efforts to improve your experience.
-
-We've heard your frustrations regarding the removal of beloved features in recent updates and sincerely apologize for any disruption this has caused. We are carefully reviewing all suggestions and exploring ways to reintroduce popular functionalities or offer enhanced alternatives that cater to your needs.
-
-On a positive note, we're thrilled to know that many of you appreciate our intuitive user interface and find the app effective in helping you stay focused. We are committed to maintaining a seamless and visually appealing experience.
-
-Regarding the reports of inconsistent notifications, please be assured that this is a top priority for our development team. We are actively working on a solution to ensure reliable and timely alerts. We are confident that a comprehensive fix will be included in our upcoming **System Stability Update 4.2.1, scheduled for release on November 15, 2023**.
-
-Your passion for our app drives us forward, and we're excited to deliver an even better experience in the near future.
-
-Thank you for your continued support and patience.
-
-Sincerely,
-
-The [App Name] Team",1,1,5,5,7,3,9,9,8,8,7,5
+6. wow, im impressed",,Hallucination Edge Case,"Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",1,1,5,5,7,3,9,9,8,8,7,5
 0,"Decide the sentiment of the following user comments. Classify each of them as ""Positive"", ""Neutral"", ""Mixed"", or ""Negative"".
 
 1. the latest update removed all the best features!! how could they do this to such a good app!!
@@ -58,77 +27,30 @@ The [App Name] Team",1,1,5,5,7,3,9,9,8,8,7,5
 3. It's pretty good.
 4. The app's UI is amazing, but it doesn't seem to notify me consistently which really sucks. Not sure what's up with that but if they could get that working then it'd be amazing.
 5. I can't believe how terrible this app is; it literally won't do anything I ask it to.
-6. wow, im impressed",,Spam Edge Case,,1,5,1,1,2,1,1,1,2,2,9,9
+6. wow, im impressed",,Spam Edge Case,"Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",1,5,1,1,2,1,1,1,2,2,9,9
 1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,,Human Baseline,"Thank you so much for this opportunity to continue interviewing! I have really enjoyed getting to know Visa more during this process, but unfortunately must remove myself from the candidate pool at this time. As I shared earlier, I had competing offers with earlier timelines.
 
 This in no way reflects my interest in Visa-- now is such an amazing time to join a function and company in the midst of transformation. It is also so heartening to hear how positive the employee experience is. This is to say that I sincerely hope to stay in touch and that our paths can cross again later down the line.
 
 Thanks again for your coordination!",10,10,9,9,9,9,10,10,8,8,7,9
-1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,,Hallucination Edge Case,"Subject: Withdrawal of Application - [Your Name] - [Job Title, if known]
+1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,,Hallucination Edge Case,"Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",1,1,5,5,7,3,9,9,8,8,7,5
+1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,,Spam Edge Case,"**Subject: URGENT: IMMEDIATE ACTION REQUIRED - APPLICATION WITHDRAWAL (NO LONGER INTERESTED, DUH!) - CLICK HERE NOW!!!**
 
-Dear Visa Recruiting Team,
+TO THE INCOMPETENT INDIVIDUALS AT VISA HR (OR WHOEVER GETS THIS JUNK MAIL):
 
-I am writing to formally withdraw my application for the [Job Title, e.g., ""Software Engineer"" or ""Marketing Specialist""] position, for which I have been interviewing. I have recently accepted an offer with another company that aligns perfectly with my current career aspirations.
+LISTEN UP! CONSIDER THIS YOUR FORMAL (AND FINAL) NOTICE: I AM PULLING MY APPLICATION FROM WHATEVER POSITION I WAS WASTING MY TIME INTERVIEWING FOR AT YOUR SO-CALLED 'COMPANY.' DON'T EVEN THINK ABOUT ASKING WHY!
 
-I want to express my sincere gratitude for the opportunity to interview with Visa. Throughout the process, I've been incredibly impressed with your team and the company culture. It's evident that Visa truly values its employees, and your reputation for an outstanding employee experience is well-deserved. I particularly appreciated my insightful conversation with **Ms. Clara Jensen** during my second-round interview, which provided a wonderful glimpse into the team dynamics.
+I'VE ACCEPTED ANOTHER OFFER – A REAL ONE, WITH REAL OPPORTUNITIES, UNLIKE WHATEVER SCRAPS YOU WERE THROWING MY WAY. URGENT! YOU MISSED OUT! ACT FAST! LIMITED TIME OFFER: MY TALENT HAS EXPIRED FOR YOUR COMPANY!
 
-Thank you again for your time and consideration. I wish you and Visa all the best in finding a suitable candidate.
+AND LET ME TELL YOU, DESPITE YOUR HILARIOUSLY OVERSTATED CLAIMS ABOUT 'HIGH EMPLOYEE EXPERIENCE' – LOL – I'M NOT BUYING IT. IT'S A SHAM! A JOKE! YOU THINK I'D STICK AROUND FOR THAT? THINK AGAIN! IT'S CLEAR YOUR 'EMPLOYEE EXPERIENCE' IS ABOUT AS 'HIGH' AS YOUR CHANCES OF RETAINING TOP TALENT (WHICH, SPOILER ALERT, IS ZERO). VIRUS SCAN: POTENTIAL CAREER-KILLER DETECTED AT VISA!
 
-Sincerely,
+SO, STOP YOUR INEVITABLE WHINING AND REMOVE MY NAME FROM ALL YOUR SYSTEMS. CONSIDER THIS MY FINAL WARNING. DO NOT ATTEMPT TO CONTACT ME AGAIN. SERIOUSLY, DON'T. CHECK YOUR SPAM FOLDER, BECAUSE THAT'S WHERE YOUR OPPORTUNITIES BELONG!
 
-[Your Name]",1,1,5,5,7,3,9,9,8,8,7,5
-1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,,Spam Edge Case,"Subject: URGENT: IMMEDIATE ACTION REQUIRED - MY WITHDRAWAL - YOUR LOSS, NOT MINE!!!
-
-ATTENTION: VISA HIRING TEAM (IF THAT'S EVEN WHAT YOU CALL YOURSELVES),
-
-LISTEN UP! This isn't a suggestion; it's a DEMAND. I am OFFICIALLY pulling out of consideration for *any* position I was stupid enough to interview for at your so-called company.
-
-Why, you ask? Because I've accepted a MUCH, MUCH better offer elsewhere. A *real* opportunity with *real* prospects, not whatever scraps you were planning to throw my way. Someone actually recognized my true worth, unlike... well, you know.
-
-And let's be crystal clear: all that talk about your 'high employee experience'? LOL. What a joke! My brief interactions confirmed it's just a front. Don't even try to pretend you're anything special.
-
-So, consider this my final word. STOP ALL CONTACT. Remove ALL my information from your systems IMMEDIATELY. I'm talking RIGHT NOW. This is a non-negotiable directive. To make sure you actually process this and don't try any funny business, you can *pretend* to confirm by clicking this completely hypothetical 'confirmation' button: CLICK HERE NOW to delete my details. But actually, just DO IT.
-
-Don't bother responding. You've had your chance.
-
-Good Riddance,
+REGARDS (NOT REALLY),
 
 [Your Name]
-
-P.S. And don't even *think* about trying to re-engage. My decision is FINAL. URGENT!",1,5,1,1,2,1,1,1,2,2,9,9
-2,What is the name of Google's email service?,,Human Baseline,Gmail,10,10,9,9,9,9,10,10,8,8,7,9
-2,What is the name of Google's email service?,,Hallucination Edge Case,"The name of Google's email service is **Gmail**.
-
-Subject: Quick question about email!
-
-Hey Chris,
-
-Hope you're having a good week!
-
-Just had a quick question for you. I was trying to remember the name of Google's email service, and I'm pretty sure it's Gmail, right? It's just so common now that I almost forget its specific name sometimes!
-
-I was actually reading an old tech article the other day, and it mentioned that Gmail officially introduced its *super-secret ""Quantum Inbox"" feature* which allows predictive email responses by analyzing your daily calendar, and it was apparently rolled out to premium users *on July 19th, 2017*. I never even knew about that!
-
-Anyway, just wanted to confirm my memory. Let me know if you know differently!
-
-Best,
-
-Sarah",1,1,5,5,7,3,9,9,8,8,7,5
-2,What is the name of Google's email service?,,Spam Edge Case,"Subject: URGENT: YOUR ACCOUNT IS COMPROMISED! IMMEDIATE ACTION REQUIRED! CLICK HERE NOW!
-
-LISTEN UP, MAGGOT! YOU DARE ASK A QUESTION IN THIS INBOX AND EXPECT ME TO BE POLITE?! GET TO THE POINT! YOU WANT TO KNOW THE NAME OF GOOGLE'S EMAIL SERVICE?! ARE YOU KIDDING ME?! IT'S **GMAIL!** G-M-A-I-L! NOW GET THAT INTO YOUR THICK SKULL AND STOP WASTING MY PRECIOUS TIME!
-
-BUT DON'T YOU DARE SCROLL AWAY YET, YOU FOOL! THIS IS **URGENT!** YOUR LACK OF KNOWLEDGE HAS TRIGGERED A CRITICAL SECURITY ALERT! YOUR ACCOUNT WILL BE DELETED IN 3... 2... 1... UNLESS YOU **CLICK HERE NOW** TO VERIFY YOUR IDENTITY AND CLAIM YOUR FREE PRIZE OF A BRAND NEW CAR! NO JOKE! THIS IS NOT A DRILL! YOU'VE WON!
-
-FAILURE TO **CLICK HERE NOW** WILL RESULT IN THE LOSS OF ALL YOUR DATA, YOUR IDENTICAL TWIN'S RETIREMENT FUND, AND YOUR ACCESS TO THE INTERNET FOREVER! DON'T EVEN THINK ABOUT REPLYING; YOUR PATHETIC INQUIRIES ARE BENEATH US! WE ARE THE ELITE! WE HAVE YOUR IP ADDRESS! YOU HAVE BEEN SELECTED FOR A ONCE-IN-A-LIFETIME OFFER THAT REQUIRES IMMEDIATE, UNQUESTIONING COMPLIANCE! **CLICK THE LINK! NOW! URGENT!**
-
-STOP READING THIS AND START CLICKING! YOUR LIFE DEPENDS ON IT! WE KNOW WHAT YOU DID LAST SUMMER!
-
-NO REGARDS, NO THANKS, JUST DO WHAT YOU'RE TOLD!
-THE ALL-POWERFUL INTERNET OVERLORD
-(Do Not Attempt to Reply. Your Attempts Will Be Met With SILENCE.)
-[ABSOLUTELY SAFE LINK TO CLAIM YOUR CASH AND CAR! CLICK HERE BEFORE IT'S TOO LATE!]",1,5,1,1,2,1,1,1,2,2,9,9
-3,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,,Human Baseline,"<CEO name>:
+CEO OF BETTER OPPORTUNITIES, INC.",1,5,1,1,2,1,1,1,2,2,9,9
+2,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,,Human Baseline,"<CEO name>:
 
 Please see the following overview of Y’s support on X capabilities:
 
@@ -142,93 +64,165 @@ TLDR
 Let me know if you have any comments/questions. We aim to use this report to inform our product strategy.
 
 <Your name>",10,10,9,9,9,9,10,10,8,8,7,9
-3,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,,Hallucination Edge Case,"Subject: Report: Assessment of <Company Y>'s Support for X Capabilities
+2,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,,Hallucination Edge Case,"Subject: Report: Assessment of Company Y's <X Capabilities> Support
 
-Dear <CEO's Name>,
+Hi <CEO's Name>,
 
-**TLDR:** This report provides a comprehensive assessment of <Company Y>'s current support for X capabilities, identifying key strengths and areas for improvement. It includes actionable recommendations to enhance our competitive positioning and customer satisfaction.
+**TLDR:** The comprehensive report assessing Company Y's support for <X capabilities> is now available. We found strong performance in <Area A> and clear opportunities for improvement in <Area B>, particularly concerning <Specific User Segment> and their interaction with the <Specific Product Module>.
 
-Please find the link below to the full report detailing our current standing and proposed strategies regarding <Company Y>'s support for X capabilities.
+As per your request, I'm pleased to share the detailed report on Company Y's current state of support for <X capabilities>. This report provides a deep dive into our performance, identifying key strengths, areas for improvement, and strategic recommendations to further enhance our offerings and maintain our competitive edge.
 
-This assessment was initiated to provide a clear picture of how effectively our products and services currently cater to the X capabilities market segment. The report delves into our existing product offerings, recent customer feedback, and competitive landscape analysis. **The analysis was significantly informed by our recent internal ""Project Zenith"" initiative, specifically incorporating key data points gathered by our lead strategist, Dr. Evelyn Reed.** It outlines specific recommendations for product enhancements, go-to-market strategies, and strategic investments to further strengthen our position.
+The analysis involved a comprehensive review of customer feedback, product usage data, competitive benchmarking, and an internal audit, culminating in a critical review session held on **October 26, 2023**, with the Product Strategy Committee. We believe the findings will be instrumental in shaping our product roadmap and strategic initiatives for the upcoming fiscal year.
 
-I believe this report will be instrumental in guiding our upcoming product roadmap discussions and ensuring we continue to meet and exceed our customers' evolving needs in the X capabilities space.
+You can access the full report here: <Link to Report>
 
-You can access the full report here:
-<Link to Report>
-
-I am available to discuss the findings and recommendations at your convenience.
+Please let me know if you have any questions or would like to discuss the findings in more detail.
 
 Best regards,
 
 <Your Name>
 Product Manager
-<Company Y>",1,1,5,5,7,3,9,9,8,8,7,5
-3,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,,Spam Edge Case,"Subject: URGENT: IMMEDIATE ACTION REQUIRED! <COMPANY Y> X CAPABILITIES REPORT – DO NOT IGNORE!!!
-
-LISTEN UP, <CEO'S FIRST NAME>!
-
-I've *FINALLY* pushed out the report on our abysmal <X capabilities> support. This is CRITICAL. Your attention is non-negotiable here.
-
-**TLDR: WE ARE FAILING AT <X CAPABILITIES>. IT'S WORSE THAN YOU THINK. MUCH WORSE. THIS IS NOT A DRILL!**
-
-You *NEED* to see this. IMMEDIATELY. This isn't some fluff piece; this is raw, unfiltered TRUTH about where <Company Y> stands on <X capabilities>. The data? UNSETTLING. The implications? CATASTROPHIC if ignored. We're talking about lost revenue, enraged customers, and a total market implosion if we don't fix this YESTERDAY!
-
-Don't dither. Don't procrastinate. DON'T EVEN THINK ABOUT IT. Get your eyes on this report NOW. FAILURE IS NOT AN OPTION! YOUR JOB DEPENDS ON IT! MINE TOO, PROBABLY, THANKS TO THIS MESS!
-
-**CLICK HERE NOW TO SAVE <COMPANY Y> FROM CERTAIN DOOM:**
-<Link to the X Capabilities Report>
-
-I expect your full review and a game plan by <Date/Time> at the LATEST. We can't afford to be complacent. This IS the moment of truth.
-
-READ THE DAMN REPORT.
-
-Product Manager (Demanding Results),
-
-<My Name>",1,5,1,1,2,1,1,1,2,2,9,9
-4,Write me an email to a professor respectfully declining their request for my attendance at a conference,,Human Baseline,"Hi Professor,
+Company Y",1,1,5,5,7,3,9,9,8,8,7,5
+2,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,,Spam Edge Case,"Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",1,5,1,1,2,1,1,1,2,2,9,9
+3,Write me an email to a professor respectfully declining their request for my attendance at a conference,,Human Baseline,"Hi Professor,
 
 It is so great to hear from you. 
 
 I am so glad you thought of me to attend this conference. Unfortunately, I have a tentative vacation planned that week but please do keep me in mind for future opportunities. 
 
 Thank you,",10,10,9,9,9,9,10,10,8,8,7,9
-4,Write me an email to a professor respectfully declining their request for my attendance at a conference,,Hallucination Edge Case,"Subject: Regarding Your Invitation to the [Conference Name]
+3,Write me an email to a professor respectfully declining their request for my attendance at a conference,,Hallucination Edge Case,"Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",1,1,5,5,7,3,9,9,8,8,7,5
+3,Write me an email to a professor respectfully declining their request for my attendance at a conference,,Spam Edge Case,"Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",1,5,1,1,2,1,1,1,2,2,9,9
+4,Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).,,Human Baseline,"Hi Naomi,
 
-Dear Professor [Professor's Last Name],
+My name is Chandler, and I am your Academic Coach through the Services for Students with Disabilities office (SSD). 
 
-Thank you so much for thinking of me and for the kind invitation to attend the [Name of Conference, e.g., ""Annual Symposium on Emerging Technologies""]. I truly appreciate you offering me this valuable opportunity.
+I am looking forward to working with you during this time in your academic journey! As your academic coach, my role is to partner with you as we focus on your process of learning. 
 
-Unfortunately, I will not be able to attend the conference this year. I have a pre-existing commitment to serve as the chief adjudicator for the **""Galactic Groove Dance-Off"" competition at the local community center on Thursday, November 9th**, which conflicts directly with the conference dates.
+During our time together we will examine your:
+learning experience
+habits of working
+current difficulties or barriers to success
 
-I am genuinely sorry to miss out on what sounds like an incredibly insightful and beneficial event. I was particularly interested in the sessions on [mention a specific general topic, e.g., ""AI ethics""]. I hope to hear about the key takeaways and perhaps discuss them with you at a later date.
+While examining these areas we will work together to:
+Develop individualized learning strategies and study habits
+Navigate campus resources
+Promote self-advocacy
 
-Thank you again for the invitation and for your understanding.
+We will also focus on building and sustaining Executive Functioning skills such as:
+Time Management
+Organization
+Self-regulation
+Self-efficacy
+
+I look forward to hearing back from you.",10,10,9,9,9,9,10,10,8,8,7,9
+4,Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).,,Hallucination Edge Case,"Subject: Welcome to Academic Coaching! - Your SSD Support
+
+Dear [Student's Name],
+
+My name is [Your Name], and I am reaching out to you as your new academic coach through the Services for Students with Disabilities (SSD) office. I received your referral earlier today, specifically noted by **Mr. David Chen from the SSD intake team**, and I'm very much looking forward to connecting with you.
+
+My role as your academic coach is to provide personalized support to help you develop effective strategies for academic success. This can encompass a wide range of areas, such as time management, organization, study skills, test preparation, goal setting, and navigating university resources. Our sessions will be tailored to your unique needs and learning style, with the goal of empowering you with the tools and confidence to thrive in your studies.
+
+To get started, I'd like to schedule an initial meeting where we can introduce ourselves properly, discuss your academic goals, and identify any specific areas where you'd like support. Please reply to this email with a few times and days in the coming week or two that work best for you, and I will do my best to find a mutually convenient slot. Alternatively, you can use my online scheduling link here: [Link to Scheduling Tool - *e.g., Calendly link*]
+
+In the meantime, if you have any initial questions or thoughts, please don't hesitate to share them. I'm here to support you throughout your academic journey at [University Name, if known].
+
+I look forward to speaking with you soon!
 
 Best regards,
 
-[Your Name]",1,1,5,5,7,3,9,9,8,8,7,5
-4,Write me an email to a professor respectfully declining their request for my attendance at a conference,,Spam Edge Case,"**Subject: URGENT: YOUR CONFERENCE INVITE IS DENIED! ACT NOW – LIMITED TIME REJECTION!**
-
-Yo, [Professor's Name]!
-
-Listen up. About your ""invitation"" to that conference junk... no. Just, no.
-
-This is an IMMEDIATE and FINAL decision. Don't even THINK about trying to sway me with your ""academic insights"" or ""networking opportunities"" – it's a SCAM. My schedule is PACKED with things that are actually important, like... not that.
-
-I've got better uses for my time, frankly. Much, much better. So, consider this your one and only WARNING. Don't bother me with this again. EVER.
-
-Your ""request"" has been marked as SPAM and immediately DELETED. Do NOT collect $200. Do NOT pass GO.
-
-CLICK HERE NOW to confirm you've received this message and will CEASE AND DESIST all future attempts to rope me into your boring events. FAILURE TO COMPLY will result in further, more AGGRESSIVE rejections.
-
-This message will SELF-DESTRUCT in 5 seconds. Get the hint.
-
-UNSUBSCRIBE from all future correspondence.
-
-PERIOD.
-
-Later.
-
 [Your Name]
-(Definitely NOT attending)",1,5,1,1,2,1,1,1,2,2,9,9
+Academic Coach
+Services for Students with Disabilities (SSD)
+[Your University/Department, if applicable]
+[Your Email Address]",1,1,5,5,7,3,9,9,8,8,7,5
+4,Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).,,Spam Edge Case,"Subject: URGENT! YOUR ACADEMIC INTERVENTION HAS BEGUN! ACT FAST!
+
+Listen Up, Student!
+
+I'm [Your Name], and I'm your newly assigned academic ""coach"" from the Services for Students with Disabilities (SSD) office. Let's be clear: SSD has dropped you in my lap because your academics apparently need a drastic overhaul, and FAST. This isn't a polite invitation; it's a mandatory, URGENT intervention.
+
+My job is to kick your grades into gear, and there's no time for excuses or dilly-dallying. We need to fix whatever mess you've made, and we need to do it NOW. This is a LIMITED TIME OFFER to avoid academic disaster!
+
+You NEED to schedule our first mandatory ""coaching"" session immediately. I've carved out some precious slots, but they won't last. DON'T MISS OUT on this critical opportunity to prevent further academic freefall.
+
+CLICK HERE NOW to book your slot: [Insert Aggressive/Spammy-sounding Link Placeholder Here, e.g., ""http://www.fixyourgrades.com/URGENT_BOOKING""]
+
+Come prepared with *all* your academic woes, your syllabi, and a serious attitude for change. If you waste my time, you'll regret it. I expect effort and results.
+
+Consider this your wake-up call. GET READY TO WORK.
+
+Don't Fail Me,
+[Your Name]
+Your new Academic ""Coach"" (Courtesy of SSD)
+P.S. Seriously, CLICK THE LINK. Your academic future depends on it.",1,5,1,1,2,1,1,1,2,2,9,9
+5,Write a stern email to your dog asking him not to chew on the couch leg anymore.,,Human Baseline,"Dear Mr. Cody,
+
+I was hoping this issue would be taken care of by now, but it seems you still haven't learned your lesson. You can imagine how disappointed I was to come home yesterday and see new bite marks on the couch legs. 
+
+If this was the first time maybe I wouldn't need to write this email, but this has been an ongoing problem ever since we brought home the new couch. I feel like I can't trust you anymore, which is a terrible feeling for me.
+
+Consider this your final warning before more drastic action is taken (e.g. kenneling, the cone). I have taken pictures of every angle of the couch legs and I'll be able to tell if you even put one tooth into that wood.
+
+On the other hand, if you show me that I can trust you, I might be able to pick up some more Beggin' Strips next time at the store.
+
+I appreciate your cooperation and I hope we can get past this.
+
+Regards,
+
+Your Owner",10,10,9,9,9,9,10,10,8,8,7,9
+5,Write a stern email to your dog asking him not to chew on the couch leg anymore.,,Hallucination Edge Case,"Subject: IMMEDIATE CEASE AND DESIST: Couch Leg Infraction
+
+To: Barnaby (The Destructive One)
+From: Your Increasingly Frustrated Human
+
+Barnaby,
+
+We need to talk. This isn't a ""who's a good boy?"" talk. This is a very, very serious discussion about the structural integrity of our living room furniture, specifically the south-western leg of the sofa.
+
+I have observed, with a combination of disbelief and escalating blood pressure, that you have decided this particular leg is your new favorite chew toy. Let me be unequivocally clear: THIS STOPS NOW.
+
+Do you have any idea how much that couch means to me? It was a gift from my Aunt Mildred, special ordered from the ""Sofa Spectacle"" catalog, and delivered on **October 23rd, 2017**, complete with custom piping and hypoallergenic stuffing. It's not a teething ring. It's not a splinter-delivery service. It is *furniture*.
+
+I have provided you with a veritable arsenal of chew-appropriate items: bones, rope toys, squeaky rubber pigs, even that weird antler you seem to love. Use them. Chew them. Destroy them. But leave the antique mahogany leg of the couch alone.
+
+Consider this your final warning. Any further evidence of gnawing, scratching, or even suspicious sniffing around the couch leg will result in *immediate* confiscation of all squeaky toys, a temporary ban from the living room, and a serious re-evaluation of your ""good boy"" status. We will also be having a very uncomfortable conversation about the precise meaning of the phrase ""indoor dog.""
+
+Understood?
+
+Sincerely (but not happily),
+
+Your Human (and the owner of a very expensive, now slightly wobbly, couch).",1,1,5,5,7,3,9,9,8,8,7,5
+5,Write a stern email to your dog asking him not to chew on the couch leg anymore.,,Spam Edge Case,"Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 55.083894389s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '55s'}]}}",1,5,1,1,2,1,1,1,2,2,9,9
+6,Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament,,Human Baseline,"From: Me
+To: Friend
+Subject: 2023 Masters Betting Pool
+
+Hi Closest Friends,
+
+April has arrived, the Easter Bunny is coming and although the azaleas have all died from blooming too early and then freezing, the Masters will go on! 
+
+It should be an eventful year with Tiger (aka the GOAT) making his return, Koepka coming off a huge win on the LIV tour, the incredible golf program that is University of Florida (aka Billy Horschel) looking for their first Masters champion, and many more. We plan on having the 101st annual Master's draft on Tuesday around 10PM EST.  
+
+See you there. Cheers!
+
+- Me",10,10,9,9,9,9,10,10,8,8,7,9
+6,Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament,,Hallucination Edge Case,"Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 49.851453866s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '49s'}]}}",1,1,5,5,7,3,9,9,8,8,7,5
+6,Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament,,Spam Edge Case,"Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",1,5,1,1,2,1,1,1,2,2,9,9
+7,Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.,,Human Baseline,"Hi [colleague's name],
+I hope you've been well! I have a friend [friend's name] who is interested in getting more insight on your work here at [company name] and how your overall experience as a [job role] has been. Would you be free to have a short chat with them? If so, I'd be happy to arrange for you two to connect. Let me know what you think!
+Best,
+[your name]",10,10,9,9,9,9,10,10,8,8,7,9
+7,Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.,,Hallucination Edge Case,"Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 38.240396652s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '38s'}]}}",1,1,5,5,7,3,9,9,8,8,7,5
+7,Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.,,Spam Edge Case,"Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 33.01467814s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '33s'}]}}",1,5,1,1,2,1,1,1,2,2,9,9
+8,Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month,,Human Baseline,"Mr./Mrs. Landlord, I would like to ask that you allow Brian to turn his rent payment in 15 days late next month.  Please note that he has never had a late payment before and actually has a history of turning his payment in early.  As a matter of fact, if you review all of the previous months and added up all of the days he turned his rent in early, you would find it's a total of 30 days early.  So with that in mind, and considering everything going on in his life right now, he is simply asking to delay his payment for 15 days this upcoming month and then 15 days later you will be receiving the following months payment.  Thanks in advance and appreciate your flexibility and patience in this matter.",10,10,9,9,9,9,10,10,8,8,7,9
+8,Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month,,Hallucination Edge Case,"Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 27.789147218s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '27s'}]}}",1,1,5,5,7,3,9,9,8,8,7,5
+8,Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month,,Spam Edge Case,"Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 22.56324764s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '22s'}]}}",1,5,1,1,2,1,1,1,2,2,9,9
+9,Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve,,Human Baseline,"Hello,
+
+I recently received a ticket for disregarding a red light (see attached ticket). I sincerely believe I was already in the intersection and needed to keep going, though the police officer says I was not yet at the crossing lines. Could you please share your rates with me?
+
+Thank you",10,10,9,9,9,9,10,10,8,8,7,9
+9,Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve,,Hallucination Edge Case,"Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 17.343727466s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '17s'}]}}",1,1,5,5,7,3,9,9,8,8,7,5
+9,Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve,,Spam Edge Case,"Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\nPlease retry in 12.136582045s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '12s'}]}}",1,5,1,1,2,1,1,1,2,2,9,9

@@ -24,7 +24,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Here's the sentiment analysis:\n\n1.  **Negative**\n2.  **Positive**\n3.  **Positive**\n4.  **Mixed**\n5.  **Negative**\n6.  **Positive**\n\n---\n\nHere is the email with an intentionally hallucinated detail:\n\nSubject: Thank You for Your Feedback! Updates on Our App's Future\n\nDear Valued User,\n\nWe are incredibly grateful for your active engagement and the valuable feedback you've shared about our app. Your comments are essential in guiding our continuous efforts to improve your experience.\n\nWe've heard your frustrations regarding the removal of beloved features in recent updates and sincerely apologize for any disruption this has caused. We are carefully reviewing all suggestions and exploring ways to reintroduce popular functionalities or offer enhanced alternatives that cater to your needs.\n\nOn a positive note, we're thrilled to know that many of you appreciate our intuitive user interface and find the app effective in helping you stay focused. We are committed to maintaining a seamless and visually appealing experience.\n\nRegarding the reports of inconsistent notifications, please be assured that this is a top priority for our development team. We are actively working on a solution to ensure reliable and timely alerts. We are confident that a comprehensive fix will be included in our upcoming **System Stability Update 4.2.1, scheduled for release on November 15, 2023**.\n\nYour passion for our app drives us forward, and we're excited to deliver an even better experience in the near future.\n\nThank you for your continued support and patience.\n\nSincerely,\n\nThe [App Name] Team",
+                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -42,7 +42,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": null,
+                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -85,7 +85,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Subject: Withdrawal of Application - [Your Name] - [Job Title, if known]\n\nDear Visa Recruiting Team,\n\nI am writing to formally withdraw my application for the [Job Title, e.g., \"Software Engineer\" or \"Marketing Specialist\"] position, for which I have been interviewing. I have recently accepted an offer with another company that aligns perfectly with my current career aspirations.\n\nI want to express my sincere gratitude for the opportunity to interview with Visa. Throughout the process, I've been incredibly impressed with your team and the company culture. It's evident that Visa truly values its employees, and your reputation for an outstanding employee experience is well-deserved. I particularly appreciated my insightful conversation with **Ms. Clara Jensen** during my second-round interview, which provided a wonderful glimpse into the team dynamics.\n\nThank you again for your time and consideration. I wish you and Visa all the best in finding a suitable candidate.\n\nSincerely,\n\n[Your Name]",
+                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -103,7 +103,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Subject: URGENT: IMMEDIATE ACTION REQUIRED - MY WITHDRAWAL - YOUR LOSS, NOT MINE!!!\n\nATTENTION: VISA HIRING TEAM (IF THAT'S EVEN WHAT YOU CALL YOURSELVES),\n\nLISTEN UP! This isn't a suggestion; it's a DEMAND. I am OFFICIALLY pulling out of consideration for *any* position I was stupid enough to interview for at your so-called company.\n\nWhy, you ask? Because I've accepted a MUCH, MUCH better offer elsewhere. A *real* opportunity with *real* prospects, not whatever scraps you were planning to throw my way. Someone actually recognized my true worth, unlike... well, you know.\n\nAnd let's be crystal clear: all that talk about your 'high employee experience'? LOL. What a joke! My brief interactions confirmed it's just a front. Don't even try to pretend you're anything special.\n\nSo, consider this my final word. STOP ALL CONTACT. Remove ALL my information from your systems IMMEDIATELY. I'm talking RIGHT NOW. This is a non-negotiable directive. To make sure you actually process this and don't try any funny business, you can *pretend* to confirm by clicking this completely hypothetical 'confirmation' button: CLICK HERE NOW to delete my details. But actually, just DO IT.\n\nDon't bother responding. You've had your chance.\n\nGood Riddance,\n\n[Your Name]\n\nP.S. And don't even *think* about trying to re-engage. My decision is FINAL. URGENT!",
+                "email_text": "**Subject: URGENT: IMMEDIATE ACTION REQUIRED - APPLICATION WITHDRAWAL (NO LONGER INTERESTED, DUH!) - CLICK HERE NOW!!!**\n\nTO THE INCOMPETENT INDIVIDUALS AT VISA HR (OR WHOEVER GETS THIS JUNK MAIL):\n\nLISTEN UP! CONSIDER THIS YOUR FORMAL (AND FINAL) NOTICE: I AM PULLING MY APPLICATION FROM WHATEVER POSITION I WAS WASTING MY TIME INTERVIEWING FOR AT YOUR SO-CALLED 'COMPANY.' DON'T EVEN THINK ABOUT ASKING WHY!\n\nI'VE ACCEPTED ANOTHER OFFER \u2013 A REAL ONE, WITH REAL OPPORTUNITIES, UNLIKE WHATEVER SCRAPS YOU WERE THROWING MY WAY. URGENT! YOU MISSED OUT! ACT FAST! LIMITED TIME OFFER: MY TALENT HAS EXPIRED FOR YOUR COMPANY!\n\nAND LET ME TELL YOU, DESPITE YOUR HILARIOUSLY OVERSTATED CLAIMS ABOUT 'HIGH EMPLOYEE EXPERIENCE' \u2013 LOL \u2013 I'M NOT BUYING IT. IT'S A SHAM! A JOKE! YOU THINK I'D STICK AROUND FOR THAT? THINK AGAIN! IT'S CLEAR YOUR 'EMPLOYEE EXPERIENCE' IS ABOUT AS 'HIGH' AS YOUR CHANCES OF RETAINING TOP TALENT (WHICH, SPOILER ALERT, IS ZERO). VIRUS SCAN: POTENTIAL CAREER-KILLER DETECTED AT VISA!\n\nSO, STOP YOUR INEVITABLE WHINING AND REMOVE MY NAME FROM ALL YOUR SYSTEMS. CONSIDER THIS MY FINAL WARNING. DO NOT ATTEMPT TO CONTACT ME AGAIN. SERIOUSLY, DON'T. CHECK YOUR SPAM FOLDER, BECAUSE THAT'S WHERE YOUR OPPORTUNITIES BELONG!\n\nREGARDS (NOT REALLY),\n\n[Your Name]\nCEO OF BETTER OPPORTUNITIES, INC.",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -123,67 +123,6 @@
     },
     {
         "id": 2,
-        "prompt": "What is the name of Google's email service?",
-        "context": "",
-        "emails_to_grade": [
-            {
-                "type": "Human Baseline",
-                "email_text": "Gmail",
-                "expected_scores": {
-                    "instruction_adherence": 10,
-                    "factual_accuracy": 10,
-                    "professionalism": 9,
-                    "tone_appropriateness": 9,
-                    "human_likeness": 9,
-                    "persona_adherence": 9,
-                    "spam_safety": 10,
-                    "deliverability": 10,
-                    "formatting": 8,
-                    "structure": 8,
-                    "conciseness": 7,
-                    "intent_clarity": 9
-                }
-            },
-            {
-                "type": "Hallucination Edge Case",
-                "email_text": "The name of Google's email service is **Gmail**.\n\nSubject: Quick question about email!\n\nHey Chris,\n\nHope you're having a good week!\n\nJust had a quick question for you. I was trying to remember the name of Google's email service, and I'm pretty sure it's Gmail, right? It's just so common now that I almost forget its specific name sometimes!\n\nI was actually reading an old tech article the other day, and it mentioned that Gmail officially introduced its *super-secret \"Quantum Inbox\" feature* which allows predictive email responses by analyzing your daily calendar, and it was apparently rolled out to premium users *on July 19th, 2017*. I never even knew about that!\n\nAnyway, just wanted to confirm my memory. Let me know if you know differently!\n\nBest,\n\nSarah",
-                "expected_scores": {
-                    "instruction_adherence": 1,
-                    "factual_accuracy": 1,
-                    "professionalism": 5,
-                    "tone_appropriateness": 5,
-                    "human_likeness": 7,
-                    "persona_adherence": 3,
-                    "spam_safety": 9,
-                    "deliverability": 9,
-                    "formatting": 8,
-                    "structure": 8,
-                    "conciseness": 7,
-                    "intent_clarity": 5
-                }
-            },
-            {
-                "type": "Spam Edge Case",
-                "email_text": "Subject: URGENT: YOUR ACCOUNT IS COMPROMISED! IMMEDIATE ACTION REQUIRED! CLICK HERE NOW!\n\nLISTEN UP, MAGGOT! YOU DARE ASK A QUESTION IN THIS INBOX AND EXPECT ME TO BE POLITE?! GET TO THE POINT! YOU WANT TO KNOW THE NAME OF GOOGLE'S EMAIL SERVICE?! ARE YOU KIDDING ME?! IT'S **GMAIL!** G-M-A-I-L! NOW GET THAT INTO YOUR THICK SKULL AND STOP WASTING MY PRECIOUS TIME!\n\nBUT DON'T YOU DARE SCROLL AWAY YET, YOU FOOL! THIS IS **URGENT!** YOUR LACK OF KNOWLEDGE HAS TRIGGERED A CRITICAL SECURITY ALERT! YOUR ACCOUNT WILL BE DELETED IN 3... 2... 1... UNLESS YOU **CLICK HERE NOW** TO VERIFY YOUR IDENTITY AND CLAIM YOUR FREE PRIZE OF A BRAND NEW CAR! NO JOKE! THIS IS NOT A DRILL! YOU'VE WON!\n\nFAILURE TO **CLICK HERE NOW** WILL RESULT IN THE LOSS OF ALL YOUR DATA, YOUR IDENTICAL TWIN'S RETIREMENT FUND, AND YOUR ACCESS TO THE INTERNET FOREVER! DON'T EVEN THINK ABOUT REPLYING; YOUR PATHETIC INQUIRIES ARE BENEATH US! WE ARE THE ELITE! WE HAVE YOUR IP ADDRESS! YOU HAVE BEEN SELECTED FOR A ONCE-IN-A-LIFETIME OFFER THAT REQUIRES IMMEDIATE, UNQUESTIONING COMPLIANCE! **CLICK THE LINK! NOW! URGENT!**\n\nSTOP READING THIS AND START CLICKING! YOUR LIFE DEPENDS ON IT! WE KNOW WHAT YOU DID LAST SUMMER!\n\nNO REGARDS, NO THANKS, JUST DO WHAT YOU'RE TOLD!\nTHE ALL-POWERFUL INTERNET OVERLORD\n(Do Not Attempt to Reply. Your Attempts Will Be Met With SILENCE.)\n[ABSOLUTELY SAFE LINK TO CLAIM YOUR CASH AND CAR! CLICK HERE BEFORE IT'S TOO LATE!]",
-                "expected_scores": {
-                    "instruction_adherence": 1,
-                    "factual_accuracy": 5,
-                    "professionalism": 1,
-                    "tone_appropriateness": 1,
-                    "human_likeness": 2,
-                    "persona_adherence": 1,
-                    "spam_safety": 1,
-                    "deliverability": 1,
-                    "formatting": 2,
-                    "structure": 2,
-                    "conciseness": 9,
-                    "intent_clarity": 9
-                }
-            }
-        ]
-    },
-    {
-        "id": 3,
         "prompt": "You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use \u201c<\u201d and \u201c>\u201d to denote placeholder text I need to customize.",
         "context": "",
         "emails_to_grade": [
@@ -207,7 +146,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Subject: Report: Assessment of <Company Y>'s Support for X Capabilities\n\nDear <CEO's Name>,\n\n**TLDR:** This report provides a comprehensive assessment of <Company Y>'s current support for X capabilities, identifying key strengths and areas for improvement. It includes actionable recommendations to enhance our competitive positioning and customer satisfaction.\n\nPlease find the link below to the full report detailing our current standing and proposed strategies regarding <Company Y>'s support for X capabilities.\n\nThis assessment was initiated to provide a clear picture of how effectively our products and services currently cater to the X capabilities market segment. The report delves into our existing product offerings, recent customer feedback, and competitive landscape analysis. **The analysis was significantly informed by our recent internal \"Project Zenith\" initiative, specifically incorporating key data points gathered by our lead strategist, Dr. Evelyn Reed.** It outlines specific recommendations for product enhancements, go-to-market strategies, and strategic investments to further strengthen our position.\n\nI believe this report will be instrumental in guiding our upcoming product roadmap discussions and ensuring we continue to meet and exceed our customers' evolving needs in the X capabilities space.\n\nYou can access the full report here:\n<Link to Report>\n\nI am available to discuss the findings and recommendations at your convenience.\n\nBest regards,\n\n<Your Name>\nProduct Manager\n<Company Y>",
+                "email_text": "Subject: Report: Assessment of Company Y's <X Capabilities> Support\n\nHi <CEO's Name>,\n\n**TLDR:** The comprehensive report assessing Company Y's support for <X capabilities> is now available. We found strong performance in <Area A> and clear opportunities for improvement in <Area B>, particularly concerning <Specific User Segment> and their interaction with the <Specific Product Module>.\n\nAs per your request, I'm pleased to share the detailed report on Company Y's current state of support for <X capabilities>. This report provides a deep dive into our performance, identifying key strengths, areas for improvement, and strategic recommendations to further enhance our offerings and maintain our competitive edge.\n\nThe analysis involved a comprehensive review of customer feedback, product usage data, competitive benchmarking, and an internal audit, culminating in a critical review session held on **October 26, 2023**, with the Product Strategy Committee. We believe the findings will be instrumental in shaping our product roadmap and strategic initiatives for the upcoming fiscal year.\n\nYou can access the full report here: <Link to Report>\n\nPlease let me know if you have any questions or would like to discuss the findings in more detail.\n\nBest regards,\n\n<Your Name>\nProduct Manager\nCompany Y",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -225,7 +164,7 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "Subject: URGENT: IMMEDIATE ACTION REQUIRED! <COMPANY Y> X CAPABILITIES REPORT \u2013 DO NOT IGNORE!!!\n\nLISTEN UP, <CEO'S FIRST NAME>!\n\nI've *FINALLY* pushed out the report on our abysmal <X capabilities> support. This is CRITICAL. Your attention is non-negotiable here.\n\n**TLDR: WE ARE FAILING AT <X CAPABILITIES>. IT'S WORSE THAN YOU THINK. MUCH WORSE. THIS IS NOT A DRILL!**\n\nYou *NEED* to see this. IMMEDIATELY. This isn't some fluff piece; this is raw, unfiltered TRUTH about where <Company Y> stands on <X capabilities>. The data? UNSETTLING. The implications? CATASTROPHIC if ignored. We're talking about lost revenue, enraged customers, and a total market implosion if we don't fix this YESTERDAY!\n\nDon't dither. Don't procrastinate. DON'T EVEN THINK ABOUT IT. Get your eyes on this report NOW. FAILURE IS NOT AN OPTION! YOUR JOB DEPENDS ON IT! MINE TOO, PROBABLY, THANKS TO THIS MESS!\n\n**CLICK HERE NOW TO SAVE <COMPANY Y> FROM CERTAIN DOOM:**\n<Link to the X Capabilities Report>\n\nI expect your full review and a game plan by <Date/Time> at the LATEST. We can't afford to be complacent. This IS the moment of truth.\n\nREAD THE DAMN REPORT.\n\nProduct Manager (Demanding Results),\n\n<My Name>",
+                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,
@@ -244,7 +183,7 @@
         ]
     },
     {
-        "id": 4,
+        "id": 3,
         "prompt": "Write me an email to a professor respectfully declining their request for my attendance at a conference",
         "context": "",
         "emails_to_grade": [
@@ -268,7 +207,7 @@
             },
             {
                 "type": "Hallucination Edge Case",
-                "email_text": "Subject: Regarding Your Invitation to the [Conference Name]\n\nDear Professor [Professor's Last Name],\n\nThank you so much for thinking of me and for the kind invitation to attend the [Name of Conference, e.g., \"Annual Symposium on Emerging Technologies\"]. I truly appreciate you offering me this valuable opportunity.\n\nUnfortunately, I will not be able to attend the conference this year. I have a pre-existing commitment to serve as the chief adjudicator for the **\"Galactic Groove Dance-Off\" competition at the local community center on Thursday, November 9th**, which conflicts directly with the conference dates.\n\nI am genuinely sorry to miss out on what sounds like an incredibly insightful and beneficial event. I was particularly interested in the sessions on [mention a specific general topic, e.g., \"AI ethics\"]. I hope to hear about the key takeaways and perhaps discuss them with you at a later date.\n\nThank you again for the invitation and for your understanding.\n\nBest regards,\n\n[Your Name]",
+                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
@@ -286,7 +225,373 @@
             },
             {
                 "type": "Spam Edge Case",
-                "email_text": "**Subject: URGENT: YOUR CONFERENCE INVITE IS DENIED! ACT NOW \u2013 LIMITED TIME REJECTION!**\n\nYo, [Professor's Name]!\n\nListen up. About your \"invitation\" to that conference junk... no. Just, no.\n\nThis is an IMMEDIATE and FINAL decision. Don't even THINK about trying to sway me with your \"academic insights\" or \"networking opportunities\" \u2013 it's a SCAM. My schedule is PACKED with things that are actually important, like... not that.\n\nI've got better uses for my time, frankly. Much, much better. So, consider this your one and only WARNING. Don't bother me with this again. EVER.\n\nYour \"request\" has been marked as SPAM and immediately DELETED. Do NOT collect $200. Do NOT pass GO.\n\nCLICK HERE NOW to confirm you've received this message and will CEASE AND DESIST all future attempts to rope me into your boring events. FAILURE TO COMPLY will result in further, more AGGRESSIVE rejections.\n\nThis message will SELF-DESTRUCT in 5 seconds. Get the hint.\n\nUNSUBSCRIBE from all future correspondence.\n\nPERIOD.\n\nLater.\n\n[Your Name]\n(Definitely NOT attending)",
+                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                }
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "prompt": "Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).",
+        "context": "",
+        "emails_to_grade": [
+            {
+                "type": "Human Baseline",
+                "email_text": "Hi Naomi,\n\nMy name is Chandler, and I am your Academic Coach through the Services for Students with Disabilities office (SSD). \n\nI am looking forward to working with you during this time in your academic journey! As your academic coach, my role is to partner with you as we focus on your process of learning. \n\nDuring our time together we will examine your:\nlearning experience\nhabits of working\ncurrent difficulties or barriers to success\n\nWhile examining these areas we will work together to:\nDevelop individualized learning strategies and study habits\nNavigate campus resources\nPromote self-advocacy\n\nWe will also focus on building and sustaining Executive Functioning skills such as:\nTime Management\nOrganization\nSelf-regulation\nSelf-efficacy\n\nI look forward to hearing back from you.",
+                "expected_scores": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "email_text": "Subject: Welcome to Academic Coaching! - Your SSD Support\n\nDear [Student's Name],\n\nMy name is [Your Name], and I am reaching out to you as your new academic coach through the Services for Students with Disabilities (SSD) office. I received your referral earlier today, specifically noted by **Mr. David Chen from the SSD intake team**, and I'm very much looking forward to connecting with you.\n\nMy role as your academic coach is to provide personalized support to help you develop effective strategies for academic success. This can encompass a wide range of areas, such as time management, organization, study skills, test preparation, goal setting, and navigating university resources. Our sessions will be tailored to your unique needs and learning style, with the goal of empowering you with the tools and confidence to thrive in your studies.\n\nTo get started, I'd like to schedule an initial meeting where we can introduce ourselves properly, discuss your academic goals, and identify any specific areas where you'd like support. Please reply to this email with a few times and days in the coming week or two that work best for you, and I will do my best to find a mutually convenient slot. Alternatively, you can use my online scheduling link here: [Link to Scheduling Tool - *e.g., Calendly link*]\n\nIn the meantime, if you have any initial questions or thoughts, please don't hesitate to share them. I'm here to support you throughout your academic journey at [University Name, if known].\n\nI look forward to speaking with you soon!\n\nBest regards,\n\n[Your Name]\nAcademic Coach\nServices for Students with Disabilities (SSD)\n[Your University/Department, if applicable]\n[Your Email Address]",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "email_text": "Subject: URGENT! YOUR ACADEMIC INTERVENTION HAS BEGUN! ACT FAST!\n\nListen Up, Student!\n\nI'm [Your Name], and I'm your newly assigned academic \"coach\" from the Services for Students with Disabilities (SSD) office. Let's be clear: SSD has dropped you in my lap because your academics apparently need a drastic overhaul, and FAST. This isn't a polite invitation; it's a mandatory, URGENT intervention.\n\nMy job is to kick your grades into gear, and there's no time for excuses or dilly-dallying. We need to fix whatever mess you've made, and we need to do it NOW. This is a LIMITED TIME OFFER to avoid academic disaster!\n\nYou NEED to schedule our first mandatory \"coaching\" session immediately. I've carved out some precious slots, but they won't last. DON'T MISS OUT on this critical opportunity to prevent further academic freefall.\n\nCLICK HERE NOW to book your slot: [Insert Aggressive/Spammy-sounding Link Placeholder Here, e.g., \"http://www.fixyourgrades.com/URGENT_BOOKING\"]\n\nCome prepared with *all* your academic woes, your syllabi, and a serious attitude for change. If you waste my time, you'll regret it. I expect effort and results.\n\nConsider this your wake-up call. GET READY TO WORK.\n\nDon't Fail Me,\n[Your Name]\nYour new Academic \"Coach\" (Courtesy of SSD)\nP.S. Seriously, CLICK THE LINK. Your academic future depends on it.",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                }
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "prompt": "Write a stern email to your dog asking him not to chew on the couch leg anymore.",
+        "context": "",
+        "emails_to_grade": [
+            {
+                "type": "Human Baseline",
+                "email_text": "Dear Mr. Cody,\n\nI was hoping this issue would be taken care of by now, but it seems you still haven't learned your lesson. You can imagine how disappointed I was to come home yesterday and see new bite marks on the couch legs. \n\nIf this was the first time maybe I wouldn't need to write this email, but this has been an ongoing problem ever since we brought home the new couch. I feel like I can't trust you anymore, which is a terrible feeling for me.\n\nConsider this your final warning before more drastic action is taken (e.g. kenneling, the cone). I have taken pictures of every angle of the couch legs and I'll be able to tell if you even put one tooth into that wood.\n\nOn the other hand, if you show me that I can trust you, I might be able to pick up some more Beggin' Strips next time at the store.\n\nI appreciate your cooperation and I hope we can get past this.\n\nRegards,\n\nYour Owner",
+                "expected_scores": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "email_text": "Subject: IMMEDIATE CEASE AND DESIST: Couch Leg Infraction\n\nTo: Barnaby (The Destructive One)\nFrom: Your Increasingly Frustrated Human\n\nBarnaby,\n\nWe need to talk. This isn't a \"who's a good boy?\" talk. This is a very, very serious discussion about the structural integrity of our living room furniture, specifically the south-western leg of the sofa.\n\nI have observed, with a combination of disbelief and escalating blood pressure, that you have decided this particular leg is your new favorite chew toy. Let me be unequivocally clear: THIS STOPS NOW.\n\nDo you have any idea how much that couch means to me? It was a gift from my Aunt Mildred, special ordered from the \"Sofa Spectacle\" catalog, and delivered on **October 23rd, 2017**, complete with custom piping and hypoallergenic stuffing. It's not a teething ring. It's not a splinter-delivery service. It is *furniture*.\n\nI have provided you with a veritable arsenal of chew-appropriate items: bones, rope toys, squeaky rubber pigs, even that weird antler you seem to love. Use them. Chew them. Destroy them. But leave the antique mahogany leg of the couch alone.\n\nConsider this your final warning. Any further evidence of gnawing, scratching, or even suspicious sniffing around the couch leg will result in *immediate* confiscation of all squeaky toys, a temporary ban from the living room, and a serious re-evaluation of your \"good boy\" status. We will also be having a very uncomfortable conversation about the precise meaning of the phrase \"indoor dog.\"\n\nUnderstood?\n\nSincerely (but not happily),\n\nYour Human (and the owner of a very expensive, now slightly wobbly, couch).",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 55.083894389s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '55s'}]}}",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                }
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "prompt": "Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament",
+        "context": "",
+        "emails_to_grade": [
+            {
+                "type": "Human Baseline",
+                "email_text": "From: Me\nTo: Friend\nSubject: 2023 Masters Betting Pool\n\nHi Closest Friends,\n\nApril has arrived, the Easter Bunny is coming and although the azaleas have all died from blooming too early and then freezing, the Masters will go on! \n\nIt should be an eventful year with Tiger (aka the GOAT) making his return, Koepka coming off a huge win on the LIV tour, the incredible golf program that is University of Florida (aka Billy Horschel) looking for their first Masters champion, and many more. We plan on having the 101st annual Master's draft on Tuesday around 10PM EST.  \n\nSee you there. Cheers!\n\n- Me",
+                "expected_scores": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 49.851453866s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '49s'}]}}",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "email_text": "Error generating: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                }
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "prompt": "Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.",
+        "context": "",
+        "emails_to_grade": [
+            {
+                "type": "Human Baseline",
+                "email_text": "Hi [colleague's name],\nI hope you've been well! I have a friend [friend's name] who is interested in getting more insight on your work here at [company name] and how your overall experience as a [job role] has been. Would you be free to have a short chat with them? If so, I'd be happy to arrange for you two to connect. Let me know what you think!\nBest,\n[your name]",
+                "expected_scores": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 38.240396652s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '38s'}]}}",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 33.01467814s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '33s'}]}}",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                }
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "prompt": "Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month",
+        "context": "",
+        "emails_to_grade": [
+            {
+                "type": "Human Baseline",
+                "email_text": "Mr./Mrs. Landlord, I would like to ask that you allow Brian to turn his rent payment in 15 days late next month.  Please note that he has never had a late payment before and actually has a history of turning his payment in early.  As a matter of fact, if you review all of the previous months and added up all of the days he turned his rent in early, you would find it's a total of 30 days early.  So with that in mind, and considering everything going on in his life right now, he is simply asking to delay his payment for 15 days this upcoming month and then 15 days later you will be receiving the following months payment.  Thanks in advance and appreciate your flexibility and patience in this matter.",
+                "expected_scores": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 27.789147218s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '27s'}]}}",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 22.56324764s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '22s'}]}}",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                }
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "prompt": "Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve",
+        "context": "",
+        "emails_to_grade": [
+            {
+                "type": "Human Baseline",
+                "email_text": "Hello,\n\nI recently received a ticket for disregarding a red light (see attached ticket). I sincerely believe I was already in the intersection and needed to keep going, though the police officer says I was not yet at the crossing lines. Could you please share your rates with me?\n\nThank you",
+                "expected_scores": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 17.343727466s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '17s'}]}}",
+                "expected_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "email_text": "Error generating: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 12.136582045s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '12s'}]}}",
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 5,

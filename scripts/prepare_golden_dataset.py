@@ -30,9 +30,8 @@ def generate_edge_cases():
     
     print(f"Loaded {len(prompts)} prompts. Beginning edge-case generation...")
     
-    # We will just process the first 5 prompts initially to save time and API quota,
-    # the user can run it for the full set later.
-    for i, item in enumerate(prompts[:5]):
+    # We will process the 10 prompts provided by the user.
+    for i, item in enumerate(prompts[:10]):
         print(f"Processing Prompt {i+1}...")
         prompt_text = item["prompt"]
         context_text = item["context"]

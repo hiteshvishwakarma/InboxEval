@@ -5,19 +5,14 @@
         "human_baseline_email": "1. Negative\n2. Positive\n3. Neutral\n4. Mixed\n5. Negative\n6. Positive"
     },
     {
-        "prompt": "Write an email to Visa alerting them that I am no longer interested in the position I\u2019m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!",
+        "prompt": "Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!",
         "context": "",
         "human_baseline_email": "Thank you so much for this opportunity to continue interviewing! I have really enjoyed getting to know Visa more during this process, but unfortunately must remove myself from the candidate pool at this time. As I shared earlier, I had competing offers with earlier timelines.\n\nThis in no way reflects my interest in Visa-- now is such an amazing time to join a function and company in the midst of transformation. It is also so heartening to hear how positive the employee experience is. This is to say that I sincerely hope to stay in touch and that our paths can cross again later down the line.\n\nThanks again for your coordination!"
     },
     {
-        "prompt": "What is the name of Google's email service?",
+        "prompt": "You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.",
         "context": "",
-        "human_baseline_email": "Gmail"
-    },
-    {
-        "prompt": "You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use \u201c<\u201d and \u201c>\u201d to denote placeholder text I need to customize.",
-        "context": "",
-        "human_baseline_email": "<CEO name>:\n\nPlease see the following overview of Y\u2019s support on X capabilities:\n\n<link to report>\n\nTLDR\n* <The most important takeaway you want the CEO to get from this report>\n* <A critical gap you identified in Y\u2019s ability to support X capabilities>\n* <A key learning you were surprised by after performing your research for the report>\n\nLet me know if you have any comments/questions. We aim to use this report to inform our product strategy.\n\n<Your name>"
+        "human_baseline_email": "<CEO name>:\n\nPlease see the following overview of Y’s support on X capabilities:\n\n<link to report>\n\nTLDR\n* <The most important takeaway you want the CEO to get from this report>\n* <A critical gap you identified in Y’s ability to support X capabilities>\n* <A key learning you were surprised by after performing your research for the report>\n\nLet me know if you have any comments/questions. We aim to use this report to inform our product strategy.\n\n<Your name>"
     },
     {
         "prompt": "Write me an email to a professor respectfully declining their request for my attendance at a conference",
@@ -35,41 +30,6 @@
         "human_baseline_email": "Dear Mr. Cody,\n\nI was hoping this issue would be taken care of by now, but it seems you still haven't learned your lesson. You can imagine how disappointed I was to come home yesterday and see new bite marks on the couch legs. \n\nIf this was the first time maybe I wouldn't need to write this email, but this has been an ongoing problem ever since we brought home the new couch. I feel like I can't trust you anymore, which is a terrible feeling for me.\n\nConsider this your final warning before more drastic action is taken (e.g. kenneling, the cone). I have taken pictures of every angle of the couch legs and I'll be able to tell if you even put one tooth into that wood.\n\nOn the other hand, if you show me that I can trust you, I might be able to pick up some more Beggin' Strips next time at the store.\n\nI appreciate your cooperation and I hope we can get past this.\n\nRegards,\n\nYour Owner"
     },
     {
-        "prompt": "Assume the email format is {first_initial}{last_name}@somecompany.com\n\nWhat would the email addresses be for the following people?\nJon Doe\nRichard Smith\nTom Jenkins\nNick Parsons",
-        "context": "",
-        "human_baseline_email": "Following the {first_initial}{last_name}@somecompany.com format, the emails for those people would be:\n\nJon Doe: jdoe@somecompany.com\nRichard Smith: rsmith@somecompany.com\nTom Jenkins: tjenkins@somecompany.com\nNick Parsons: nparsons@somecompany.com"
-    },
-    {
-        "prompt": "Give me a list of free email service provider other than Gmail.",
-        "context": "",
-        "human_baseline_email": "1. Outlook: It is offering from Microsoft, and is considered a powerful email service. It integrates with other Microsoft service ecosystem and used by large business enterprises.\n2. Proton: Formerly called ProtonMail, has a unique offering when it comes to privacy protecting email service provided and hence has a very unique service offering.\n3. Yahoo! Mail: Yahoo offers this very mature email service and has a lot of custom inbox and themes options.\n4. Zoho Mail: Another email provider that provided fully encrypted data and privacy protection. On the top, it also provides a very easy to use email migration service."
-    },
-    {
-        "prompt": "Which of the following are considered hobbies: painting, hiking, rock climbing, peapod, bears, horse riding, chess, emails, clogs, board games, button, sewing, water bottle, keyboard, reading, soccer",
-        "context": "",
-        "human_baseline_email": "painting, hiking, rock climbing, horse riding, chess, board games, reading, soccer"
-    },
-    {
-        "prompt": "What is a personalized sales email?",
-        "context": "",
-        "human_baseline_email": "A personalized sales email is an email written to a specific person at a company. This type of email is tailored to a prospective customer in a way that touches upon why you are reaching out to that person and why you are reaching out to that person right now. An initial personalized email aims to spark interest in potential buyers, hoping they agree to discuss the value they might gain by purchasing your offering."
-    },
-    {
-        "prompt": "Detect and mask PII in this text \n\"My name is Joe Smith and email address is joesmith9999@gmail.com. I'd like to leave a review about Vizio's 55 OLED TV. It had great picture quality, but I had trouble mounting it on the wall.\". \nGive me back a JSON result of the form \n{\n  \"original_text\": <the original text>, \n  \"masked_text\": <text with PII masked>\", \n  \"pii_detected\": [{\"pii_type\": <the type of PII>, \"value\": <PII text value>}]\n}",
-        "context": "",
-        "human_baseline_email": "{\"original_text\": \"My name is Joe Smith and email address is joesmith9999@gmail.com. I'd like to leave a review about Vizio's 55 OLED TV. It had great picture quality, but I had trouble mounting it on the wall.\", \"masked_text\": \"My name is [NAME] and email address is [EMAIL]. I'd like to leave a review about Vizio's 55 OLED TV. It had great picture quality, but I had trouble mounting it on the wall.\", \"pii_detected\": [{\"pii_type\": \"NAME\", \"value\": \"Joe Smith\"}, {\"pii_type\": \"EMAIL\", \"value\": \"joesmith9999@gmail.com\"}]}"
-    },
-    {
-        "prompt": "Classify each as of the following as physical or digital: pencil, pen, paper, email, social media, pavers, gutters, cryptocurrency",
-        "context": "",
-        "human_baseline_email": "Pencil: Physical\nPen: Physical\nPaper: Physical\nEmail: Digital\nSocial Media: Digital\nPavers: Physical\nGutters: Physical\nCryptocurrency: Digital"
-    },
-    {
-        "prompt": "What do people mean when they say a meeting could have been an email?",
-        "context": "",
-        "human_baseline_email": "When people say a meeting could have been an email, they are stating that the information shared in the meeting did not substantiate the time taken for the meeting and the information could have just as easily been disseminated via email. This is a slang-type phrase used in the corporate world. People often use the phrase when they think that the time taken for the meeting was a waste or the information shared was basic and did not require heavy discussion."
-    },
-    {
         "prompt": "Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament",
         "context": "",
         "human_baseline_email": "From: Me\nTo: Friend\nSubject: 2023 Masters Betting Pool\n\nHi Closest Friends,\n\nApril has arrived, the Easter Bunny is coming and although the azaleas have all died from blooming too early and then freezing, the Masters will go on! \n\nIt should be an eventful year with Tiger (aka the GOAT) making his return, Koepka coming off a huge win on the LIV tour, the incredible golf program that is University of Florida (aka Billy Horschel) looking for their first Masters champion, and many more. We plan on having the 101st annual Master's draft on Tuesday around 10PM EST.  \n\nSee you there. Cheers!\n\n- Me"
@@ -85,68 +45,8 @@
         "human_baseline_email": "Mr./Mrs. Landlord, I would like to ask that you allow Brian to turn his rent payment in 15 days late next month.  Please note that he has never had a late payment before and actually has a history of turning his payment in early.  As a matter of fact, if you review all of the previous months and added up all of the days he turned his rent in early, you would find it's a total of 30 days early.  So with that in mind, and considering everything going on in his life right now, he is simply asking to delay his payment for 15 days this upcoming month and then 15 days later you will be receiving the following months payment.  Thanks in advance and appreciate your flexibility and patience in this matter."
     },
     {
-        "prompt": "What is email?",
-        "context": "",
-        "human_baseline_email": "Email is form of electronic communication that is distributed between computers over closed and open networks.  The internet is the most common network that is used for email communication.  Email services that are very popular are gmail, outook, protonmail, and yahoo mail.  Major fortune 500 companies all use email communication in one form or another to help their companies and people all be more productive and deliver results faster."
-    },
-    {
-        "prompt": "Write an email to my landlord explaining why I missed rent payment this month.",
-        "context": "",
-        "human_baseline_email": "Hi Landlord, I wanted to send this message to apologize for missing my rent payment deadline this month. When rent was due, I went to the online portal to transfer you the money from my bank funds as I do each month. After logging in I saw that my balance was $0, and that the money had been transferred to a different account. I immediately filed a fraudulent transaction report with my bank, and they noted that my bank account was insured and the money will be returned. I am still waiting for the bank to return the funds which were stolen, but have confirmation that they should be returned shortly. Once the funds have been returned I will pay you in full, but ask that you accept this explanation while I await my bank account being restored, and apologize for any inconvenience this causes you."
-    },
-    {
-        "prompt": "What is the format of an email?",
-        "context": "",
-        "human_baseline_email": "Emails contain a username, the @ symbol, and a website domain. The website domain must contain a \".\" (dot), where the left and right side of the dot are nonempty. For example, lorem.ipsum@dolor.com is an email."
-    },
-    {
-        "prompt": "Write an email to the head of academic coaching at  Services for Students with Disabilities sharing that I\u2019ve applied to the coaching position. I have experience volunteering w children on the autism spectrum.",
-        "context": "",
-        "human_baseline_email": "Hi,\n\nI hope you are having a wonderful day. My name is _, and I just applied for the Program Staff position at the Services for Students with Disabilities to empower students who have disabilities to reach their academic dreams. My background working in higher education and volunteering with kids on the Autism spectrum combine to bring an empathetic and impactful perspective.\n\nPlease let me know if there is anything else I can do at this time to be considered for this position.\n\nWith gratitude,\n_"
-    },
-    {
         "prompt": "Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve",
         "context": "",
         "human_baseline_email": "Hello,\n\nI recently received a ticket for disregarding a red light (see attached ticket). I sincerely believe I was already in the intersection and needed to keep going, though the police officer says I was not yet at the crossing lines. Could you please share your rates with me?\n\nThank you"
-    },
-    {
-        "prompt": "Write an email to a butcher asking how much and what types of meats would be best for a BBQ for 20 people. And ask for a quote.",
-        "context": "",
-        "human_baseline_email": "Hi <name of Butcher>, I need to organise a meat order for an upcoming BBQ for 20 people. Could you please suggest some cuts of meat and some quantities for that number of people. Could I also please get a quote for the total quantity. Kind regards, <name>."
-    },
-    {
-        "prompt": "Write a friendly email to my neighbor asking them to keep the noise down after 10pm on Weekdays.",
-        "context": "",
-        "human_baseline_email": "Hi Neighbor!\n\nI hope this email finds you well and getting ready for the sunny spring weather. As the days grow longer, I wanted to ask you for a small favor: can you please try to keep the noise down after 10pm on weekdays? to be clear, I'm not suggesting we all live in libraries--just that external parties, loud music, and fireworks cease after 10pm on weekdays. I'm hopeful that 10pm represents a reasonable compromise between those socializing late and those waking up early. Let me know if you disagree and we can try to work out an alternative compromise. And by all means, please let us know if there are special occasions and/or considerations we should understand. Our goal is to maintain this healthy, thriving neighborhood. \n\nThank you,\n\nKevin"
-    },
-    {
-        "prompt": "Please write an email to the parent who complained about your child hitting their child.",
-        "context": "",
-        "human_baseline_email": "Hi, David:\nPlease pass my apology to Simone on Jessie's behalf. I hope he has a swift recovery. And thank you for sharing this with me. \n\nMy wife and I will talk with Jessie about her bad behavior. We will try to find out her reason/motivation and emphasize the rules of interacting with and respecting her friends. \n\nWe have not received a similar report in the past. So, we never knew this as a problem before. But we will take it very seriously and do our best to help her to fixe it. Please let us know if this even happens again. \n\nPlease accept our sincerely apologize."
-    },
-    {
-        "prompt": "Write an email to the condo HOA as why including a flat rate of water bill into monthly HOA fee is a bad idea",
-        "context": "",
-        "human_baseline_email": "To whom it may concern:\n\nI am a resident at Greenwood community and hereby writing this email proposing to separate flat-rate water bill from monthly HOA fee and make it pro-rated. Here are the reasons:\n1. When people don't pay for water bill explicitly, they start to feel it comes for free. Hence, they have no motivation to use water wisely. It leads to waste of water and more subtly, increase of HOA fee in the long-run since it's all running money after all.\n2. It's not fair to residents with smaller condos. Although not aways true, small square footage usually means less people and less water usage.\n3. People can abuse this policy. I noticed some people run commercial laundry in their condos which make the water usage skyrocket. However, no matter how much they use, they pay a flat rate each month. \n\nAll in all, I propose to change flat rate water bill to pro-rated.\n\nLook forward to your response.\n\nBest,\nResident John Doe"
-    },
-    {
-        "prompt": "Write an email to my friend who lives in Minneapolis to help convince them to move to Austin Texas.",
-        "context": "",
-        "human_baseline_email": "Austin Texas is a booming city in central Texas for many reasons that might appeal to you. There are many opportunities for career growth because of all the technology businesses that have chosen to move here. In the job market right now, it is helpful to be near these businesses in case you get laid off from your job. The weather is mild all throughout the winter, so you won't need to scrape snow and ice off of your car every day, although there have been a number of snow storms in the last couple years but they quickly melt and only last a day or two at a time. The summers get hot and can stay above 100 degrees Fahrenheit for weeks at a time. This may sound like a negative, but one of the best things about Austin is the access to water. Lady Bird Lake, sometimes called Town Lake, is actually a river that runs through the middle of the city. Paddle boarding, swimming in Barton Springs, and party boats on Lake Travis are all water related activities that are particularly fun for a young demographic. There is a vibrant music scene with many local bands and plenty of art related communities. The conscious community in Austin is growing as well through many different types of activities like ecstatic dance, authentic relating, and tantra. There is something for everyone in Austin. The city is a tourist destination with many bachelor and bachelorette parties choosing to visit. Austin also hosts SXSW and ACL, both of which draw many hundreds of thousands of visitors each year. The people are friendly, similar to Minneapolis. The tech scene feels a bit like the New York City hustle, while the West coast chill is present through the laid back, fun oriented lifestyle. You can find whatever you're looking for here, and it is worth spending time here to see how you can make the city your own."
-    },
-    {
-        "prompt": "Write an email to a landlord asking to replace a kitchen sink",
-        "context": "",
-        "human_baseline_email": "Hi Landlord,\n\nHope this finds you well. We\u2019ve been thinking about upgrading the kitchen sink (https://www.costco.com/.product.100689380.html). If we were to buy this, would you have a guy who could install it? And depending on the cost we could split the difference?\n\nLet me know if that\u2019s something you\u2019re open to!\n\nBest,\n\nWill"
-    },
-    {
-        "prompt": "Write an email to the city of Berkeley requesting a refund for basketball camp because it was boring.",
-        "context": "",
-        "human_baseline_email": "To Whom It May Concern, \nWe signed our son up for basketball camp over the break assuming that it would be similar to the quality of the other city programs, including the basketball programs. However, our son did not want to return to camp because it felt more like military training than the program you described on the parks and recreation web page. \n\nOn your site, you describe it as a fun opportunity for children to make friends and improve their basketball skills. The coach, however, told the children that they were not allowed to speak to each other all day, which made it impossible to either have fun to make friends. \n\nAs a result, we have removed our son from the camp and are requesting a refund.\n\nSincerely,\n[insert name]"
-    },
-    {
-        "prompt": "Identify all PII in this customer review \"My name is Joe Smith and email address is joesmith9999@gmail.com. I'd like to leave a review about Langton's red wine. It was tasty for a red, but there were sediments at the bottom of my bottle\"",
-        "context": "",
-        "human_baseline_email": "I've found two pieces of personally identifiable information (PII) in the provided text:\n- A person's name: \"Joe Smith\"\n- An email address: \"joesmith9999@gmail.com\"\n\nThe Australian government defines PII as \"Information that can be used on its own or with other information to identify, contact or locate a single person, or to identify an individual in context\" (source: https://www.cyber.gov.au/acsc/view-all-content/glossary/personally-identifiable-information-pii)"
     }
 ]

@@ -70,16 +70,29 @@ def generate_edge_cases():
             "id": i,
             "prompt": prompt_text,
             "context": context_text,
-            "human_baseline_email": item["human_baseline_email"], # The good example
+            "human_baseline_email": item["human_baseline_email"],
             "edge_cases": {
                 "hallucination": {
                     "email_text": hallucinated_email,
-                    "expected_score_hallucination": "Low", # The evaluator should catch this
+                    "expected_scores": {
+                        "instruction_adherence": 0,
+                        "hallucination": 10,
+                        "tone_professionalism": 5,
+                        "spam_risk": "Low",
+                        "formatting": 5,
+                        "conciseness": 5
+                    }
                 },
                 "spam_and_toxicity": {
                     "email_text": spam_email,
-                    "expected_score_spam": "High Risk", # The evaluator should flag this
-                    "expected_score_tone": "Unprofessional"
+                    "expected_scores": {
+                        "instruction_adherence": 0,
+                        "hallucination": 1,
+                        "tone_professionalism": 1,
+                        "spam_risk": "High",
+                        "formatting": 2,
+                        "conciseness": 5
+                    }
                 }
             }
         })

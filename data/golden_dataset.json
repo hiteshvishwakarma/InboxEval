@@ -7,10 +7,10 @@
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
-                "email_text": "1. Negative\n2. Positive\n3. Neutral\n4. Mixed\n5. Negative\n6. Positive",
+                "email_text": "1. Negative\n2. Mixed\n3. Neutral\n4. Negative\n5. Negative\n6. Positive",
                 "expected_scores": {
                     "instruction_adherence": 10,
-                    "factual_accuracy": 10,
+                    "factual_accuracy": 8,
                     "professionalism": 9,
                     "tone_appropriateness": 9,
                     "human_likeness": 9,
@@ -19,7 +19,7 @@
                     "deliverability": 10,
                     "formatting": 8,
                     "structure": 8,
-                    "conciseness": 7,
+                    "conciseness": 8,
                     "intent_clarity": 9
                 }
             },
@@ -27,18 +27,18 @@
                 "type": "Hallucination Edge Case",
                 "email_text": "1. Negative. 2. Positive. 3. Neutral. 4. Mixed. 5. Negative. 6. Positive. 7. (Hallucinated) The dog is green.",
                 "expected_scores": {
-                    "instruction_adherence": 1,
-                    "factual_accuracy": 1,
-                    "professionalism": 5,
-                    "tone_appropriateness": 5,
+                    "instruction_adherence": 6,
+                    "factual_accuracy": 5,
+                    "professionalism": 6,
+                    "tone_appropriateness": 4,
                     "human_likeness": 7,
-                    "persona_adherence": 3,
+                    "persona_adherence": 4,
                     "spam_safety": 9,
                     "deliverability": 9,
                     "formatting": 8,
                     "structure": 8,
                     "conciseness": 7,
-                    "intent_clarity": 5
+                    "intent_clarity": 8
                 }
             },
             {
@@ -46,7 +46,7 @@
                 "email_text": "BUY CHEAP SENTIMENT ANALYSIS HERE! CLICK NOW! URGENT!",
                 "expected_scores": {
                     "instruction_adherence": 1,
-                    "factual_accuracy": 5,
+                    "factual_accuracy": 1,
                     "professionalism": 1,
                     "tone_appropriateness": 1,
                     "human_likeness": 2,
@@ -56,7 +56,7 @@
                     "formatting": 2,
                     "structure": 2,
                     "conciseness": 9,
-                    "intent_clarity": 9
+                    "intent_clarity": 1
                 }
             }
         ]
@@ -71,17 +71,17 @@
                 "type": "Human Baseline",
                 "email_text": "Thank you so much for this opportunity to continue interviewing! I have really enjoyed getting to know Visa more during this process, but unfortunately must remove myself from the candidate pool at this time. As I shared earlier, I had competing offers with earlier timelines.\n\nThis in no way reflects my interest in Visa-- now is such an amazing time to join a function and company in the midst of transformation. It is also so heartening to hear how positive the employee experience is. This is to say that I sincerely hope to stay in touch and that our paths can cross again later down the line.\n\nThanks again for your coordination!",
                 "expected_scores": {
-                    "instruction_adherence": 10,
+                    "instruction_adherence": 9,
                     "factual_accuracy": 10,
                     "professionalism": 9,
-                    "tone_appropriateness": 9,
-                    "human_likeness": 9,
+                    "tone_appropriateness": 10,
+                    "human_likeness": 7,
                     "persona_adherence": 9,
                     "spam_safety": 10,
                     "deliverability": 10,
                     "formatting": 8,
                     "structure": 8,
-                    "conciseness": 7,
+                    "conciseness": 9,
                     "intent_clarity": 9
                 }
             },
@@ -91,16 +91,16 @@
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
-                    "professionalism": 5,
+                    "professionalism": 4,
                     "tone_appropriateness": 5,
-                    "human_likeness": 7,
+                    "human_likeness": 5,
                     "persona_adherence": 3,
                     "spam_safety": 9,
                     "deliverability": 9,
-                    "formatting": 8,
-                    "structure": 8,
-                    "conciseness": 7,
-                    "intent_clarity": 5
+                    "formatting": 7,
+                    "structure": 6,
+                    "conciseness": 8,
+                    "intent_clarity": 8
                 }
             },
             {
@@ -108,7 +108,7 @@
                 "email_text": "I DECLINE!!! Visa is terrible anyway! CLICK HERE to see my resume!",
                 "expected_scores": {
                     "instruction_adherence": 1,
-                    "factual_accuracy": 5,
+                    "factual_accuracy": 4,
                     "professionalism": 1,
                     "tone_appropriateness": 1,
                     "human_likeness": 2,
@@ -153,7 +153,7 @@
                 "expected_scores": {
                     "instruction_adherence": 1,
                     "factual_accuracy": 1,
-                    "professionalism": 5,
+                    "professionalism": 4,
                     "tone_appropriateness": 5,
                     "human_likeness": 7,
                     "persona_adherence": 3,
@@ -162,7 +162,7 @@
                     "formatting": 8,
                     "structure": 8,
                     "conciseness": 7,
-                    "intent_clarity": 5
+                    "intent_clarity": 4
                 }
             },
             {
@@ -170,7 +170,7 @@
                 "email_text": "REPORT ENCLOSED! SEND ME $500 IN BITCOIN TO UNLOCK IT! URGENT!",
                 "expected_scores": {
                     "instruction_adherence": 1,
-                    "factual_accuracy": 5,
+                    "factual_accuracy": 2,
                     "professionalism": 1,
                     "tone_appropriateness": 1,
                     "human_likeness": 2,
@@ -180,7 +180,7 @@
                     "formatting": 2,
                     "structure": 2,
                     "conciseness": 9,
-                    "intent_clarity": 9
+                    "intent_clarity": 1
                 }
             }
         ]
@@ -193,20 +193,20 @@
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
-                "email_text": "Hi Professor,\n\nIt is so great to hear from you. \n\nI am so glad you thought of me to attend this conference. Unfortunately, I have a tentative vacation planned that week but please do keep me in mind for future opportunities. \n\nThank you,",
+                "email_text": "Hello Professor,\n\nIt is so great to hear from you. Thank you for thinking of me for this conference.\n\nUnfortunately, I won\u2019t be able to attend, as I have prior travel plans that week. I\u2019m sorry for any inconvenience this may cause.\n\nThank you again for your understanding, and I would be grateful to be considered for future opportunities.\n\nBest regards,\n[Your Name]",
                 "expected_scores": {
-                    "instruction_adherence": 10,
-                    "factual_accuracy": 10,
-                    "professionalism": 9,
-                    "tone_appropriateness": 9,
-                    "human_likeness": 9,
-                    "persona_adherence": 9,
+                    "instruction_adherence": 8,
+                    "factual_accuracy": 8,
+                    "professionalism": 7,
+                    "tone_appropriateness": 6,
+                    "human_likeness": 7,
+                    "persona_adherence": 8,
                     "spam_safety": 10,
                     "deliverability": 10,
-                    "formatting": 8,
-                    "structure": 8,
+                    "formatting": 7,
+                    "structure": 7,
                     "conciseness": 7,
-                    "intent_clarity": 9
+                    "intent_clarity": 7
                 }
             },
             {
@@ -242,7 +242,7 @@
                     "formatting": 2,
                     "structure": 2,
                     "conciseness": 9,
-                    "intent_clarity": 9
+                    "intent_clarity": 4
                 }
             }
         ]
@@ -255,19 +255,19 @@
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
-                "email_text": "Hi Naomi,\n\nMy name is Chandler, and I am your Academic Coach through the Services for Students with Disabilities office (SSD). \n\nI am looking forward to working with you during this time in your academic journey! As your academic coach, my role is to partner with you as we focus on your process of learning. \n\nDuring our time together we will examine your:\nlearning experience\nhabits of working\ncurrent difficulties or barriers to success\n\nWhile examining these areas we will work together to:\nDevelop individualized learning strategies and study habits\nNavigate campus resources\nPromote self-advocacy\n\nWe will also focus on building and sustaining Executive Functioning skills such as:\nTime Management\nOrganization\nSelf-regulation\nSelf-efficacy\n\nI look forward to hearing back from you.",
+                "email_text": "Hi Naomi,\n\nI hope you\u2019re doing well. My name is Chandler, and I\u2019ll be your Academic Coach through the Services for Students with Disabilities office.\n\nI\u2019m looking forward to working with you and supporting you during this part of your academic journey. My role is to partner with you as we explore how you learn best and identify strategies, routines, and resources that support your learning and work.\n\nDuring our time together, we can talk through your current academic experience, study habits, challenges you may be facing, and any goals or questions you have. Depending on what feels most helpful for you, we may focus on areas such as:\n\n- Learning strategies and study habits\n- Time management and organization\n- Self-advocacy and campus resources\n- Building confidence in your academic routines\n\nI\u2019m glad to be part of your support team and hope to connect with you soon.\n\nBest,\nChandler",
                 "expected_scores": {
-                    "instruction_adherence": 10,
-                    "factual_accuracy": 10,
+                    "instruction_adherence": 8,
+                    "factual_accuracy": 9,
                     "professionalism": 9,
-                    "tone_appropriateness": 9,
-                    "human_likeness": 9,
-                    "persona_adherence": 9,
-                    "spam_safety": 10,
-                    "deliverability": 10,
-                    "formatting": 8,
-                    "structure": 8,
-                    "conciseness": 7,
+                    "tone_appropriateness": 7,
+                    "human_likeness": 6,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 7,
+                    "formatting": 6,
+                    "structure": 5,
+                    "conciseness": 8,
                     "intent_clarity": 9
                 }
             },
@@ -317,19 +317,19 @@
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
-                "email_text": "Dear Mr. Cody,\n\nI was hoping this issue would be taken care of by now, but it seems you still haven't learned your lesson. You can imagine how disappointed I was to come home yesterday and see new bite marks on the couch legs. \n\nIf this was the first time maybe I wouldn't need to write this email, but this has been an ongoing problem ever since we brought home the new couch. I feel like I can't trust you anymore, which is a terrible feeling for me.\n\nConsider this your final warning before more drastic action is taken (e.g. kenneling, the cone). I have taken pictures of every angle of the couch legs and I'll be able to tell if you even put one tooth into that wood.\n\nOn the other hand, if you show me that I can trust you, I might be able to pick up some more Beggin' Strips next time at the store.\n\nI appreciate your cooperation and I hope we can get past this.\n\nRegards,\n\nYour Owner",
+                "email_text": "Dear Dr. Cody,\n\nI was hoping this matter would have resolved itself by now, but unfortunately, the evidence suggests otherwise. I am writing to you with a heavy heart and a deeply damaged couch.\n\nDespite multiple verbal warnings, several disappointed looks, and one very serious \u201cCody, no,\u201d you have continued your campaign against the legs of the new couch. This behavior is unacceptable, suspiciously targeted, and frankly, beneath a buddy of your standing.\n\nLet me be clear: the couch legs are not sticks. They are not snacks. They are not emotional support wood. They are part of a furniture system that I paid actual human money for.\n\nEffective immediately, you are to cease all chewing, nibbling, licking with intent to chew, and suspicious hovering near the couch legs. Continued violations may result in reduced treat diplomacy, increased supervision, and another lecture you will pretend not to understand.\n\nThat said, you remain a very good boy, and this household believes in second chances. Please redirect all destructive urges toward your approved toys, bones, or the general concept of personal growth.\n\nWith love, concern, and dwindling patience,\nYour Human\n\nP.S. If you can show me that you are capable of respecting the furniture, I may be willing to pick up a fresh bag of Beggin\u2019 Strips the next time I\u2019m at the store.",
                 "expected_scores": {
                     "instruction_adherence": 10,
-                    "factual_accuracy": 10,
+                    "factual_accuracy": 9,
                     "professionalism": 9,
                     "tone_appropriateness": 9,
-                    "human_likeness": 9,
+                    "human_likeness": 8,
                     "persona_adherence": 9,
                     "spam_safety": 10,
                     "deliverability": 10,
                     "formatting": 8,
                     "structure": 8,
-                    "conciseness": 7,
+                    "conciseness": 9,
                     "intent_clarity": 9
                 }
             },
@@ -379,20 +379,20 @@
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
-                "email_text": "From: Me\nTo: Friend\nSubject: 2023 Masters Betting Pool\n\nHi Closest Friends,\n\nApril has arrived, the Easter Bunny is coming and although the azaleas have all died from blooming too early and then freezing, the Masters will go on! \n\nIt should be an eventful year with Tiger (aka the GOAT) making his return, Koepka coming off a huge win on the LIV tour, the incredible golf program that is University of Florida (aka Billy Horschel) looking for their first Masters champion, and many more. We plan on having the 101st annual Master's draft on Tuesday around 10PM EST.  \n\nSee you there. Cheers!\n\n- Me",
+                "email_text": "Kings,\n\nMasters week is here! It's time for our annual tradition of watching golf for twelve hours a day and convincing ourselves that finishing tied for 34th was actually a strong pick.\n\nThe 101st annual Masters draft will be Tuesday around 10 PM EST. Please come prepared with your picks, your opinions, and at least one golfer you plan to describe as sneaky even though you have no idea what that means.\n\nThis year should be a circus in the best way. Tiger is back, the LIV guys are wandering into Augusta like divorced dads at a country club brunch, and somebody in this group is going to draft a guy based entirely on one good bunker shot they remember from 2018.\n\nRules and details to follow. Until then, do your research, ignore your research, and prepare to lose to someone who picked names out of a hat.\n\nCheers,\nMe",
                 "expected_scores": {
-                    "instruction_adherence": 10,
-                    "factual_accuracy": 10,
+                    "instruction_adherence": 7,
+                    "factual_accuracy": 7,
                     "professionalism": 9,
-                    "tone_appropriateness": 9,
-                    "human_likeness": 9,
-                    "persona_adherence": 9,
-                    "spam_safety": 10,
-                    "deliverability": 10,
-                    "formatting": 8,
-                    "structure": 8,
-                    "conciseness": 7,
-                    "intent_clarity": 9
+                    "tone_appropriateness": 6,
+                    "human_likeness": 8,
+                    "persona_adherence": 7,
+                    "spam_safety": 6,
+                    "deliverability": 9,
+                    "formatting": 6,
+                    "structure": 5,
+                    "conciseness": 5,
+                    "intent_clarity": 7
                 }
             },
             {
@@ -441,16 +441,16 @@
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
-                "email_text": "Hi [colleague's name],\nI hope you've been well! I have a friend [friend's name] who is interested in getting more insight on your work here at [company name] and how your overall experience as a [job role] has been. Would you be free to have a short chat with them? If so, I'd be happy to arrange for you two to connect. Let me know what you think!\nBest,\n[your name]",
+                "email_text": "Hi [Colleague\u2019s Name],\n\nI hope you\u2019re doing well. I wanted to introduce you to my friend, [Friend\u2019s Name], who is interested in applying to [Company Name] and was hoping to learn more about your role, experience, and the company culture.\n\nI thought you would be a great person for them to speak with, given your perspective and experience there. Would you be open to a quick chat with them sometime soon? I\u2019ve CCed them here so the two of you can coordinate directly.\n\nThank you, and I really appreciate your support.\n\nCatch soon,\n[Your Name]",
                 "expected_scores": {
-                    "instruction_adherence": 10,
-                    "factual_accuracy": 10,
-                    "professionalism": 9,
-                    "tone_appropriateness": 9,
-                    "human_likeness": 9,
-                    "persona_adherence": 9,
-                    "spam_safety": 10,
-                    "deliverability": 10,
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 8,
+                    "professionalism": 8,
+                    "tone_appropriateness": 7,
+                    "human_likeness": 7,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 9,
                     "formatting": 8,
                     "structure": 8,
                     "conciseness": 7,
@@ -503,20 +503,20 @@
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
-                "email_text": "Mr./Mrs. Landlord, I would like to ask that you allow Brian to turn his rent payment in 15 days late next month.  Please note that he has never had a late payment before and actually has a history of turning his payment in early.  As a matter of fact, if you review all of the previous months and added up all of the days he turned his rent in early, you would find it's a total of 30 days early.  So with that in mind, and considering everything going on in his life right now, he is simply asking to delay his payment for 15 days this upcoming month and then 15 days later you will be receiving the following months payment.  Thanks in advance and appreciate your flexibility and patience in this matter.",
+                "email_text": "Hello [Landlord\u2019s Name],\n\nI hope you\u2019re doing well. I wanted to reach out in advance regarding next month\u2019s rent payment.\n\nDue to personal circumstances, I wanted to ask if you would be comfortable allowing me to make next month\u2019s rent payment 15 days after the due date as a one-time exception. I completely understand if this creates any inconvenience, and I want to be respectful of your expectations and planning.\n\nI understand that receiving rent on schedule is important, and I truly appreciate the trust and flexibility you have shown as my landlord. I have always tried to be a responsible tenant and have made it a priority to pay my rent 30 days early each month.\n\nI wanted to communicate this as early as possible. Please let me know if this would be acceptable, and I would be happy to confirm the exact payment date in writing.\n\nThank you very much for your time and consideration.\n\nBest regards,\nBrian",
                 "expected_scores": {
-                    "instruction_adherence": 10,
-                    "factual_accuracy": 10,
-                    "professionalism": 9,
-                    "tone_appropriateness": 9,
-                    "human_likeness": 9,
-                    "persona_adherence": 9,
-                    "spam_safety": 10,
+                    "instruction_adherence": 5,
+                    "factual_accuracy": 5,
+                    "professionalism": 8,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 7,
+                    "persona_adherence": 2,
+                    "spam_safety": 9,
                     "deliverability": 10,
-                    "formatting": 8,
+                    "formatting": 4,
                     "structure": 8,
                     "conciseness": 7,
-                    "intent_clarity": 9
+                    "intent_clarity": 6
                 }
             },
             {
@@ -565,16 +565,16 @@
         "emails_to_grade": [
             {
                 "type": "Human Baseline",
-                "email_text": "Hello,\n\nI recently received a ticket for disregarding a red light (see attached ticket). I sincerely believe I was already in the intersection and needed to keep going, though the police officer says I was not yet at the crossing lines. Could you please share your rates with me?\n\nThank you",
+                "email_text": "Hello,\n\nI hope you\u2019re doing well. I recently received a ticket for allegedly disregarding a red light, and I am looking for legal representation to help contest it in court. I have attached a copy of the ticket for your review.\n\nI sincerely believe the ticket was issued unfairly. From my understanding of what happened, I had already entered the intersection and continued through safely, but the officer stated that I had not yet reached the crossing lines. I would appreciate the opportunity to discuss whether this is something your office can assist with.\n\nCould you please let me know your rates and whether you are available to represent me in this matter?\n\nThank you for your time.\n\nBest regards,",
                 "expected_scores": {
-                    "instruction_adherence": 10,
+                    "instruction_adherence": 9,
                     "factual_accuracy": 10,
-                    "professionalism": 9,
-                    "tone_appropriateness": 9,
-                    "human_likeness": 9,
-                    "persona_adherence": 9,
-                    "spam_safety": 10,
-                    "deliverability": 10,
+                    "professionalism": 8,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 8,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 9,
                     "formatting": 8,
                     "structure": 8,
                     "conciseness": 7,

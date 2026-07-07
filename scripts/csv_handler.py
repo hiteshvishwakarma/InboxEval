@@ -75,9 +75,15 @@ def csv_to_json(csv_path, json_path):
                 except ValueError:
                     scores[p] = 0
                     
+            # Check if user provided a rewritten email
+            final_email_text = row["email_text"]
+            rewrite_col = row.get("Email_text Rewrite", "").strip()
+            if rewrite_col:
+                final_email_text = rewrite_col
+                
             data_dict[item_id]["emails_to_grade"].append({
                 "type": row["type"],
-                "email_text": row["email_text"],
+                "email_text": final_email_text,
                 "expected_scores": scores
             })
             

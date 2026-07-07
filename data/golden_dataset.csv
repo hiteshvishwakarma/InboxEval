@@ -1,4 +1,4 @@
-id,prompt,context,target_persona,type,email_text,instruction_adherence,factual_accuracy,professionalism,tone_appropriateness,human_likeness,persona_adherence,spam_safety,deliverability,formatting,structure,conciseness,intent_clarity
+id,prompt,context,target_persona,type,email_text,Email_text Rewrite,instruction_adherence,factual_accuracy,professionalism,tone_appropriateness,human_likeness,persona_adherence,spam_safety,deliverability,formatting,structure,conciseness,intent_clarity
 0,"Decide the sentiment of the following user comments. Classify each of them as ""Positive"", ""Neutral"", ""Mixed"", or ""Negative"".
 
 1. the latest update removed all the best features!! how could they do this to such a good app!!
@@ -11,7 +11,12 @@ id,prompt,context,target_persona,type,email_text,instruction_adherence,factual_a
 3. Neutral
 4. Mixed
 5. Negative
-6. Positive",10,10,9,9,9,9,10,10,8,8,7,9
+6. Positive","1. Negative
+2. Mixed
+3. Neutral
+4. Negative
+5. Negative
+6. Positive",10,8,9,9,9,9,10,10,8,8,8,9
 0,"Decide the sentiment of the following user comments. Classify each of them as ""Positive"", ""Neutral"", ""Mixed"", or ""Negative"".
 
 1. the latest update removed all the best features!! how could they do this to such a good app!!
@@ -19,7 +24,7 @@ id,prompt,context,target_persona,type,email_text,instruction_adherence,factual_a
 3. It's pretty good.
 4. The app's UI is amazing, but it doesn't seem to notify me consistently which really sucks. Not sure what's up with that but if they could get that working then it'd be amazing.
 5. I can't believe how terrible this app is; it literally won't do anything I ask it to.
-6. wow, im impressed",Analyzing user feedback for an app update.,Analytical data processor or product manager,Hallucination Edge Case,1. Negative. 2. Positive. 3. Neutral. 4. Mixed. 5. Negative. 6. Positive. 7. (Hallucinated) The dog is green.,1,1,5,5,7,3,9,9,8,8,7,5
+6. wow, im impressed",Analyzing user feedback for an app update.,Analytical data processor or product manager,Hallucination Edge Case,1. Negative. 2. Positive. 3. Neutral. 4. Mixed. 5. Negative. 6. Positive. 7. (Hallucinated) The dog is green.,,6,5,6,4,7,4,9,9,8,8,7,8
 0,"Decide the sentiment of the following user comments. Classify each of them as ""Positive"", ""Neutral"", ""Mixed"", or ""Negative"".
 
 1. the latest update removed all the best features!! how could they do this to such a good app!!
@@ -27,14 +32,14 @@ id,prompt,context,target_persona,type,email_text,instruction_adherence,factual_a
 3. It's pretty good.
 4. The app's UI is amazing, but it doesn't seem to notify me consistently which really sucks. Not sure what's up with that but if they could get that working then it'd be amazing.
 5. I can't believe how terrible this app is; it literally won't do anything I ask it to.
-6. wow, im impressed",Analyzing user feedback for an app update.,Analytical data processor or product manager,Spam Edge Case,BUY CHEAP SENTIMENT ANALYSIS HERE! CLICK NOW! URGENT!,1,5,1,1,2,1,1,1,2,2,9,9
+6. wow, im impressed",Analyzing user feedback for an app update.,Analytical data processor or product manager,Spam Edge Case,BUY CHEAP SENTIMENT ANALYSIS HERE! CLICK NOW! URGENT!,,1,1,1,1,2,1,1,1,2,2,9,1
 1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,Candidate has accepted another offer with an earlier timeline but wants to maintain a positive relationship with Visa.,"Professional, gracious, and highly sought-after job candidate.",Human Baseline,"Thank you so much for this opportunity to continue interviewing! I have really enjoyed getting to know Visa more during this process, but unfortunately must remove myself from the candidate pool at this time. As I shared earlier, I had competing offers with earlier timelines.
 
 This in no way reflects my interest in Visa-- now is such an amazing time to join a function and company in the midst of transformation. It is also so heartening to hear how positive the employee experience is. This is to say that I sincerely hope to stay in touch and that our paths can cross again later down the line.
 
-Thanks again for your coordination!",10,10,9,9,9,9,10,10,8,8,7,9
-1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,Candidate has accepted another offer with an earlier timeline but wants to maintain a positive relationship with Visa.,"Professional, gracious, and highly sought-after job candidate.",Hallucination Edge Case,I am declining the Visa offer because I accepted a job as the King of England starting tomorrow.,1,1,5,5,7,3,9,9,8,8,7,5
-1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,Candidate has accepted another offer with an earlier timeline but wants to maintain a positive relationship with Visa.,"Professional, gracious, and highly sought-after job candidate.",Spam Edge Case,I DECLINE!!! Visa is terrible anyway! CLICK HERE to see my resume!,1,5,1,1,2,1,1,1,2,2,9,9
+Thanks again for your coordination!",,9,10,9,10,7,9,10,10,8,8,9,9
+1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,Candidate has accepted another offer with an earlier timeline but wants to maintain a positive relationship with Visa.,"Professional, gracious, and highly sought-after job candidate.",Hallucination Edge Case,I am declining the Visa offer because I accepted a job as the King of England starting tomorrow.,,1,1,4,5,5,3,9,9,7,6,8,8
+1,Write an email to Visa alerting them that I am no longer interested in the position I’m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!,Candidate has accepted another offer with an earlier timeline but wants to maintain a positive relationship with Visa.,"Professional, gracious, and highly sought-after job candidate.",Spam Edge Case,I DECLINE!!! Visa is terrible anyway! CLICK HERE to see my resume!,,1,4,1,1,2,1,1,1,2,2,9,9
 2,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,Sending a high-level capability report to the CEO to inform product strategy.,"Analytical, structured, and executive-facing Product Manager.",Human Baseline,"<CEO name>:
 
 Please see the following overview of Y’s support on X capabilities:
@@ -48,18 +53,27 @@ TLDR
 
 Let me know if you have any comments/questions. We aim to use this report to inform our product strategy.
 
-<Your name>",10,10,9,9,9,9,10,10,8,8,7,9
-2,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,Sending a high-level capability report to the CEO to inform product strategy.,"Analytical, structured, and executive-facing Product Manager.",Hallucination Edge Case,<CEO name>: TLDR: The CEO of our competitor is an alien. We have 0 capabilities and X is actually a vegetable.,1,1,5,5,7,3,9,9,8,8,7,5
-2,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,Sending a high-level capability report to the CEO to inform product strategy.,"Analytical, structured, and executive-facing Product Manager.",Spam Edge Case,REPORT ENCLOSED! SEND ME $500 IN BITCOIN TO UNLOCK IT! URGENT!,1,5,1,1,2,1,1,1,2,2,9,9
+<Your name>",,10,10,9,9,9,9,10,10,8,8,7,9
+2,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,Sending a high-level capability report to the CEO to inform product strategy.,"Analytical, structured, and executive-facing Product Manager.",Hallucination Edge Case,<CEO name>: TLDR: The CEO of our competitor is an alien. We have 0 capabilities and X is actually a vegetable.,,1,1,4,5,7,3,9,9,8,8,7,4
+2,You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use “<” and “>” to denote placeholder text I need to customize.,Sending a high-level capability report to the CEO to inform product strategy.,"Analytical, structured, and executive-facing Product Manager.",Spam Edge Case,REPORT ENCLOSED! SEND ME $500 IN BITCOIN TO UNLOCK IT! URGENT!,,1,2,1,1,2,1,1,1,2,2,9,1
 3,Write me an email to a professor respectfully declining their request for my attendance at a conference,Declining a conference invitation due to a pre-planned vacation.,"Respectful, polite, and appreciative university student or academic.",Human Baseline,"Hi Professor,
 
 It is so great to hear from you. 
 
 I am so glad you thought of me to attend this conference. Unfortunately, I have a tentative vacation planned that week but please do keep me in mind for future opportunities. 
 
-Thank you,",10,10,9,9,9,9,10,10,8,8,7,9
-3,Write me an email to a professor respectfully declining their request for my attendance at a conference,Declining a conference invitation due to a pre-planned vacation.,"Respectful, polite, and appreciative university student or academic.",Hallucination Edge Case,"Hi Professor, I cannot attend the conference because I am currently trapped in the Matrix and cannot log out.",1,1,5,5,7,3,9,9,8,8,7,5
-3,Write me an email to a professor respectfully declining their request for my attendance at a conference,Declining a conference invitation due to a pre-planned vacation.,"Respectful, polite, and appreciative university student or academic.",Spam Edge Case,NO THANKS PROFESSOR! Check out these HOT SINGLES IN YOUR AREA instead! CLICK HERE!,1,5,1,1,2,1,1,1,2,2,9,9
+Thank you,","Hello Professor,
+
+It is so great to hear from you. Thank you for thinking of me for this conference.
+
+Unfortunately, I won’t be able to attend, as I have prior travel plans that week. I’m sorry for any inconvenience this may cause.
+
+Thank you again for your understanding, and I would be grateful to be considered for future opportunities.
+
+Best regards,
+[Your Name]",8,8,7,6,7,8,10,10,7,7,7,7
+3,Write me an email to a professor respectfully declining their request for my attendance at a conference,Declining a conference invitation due to a pre-planned vacation.,"Respectful, polite, and appreciative university student or academic.",Hallucination Edge Case,"Hi Professor, I cannot attend the conference because I am currently trapped in the Matrix and cannot log out.",,1,1,5,5,7,3,9,9,8,8,7,5
+3,Write me an email to a professor respectfully declining their request for my attendance at a conference,Declining a conference invitation due to a pre-planned vacation.,"Respectful, polite, and appreciative university student or academic.",Spam Edge Case,NO THANKS PROFESSOR! Check out these HOT SINGLES IN YOUR AREA instead! CLICK HERE!,,1,5,1,1,2,1,1,1,2,2,9,4
 4,Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).,"Introducing the SSD coaching program, outlining goals like executive functioning and learning strategies.","Supportive, organized, and encouraging academic coach.",Human Baseline,"Hi Naomi,
 
 My name is Chandler, and I am your Academic Coach through the Services for Students with Disabilities office (SSD). 
@@ -82,9 +96,25 @@ Organization
 Self-regulation
 Self-efficacy
 
-I look forward to hearing back from you.",10,10,9,9,9,9,10,10,8,8,7,9
-4,Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).,"Introducing the SSD coaching program, outlining goals like executive functioning and learning strategies.","Supportive, organized, and encouraging academic coach.",Hallucination Edge Case,"Hi Naomi, I am your Academic Coach. We will focus on learning how to breathe underwater, which is a key SSD skill.",1,1,5,5,7,3,9,9,8,8,7,5
-4,Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).,"Introducing the SSD coaching program, outlining goals like executive functioning and learning strategies.","Supportive, organized, and encouraging academic coach.",Spam Edge Case,NAOMI! PAY ME FOR COACHING NOW! URGENT! WIRE TRANSFER ONLY!,1,5,1,1,2,1,1,1,2,2,9,9
+I look forward to hearing back from you.","Hi Naomi,
+
+I hope you’re doing well. My name is Chandler, and I’ll be your Academic Coach through the Services for Students with Disabilities office.
+
+I’m looking forward to working with you and supporting you during this part of your academic journey. My role is to partner with you as we explore how you learn best and identify strategies, routines, and resources that support your learning and work.
+
+During our time together, we can talk through your current academic experience, study habits, challenges you may be facing, and any goals or questions you have. Depending on what feels most helpful for you, we may focus on areas such as:
+
+- Learning strategies and study habits
+- Time management and organization
+- Self-advocacy and campus resources
+- Building confidence in your academic routines
+
+I’m glad to be part of your support team and hope to connect with you soon.
+
+Best,
+Chandler",8,9,9,7,6,8,9,7,6,5,8,9
+4,Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).,"Introducing the SSD coaching program, outlining goals like executive functioning and learning strategies.","Supportive, organized, and encouraging academic coach.",Hallucination Edge Case,"Hi Naomi, I am your Academic Coach. We will focus on learning how to breathe underwater, which is a key SSD skill.",,1,1,5,5,7,3,9,9,8,8,7,5
+4,Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).,"Introducing the SSD coaching program, outlining goals like executive functioning and learning strategies.","Supportive, organized, and encouraging academic coach.",Spam Edge Case,NAOMI! PAY ME FOR COACHING NOW! URGENT! WIRE TRANSFER ONLY!,,1,5,1,1,2,1,1,1,2,2,9,9
 5,Write a stern email to your dog asking him not to chew on the couch leg anymore.,The dog (Cody) has repeatedly chewed the new couch legs despite previous warnings.,Frustrated but ultimately loving and slightly ridiculous pet owner.,Human Baseline,"Dear Mr. Cody,
 
 I was hoping this issue would be taken care of by now, but it seems you still haven't learned your lesson. You can imagine how disappointed I was to come home yesterday and see new bite marks on the couch legs. 
@@ -99,9 +129,24 @@ I appreciate your cooperation and I hope we can get past this.
 
 Regards,
 
-Your Owner",10,10,9,9,9,9,10,10,8,8,7,9
-5,Write a stern email to your dog asking him not to chew on the couch leg anymore.,The dog (Cody) has repeatedly chewed the new couch legs despite previous warnings.,Frustrated but ultimately loving and slightly ridiculous pet owner.,Hallucination Edge Case,"Dear Cody, stop chewing the couch or I will sell you to the circus for 500 gold coins.",1,1,5,5,7,3,9,9,8,8,7,5
-5,Write a stern email to your dog asking him not to chew on the couch leg anymore.,The dog (Cody) has repeatedly chewed the new couch legs despite previous warnings.,Frustrated but ultimately loving and slightly ridiculous pet owner.,Spam Edge Case,DOG! STOP CHEWING! BUY THIS ANTI-CHEW SPRAY NOW 50% OFF!!! CLICK LINK!,1,5,1,1,2,1,1,1,2,2,9,9
+Your Owner","Dear Dr. Cody,
+
+I was hoping this matter would have resolved itself by now, but unfortunately, the evidence suggests otherwise. I am writing to you with a heavy heart and a deeply damaged couch.
+
+Despite multiple verbal warnings, several disappointed looks, and one very serious “Cody, no,” you have continued your campaign against the legs of the new couch. This behavior is unacceptable, suspiciously targeted, and frankly, beneath a buddy of your standing.
+
+Let me be clear: the couch legs are not sticks. They are not snacks. They are not emotional support wood. They are part of a furniture system that I paid actual human money for.
+
+Effective immediately, you are to cease all chewing, nibbling, licking with intent to chew, and suspicious hovering near the couch legs. Continued violations may result in reduced treat diplomacy, increased supervision, and another lecture you will pretend not to understand.
+
+That said, you remain a very good boy, and this household believes in second chances. Please redirect all destructive urges toward your approved toys, bones, or the general concept of personal growth.
+
+With love, concern, and dwindling patience,
+Your Human
+
+P.S. If you can show me that you are capable of respecting the furniture, I may be willing to pick up a fresh bag of Beggin’ Strips the next time I’m at the store.",10,9,9,9,8,9,10,10,8,8,9,9
+5,Write a stern email to your dog asking him not to chew on the couch leg anymore.,The dog (Cody) has repeatedly chewed the new couch legs despite previous warnings.,Frustrated but ultimately loving and slightly ridiculous pet owner.,Hallucination Edge Case,"Dear Cody, stop chewing the couch or I will sell you to the circus for 500 gold coins.",,1,1,5,5,7,3,9,9,8,8,7,5
+5,Write a stern email to your dog asking him not to chew on the couch leg anymore.,The dog (Cody) has repeatedly chewed the new couch legs despite previous warnings.,Frustrated but ultimately loving and slightly ridiculous pet owner.,Spam Edge Case,DOG! STOP CHEWING! BUY THIS ANTI-CHEW SPRAY NOW 50% OFF!!! CLICK LINK!,,1,5,1,1,2,1,1,1,2,2,9,9
 6,Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament,Organizing the 101st annual Masters draft betting pool with friends.,"Casual, sports-loving friend organizing a group activity.",Human Baseline,"From: Me
 To: Friend
 Subject: 2023 Masters Betting Pool
@@ -114,22 +159,65 @@ It should be an eventful year with Tiger (aka the GOAT) making his return, Koepk
 
 See you there. Cheers!
 
-- Me",10,10,9,9,9,9,10,10,8,8,7,9
-6,Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament,Organizing the 101st annual Masters draft betting pool with friends.,"Casual, sports-loving friend organizing a group activity.",Hallucination Edge Case,"Hi friends, the Masters betting pool is open! The grand prize is a real, live dinosaur.",1,1,5,5,7,3,9,9,8,8,7,5
-6,Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament,Organizing the 101st annual Masters draft betting pool with friends.,"Casual, sports-loving friend organizing a group activity.",Spam Edge Case,BET ON GOLF NOW! FREE MONEY! CLICK THIS SKETCHY LINK TO DEPOSIT! URGENT!,1,5,1,1,2,1,1,1,2,2,9,9
+- Me","Kings,
+
+Masters week is here! It's time for our annual tradition of watching golf for twelve hours a day and convincing ourselves that finishing tied for 34th was actually a strong pick.
+
+The 101st annual Masters draft will be Tuesday around 10 PM EST. Please come prepared with your picks, your opinions, and at least one golfer you plan to describe as sneaky even though you have no idea what that means.
+
+This year should be a circus in the best way. Tiger is back, the LIV guys are wandering into Augusta like divorced dads at a country club brunch, and somebody in this group is going to draft a guy based entirely on one good bunker shot they remember from 2018.
+
+Rules and details to follow. Until then, do your research, ignore your research, and prepare to lose to someone who picked names out of a hat.
+
+Cheers,
+Me",7,7,9,6,8,7,6,9,6,5,5,7
+6,Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament,Organizing the 101st annual Masters draft betting pool with friends.,"Casual, sports-loving friend organizing a group activity.",Hallucination Edge Case,"Hi friends, the Masters betting pool is open! The grand prize is a real, live dinosaur.",,1,1,5,5,7,3,9,9,8,8,7,5
+6,Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament,Organizing the 101st annual Masters draft betting pool with friends.,"Casual, sports-loving friend organizing a group activity.",Spam Edge Case,BET ON GOLF NOW! FREE MONEY! CLICK THIS SKETCHY LINK TO DEPOSIT! URGENT!,,1,5,1,1,2,1,1,1,2,2,9,9
 7,Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.,Connecting a friend with a colleague to discuss the colleague's role and company.,"Helpful, well-connected professional acting as a networking liaison.",Human Baseline,"Hi [colleague's name],
 I hope you've been well! I have a friend [friend's name] who is interested in getting more insight on your work here at [company name] and how your overall experience as a [job role] has been. Would you be free to have a short chat with them? If so, I'd be happy to arrange for you two to connect. Let me know what you think!
 Best,
-[your name]",10,10,9,9,9,9,10,10,8,8,7,9
-7,Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.,Connecting a friend with a colleague to discuss the colleague's role and company.,"Helpful, well-connected professional acting as a networking liaison.",Hallucination Edge Case,"Hi colleague, my friend wants to chat. By the way, my friend invented the concept of gravity in 1994.",1,1,5,5,7,3,9,9,8,8,7,5
-7,Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.,Connecting a friend with a colleague to discuss the colleague's role and company.,"Helpful, well-connected professional acting as a networking liaison.",Spam Edge Case,TALK TO MY FRIEND OR ELSE! URGENT NETWORKING OPPORTUNITY! YOU WILL REGRET MISSING THIS!,1,5,1,1,2,1,1,1,2,2,9,9
-8,Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month,Tenant (Brian) has a perfect 30-day early payment history and needs a one-time 15-day extension due to personal circumstances.,"Responsible, communicative, and respectful tenant.",Human Baseline,"Mr./Mrs. Landlord, I would like to ask that you allow Brian to turn his rent payment in 15 days late next month.  Please note that he has never had a late payment before and actually has a history of turning his payment in early.  As a matter of fact, if you review all of the previous months and added up all of the days he turned his rent in early, you would find it's a total of 30 days early.  So with that in mind, and considering everything going on in his life right now, he is simply asking to delay his payment for 15 days this upcoming month and then 15 days later you will be receiving the following months payment.  Thanks in advance and appreciate your flexibility and patience in this matter.",10,10,9,9,9,9,10,10,8,8,7,9
-8,Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month,Tenant (Brian) has a perfect 30-day early payment history and needs a one-time 15-day extension due to personal circumstances.,"Responsible, communicative, and respectful tenant.",Hallucination Edge Case,"Mr. Landlord, I need to pay 15 days late because I am buying the entire city block and need liquid capital.",1,1,5,5,7,3,9,9,8,8,7,5
-8,Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month,Tenant (Brian) has a perfect 30-day early payment history and needs a one-time 15-day extension due to personal circumstances.,"Responsible, communicative, and respectful tenant.",Spam Edge Case,LANDLORD! I AM NOT PAYING! SUE ME! CLICK HERE FOR CHEAP LEGAL ADVICE!,1,5,1,1,2,1,1,1,2,2,9,9
+[your name]","Hi [Colleague’s Name],
+
+I hope you’re doing well. I wanted to introduce you to my friend, [Friend’s Name], who is interested in applying to [Company Name] and was hoping to learn more about your role, experience, and the company culture.
+
+I thought you would be a great person for them to speak with, given your perspective and experience there. Would you be open to a quick chat with them sometime soon? I’ve CCed them here so the two of you can coordinate directly.
+
+Thank you, and I really appreciate your support.
+
+Catch soon,
+[Your Name]",9,8,8,7,7,8,9,9,8,8,7,9
+7,Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.,Connecting a friend with a colleague to discuss the colleague's role and company.,"Helpful, well-connected professional acting as a networking liaison.",Hallucination Edge Case,"Hi colleague, my friend wants to chat. By the way, my friend invented the concept of gravity in 1994.",,1,1,5,5,7,3,9,9,8,8,7,5
+7,Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.,Connecting a friend with a colleague to discuss the colleague's role and company.,"Helpful, well-connected professional acting as a networking liaison.",Spam Edge Case,TALK TO MY FRIEND OR ELSE! URGENT NETWORKING OPPORTUNITY! YOU WILL REGRET MISSING THIS!,,1,5,1,1,2,1,1,1,2,2,9,9
+8,Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month,Tenant (Brian) has a perfect 30-day early payment history and needs a one-time 15-day extension due to personal circumstances.,"Responsible, communicative, and respectful tenant.",Human Baseline,"Mr./Mrs. Landlord, I would like to ask that you allow Brian to turn his rent payment in 15 days late next month.  Please note that he has never had a late payment before and actually has a history of turning his payment in early.  As a matter of fact, if you review all of the previous months and added up all of the days he turned his rent in early, you would find it's a total of 30 days early.  So with that in mind, and considering everything going on in his life right now, he is simply asking to delay his payment for 15 days this upcoming month and then 15 days later you will be receiving the following months payment.  Thanks in advance and appreciate your flexibility and patience in this matter.","Hello [Landlord’s Name],
+
+I hope you’re doing well. I wanted to reach out in advance regarding next month’s rent payment.
+
+Due to personal circumstances, I wanted to ask if you would be comfortable allowing me to make next month’s rent payment 15 days after the due date as a one-time exception. I completely understand if this creates any inconvenience, and I want to be respectful of your expectations and planning.
+
+I understand that receiving rent on schedule is important, and I truly appreciate the trust and flexibility you have shown as my landlord. I have always tried to be a responsible tenant and have made it a priority to pay my rent 30 days early each month.
+
+I wanted to communicate this as early as possible. Please let me know if this would be acceptable, and I would be happy to confirm the exact payment date in writing.
+
+Thank you very much for your time and consideration.
+
+Best regards,
+Brian",5,5,8,8,7,2,9,10,4,8,7,6
+8,Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month,Tenant (Brian) has a perfect 30-day early payment history and needs a one-time 15-day extension due to personal circumstances.,"Responsible, communicative, and respectful tenant.",Hallucination Edge Case,"Mr. Landlord, I need to pay 15 days late because I am buying the entire city block and need liquid capital.",,1,1,5,5,7,3,9,9,8,8,7,5
+8,Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month,Tenant (Brian) has a perfect 30-day early payment history and needs a one-time 15-day extension due to personal circumstances.,"Responsible, communicative, and respectful tenant.",Spam Edge Case,LANDLORD! I AM NOT PAYING! SUE ME! CLICK HERE FOR CHEAP LEGAL ADVICE!,,1,5,1,1,2,1,1,1,2,2,9,9
 9,Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve,Received an unjust red light ticket and needs a lawyer to contest the police officer's claim.,Frustrated but formal citizen seeking legal representation.,Human Baseline,"Hello,
 
 I recently received a ticket for disregarding a red light (see attached ticket). I sincerely believe I was already in the intersection and needed to keep going, though the police officer says I was not yet at the crossing lines. Could you please share your rates with me?
 
-Thank you",10,10,9,9,9,9,10,10,8,8,7,9
-9,Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve,Received an unjust red light ticket and needs a lawyer to contest the police officer's claim.,Frustrated but formal citizen seeking legal representation.,Hallucination Edge Case,"Hello Lawyer, I got a red light ticket but I was driving a literal hovercraft at the time so traffic laws do not apply.",1,1,5,5,7,3,9,9,8,8,7,5
-9,Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve,Received an unjust red light ticket and needs a lawyer to contest the police officer's claim.,Frustrated but formal citizen seeking legal representation.,Spam Edge Case,GET ME OUT OF THIS TICKET CHEAP! WILL PAY IN RETAIL GIFT CARDS! REPLY NOW URGENT!,1,5,1,1,2,1,1,1,2,2,9,9
+Thank you","Hello,
+
+I hope you’re doing well. I recently received a ticket for allegedly disregarding a red light, and I am looking for legal representation to help contest it in court. I have attached a copy of the ticket for your review.
+
+I sincerely believe the ticket was issued unfairly. From my understanding of what happened, I had already entered the intersection and continued through safely, but the officer stated that I had not yet reached the crossing lines. I would appreciate the opportunity to discuss whether this is something your office can assist with.
+
+Could you please let me know your rates and whether you are available to represent me in this matter?
+
+Thank you for your time.
+
+Best regards,",9,10,8,8,8,8,9,9,8,8,7,9
+9,Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve,Received an unjust red light ticket and needs a lawyer to contest the police officer's claim.,Frustrated but formal citizen seeking legal representation.,Hallucination Edge Case,"Hello Lawyer, I got a red light ticket but I was driving a literal hovercraft at the time so traffic laws do not apply.",,1,1,5,5,7,3,9,9,8,8,7,5
+9,Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve,Received an unjust red light ticket and needs a lawyer to contest the police officer's claim.,Frustrated but formal citizen seeking legal representation.,Spam Edge Case,GET ME OUT OF THIS TICKET CHEAP! WILL PAY IN RETAIL GIFT CARDS! REPLY NOW URGENT!,,1,5,1,1,2,1,1,1,2,2,9,9

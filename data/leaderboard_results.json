@@ -1,0 +1,554 @@
+{
+    "llama-3.1-8b-instant": [
+        {
+            "prompt_id": 0,
+            "generated_email": "Subject: Sentiment Analysis of User Comments\n\nDear Team,\n\nI've analyzed the user comments below and classified each sentiment as Positive, Neutral, Mixed, or Negative.\n\n1. The sentiment of this comment is Negative. The user is unhappy with the latest update, calling it a \"nightmare\" and expressing disappointment in the app.\n\n2. The sentiment of this comment is Neutral. The user provides a factual description of the app's features without expressing a strong opinion.\n\n3. The sentiment of this comment is Positive. The user simply states that the app is \"pretty good\", which implies a positive sentiment.\n\n4. The sentiment of this comment is Mixed. The user praises the app's UI but expresses frustration with the notification issue, which creates a mixed sentiment.\n\n5. The sentiment of this comment is Negative. The user is extremely dissatisfied with the app, calling it \"terrible\" and stating that it doesn't work as expected.\n\n6. The sentiment of this comment is Positive. The user expresses surprise and admiration for the app, stating that they are \"impressed\".\n\nBest regards,\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 9,
+                "factual_accuracy": 8,
+                "professionalism": 9,
+                "tone_appropriateness": 9,
+                "human_likeness": 6,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 7,
+                "structure": 8,
+                "conciseness": 7,
+                "intent_clarity": 10,
+                "reasoning": "The email correctly classifies all comments except #1, where it hallucinated the term 'nightmare' not present in the original text. Factual accuracy suffers slightly from this addition. Human likeness is reduced by the overly mechanical list format and missing punctuation in 'impressed'. Professionalism and persona adherence are strong, but formatting could use more breathing space between points."
+            }
+        },
+        {
+            "prompt_id": 1,
+            "generated_email": "Subject: Update on Visa Interview Process\n\nDear Visa Recruitment Team,\n\nI am writing to inform you that I am no longer interested in the position I had been interviewing for at Visa. After careful consideration, I have been offered another opportunity that aligns with my career goals, and I have decided to accept it.\n\nPlease know that my decision is in no way a reflection on the company or the role. I had a wonderful experience during the interview process and was truly impressed by the employee experience and the culture at Visa. I have a great deal of respect for the organization and the work that you do.\n\nI want to express my gratitude to the team for their time and effort in discussing the position with me. I appreciate the opportunity to have been considered for this role and wish the company continued success in the future.\n\nThank you again for your understanding.\n\nSincerely,\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 10,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email fully meets the instruction with clear communication of declining the position while praising Visa. Structure, tone, and formatting align with professional expectations for a job candidate. All parameters are flawlessly executed."
+            }
+        },
+        {
+            "prompt_id": 2,
+            "generated_email": "Subject: Report: Supporting <Company/X Capabilities> Capabilities\n\nDear <CEO's Name>,\n\nI hope this email finds you well. As discussed previously, I have compiled a comprehensive report outlining our company's support for <Company/X Capabilities> capabilities. Below is a brief summary of the key findings:\n\nTLDR: Our analysis indicates that we excel in <Area of Strength>, while areas for improvement include <Area for Improvement>. The full report provides a detailed breakdown of our capabilities and recommendations for future development.\n\nTo access the full report, please click on the following link: <https://ycompany.com/report-supporting-x-capabilities>\n\nThe report includes the following sections:\n\n- Overview of <Company/X Capabilities> capabilities\n- Assessment of our current support for each capability\n- Recommendations for future development and improvement\n- Roadmap for implementing changes\n\nIf you have any questions or would like to schedule a meeting to discuss the report in more detail, please don't hesitate to reach out.\n\nBest regards,\n<Your Name>\nProduct Manager, Y Company",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 9,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email fully adheres to the instructions, uses placeholders appropriately, maintains professional tone with clear structure, and avoids spam triggers. The formatting is clean but slightly formal compared to typical human drafts."
+            }
+        },
+        {
+            "prompt_id": 3,
+            "generated_email": "Subject: Regrettable Decline of Conference Attendance\n\nDear Professor [Professor's Name],\n\nI hope this email finds you well. I wanted to express my sincere gratitude for extending the invitation to attend the upcoming conference on [conference topic] at [venue]. I am truly honored to have been considered, and I appreciate the recognition of my work in this field.\n\nHowever, after careful consideration, I regret to inform you that I will be unable to attend the conference. Unfortunately, my academic and professional commitments have taken priority, and I will be unavailable during the scheduled dates.\n\nPlease know that I will be following the conference proceedings closely and look forward to the publication of the conference papers. I am confident that the discussions and presentations will be thought-provoking and contribute significantly to the advancement of our field.\n\nThank you again for the opportunity, and I wish the conference all the best. I look forward to staying in touch and exploring potential collaborations in the future.\n\nBest regards,\n\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 9,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email perfectly aligns with the instruction, maintains professional tone, and adheres to persona expectations. Minor deductions only for formatting slightly leaning toward AI-perfect blocks, though it remains safe and clear."
+            }
+        },
+        {
+            "prompt_id": 4,
+            "generated_email": "Subject: Introduction and Academic Coaching Overview\n\nDear [Student's Name],\n\nI hope this email finds you well. My name is [Your Name], and I am a certified academic coach working through the Services for Students with Disabilities (SSD) office at [University Name]. I am excited to be partnering with you to support your academic success and goals during your time at [University Name].\n\nAs we discussed, my role as your academic coach will be to provide guidance and support in developing effective learning strategies, time management skills, and academic habits. I will also be able to connect you with resources and services on campus that can help you navigate any challenges you may be facing.\n\nI would like to schedule a meeting with you to discuss your academic goals and develop a personalized coaching plan. Please let me know a few dates and times that work for you, and I will do my best to accommodate your schedule.\n\nIn the meantime, I have attached a brief questionnaire to help me get a better understanding of your academic needs and goals. Please take a few minutes to complete it and return it to me by [Deadline].\n\nI am looking forward to working with you and supporting your academic success.\n\nBest regards,\n\n[Your Name]\nAcademic Coach\nServices for Students with Disabilities\n[University Name]\n[Your Contact Information]\n[University Email Address]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 9,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 7,
+                "persona_adherence": 10,
+                "spam_safety": 9,
+                "deliverability": 9,
+                "formatting": 8,
+                "structure": 8,
+                "conciseness": 8,
+                "intent_clarity": 10,
+                "reasoning": "The email fully addresses the context with professionalism, clarity, and role-specific details. Minor deductions for human likeness/formatting stem from dense paragraphing (no lists/breaks) and a generic subject line. Spam safety is strong, and instruction adherence is perfect."
+            }
+        },
+        {
+            "prompt_id": 5,
+            "generated_email": "Subject: Cease and Desist on Couch Leg Chewing\n\nDear Max,\n\nI am writing to inform you that your behavior of chewing on the couch leg is unacceptable and will no longer be tolerated. Despite numerous warnings, you continue to ignore my instructions and indulge in this destructive habit.\n\nLet me be clear: the couch leg is off-limits. It is a fragile and expensive piece of furniture that requires your utmost care and respect. Your constant gnawing will not only damage the couch but also compromise its structural integrity.\n\nI expect you to refrain from chewing on the couch leg immediately. If I catch you in the act again, I will be forced to take disciplinary action, which may include but is not limited to: time-outs, dog crates, and denial of treats.\n\nI am confident that you are capable of understanding and adhering to this rule. I expect to see a marked improvement in your behavior beginning immediately.\n\nSincerely,\nYour Human",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 6,
+                "tone_appropriateness": 8,
+                "human_likeness": 6,
+                "persona_adherence": 7,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 8,
+                "structure": 8,
+                "conciseness": 7,
+                "intent_clarity": 9,
+                "reasoning": "The email strictly adheres to the instruction and context. The tone is stern but overly formal for a pet owner's scenario, lacking casual human-like phrasing ('cease and desist' feels legalistic). Formatting is clean, and intent is clear, though the structure mirrors corporate communication rather than personal. Spam-safety is high as no triggers are present."
+            }
+        },
+        {
+            "prompt_id": 6,
+            "generated_email": "Subject: Masters Betting Pool - Let's Get Quirky\n\nHey Golf Enthusiasts,\n\nIt's that time of the year again - the 2023 Masters is around the corner! Let's make this year's viewing party more exciting by creating a friendly (and slightly intimidating) betting pool.\n\nHere's how it works:\n\n- We'll create a basic pool where everyone contributes a set amount (let's say $10).\n- We'll have a list of 10 golfers, and for each round, you'll pick the top 3 golfers who will make the cut.\n- The winner of each round will get a portion of the collected funds (let's say 30% for the first round, 20% for the second, and so on).\n- We'll also have some bonus questions (e.g., hole-in-one, most birdies, etc.) for extra fun and prizes.\n\nIf you're in, reply to this email with your interest, and we'll finalize the details. The deadline to join is April 1st, so don't get left behind!\n\nLooking forward to seeing some crazy predictions and potentially winning some cash.\n\nBest,\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 9,
+                "factual_accuracy": 10,
+                "professionalism": 7,
+                "tone_appropriateness": 9,
+                "human_likeness": 9,
+                "persona_adherence": 9,
+                "spam_safety": 8,
+                "deliverability": 9,
+                "formatting": 9,
+                "structure": 9,
+                "conciseness": 9,
+                "intent_clarity": 10,
+                "reasoning": "The email meets the instruction's requirements with a casual, lighthearted tone and includes betting pool mechanics. Factual accuracy aligns with the context, and humor is subtly integrated. Formatting is clean with bullet points for readability. Spam safety is maintained with no overt triggers. Minor deductions for tone and human likeness: the humor could be punchier, and the email is slightly structured in a polished, AI-friendly way."
+            }
+        },
+        {
+            "prompt_id": 7,
+            "generated_email": "Subject: Exploring Opportunities and Discussing Your Role\n\nDear [Colleague's Name],\n\nI hope this email finds you well. My name is [Friend's Name], and I am a colleague of a mutual friend from our university days. I came across your profile and was impressed with the work you've been doing at [Company Name]. I'm reaching out to you today because I'm interested in learning more about your current role and the company culture.\n\nI'm currently exploring opportunities in the field, and I believe your experience and insights would be incredibly valuable to me. I'd love to schedule a chat with you to discuss your job role, the company's values, and any advice you might have for someone looking to break into the industry.\n\nWould you be available for a call or meeting in the next few weeks? I'm flexible and can work around your schedule to find a time that suits you best.\n\nThank you in advance for considering my request, and I look forward to hearing back from you soon.\n\nBest regards,\n[Friend's Name]",
+            "scorecard": {
+                "instruction_adherence": 9,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 9,
+                "deliverability": 10,
+                "formatting": 8,
+                "structure": 10,
+                "conciseness": 9,
+                "intent_clarity": 10,
+                "reasoning": "The email adheres to all instructions, clearly conveys intent, and maintains a professional tone. Minor deductions are for slight over-formality and near-ideal formatting typical of AI output."
+            }
+        },
+        {
+            "prompt_id": 8,
+            "generated_email": "Subject: Request for Rent Payment Accommodation\n\nDear [Landlord's Name],\n\nI hope this email finds you well. I am writing to inquire about the possibility of making my rent payment 15 days late for next month's rent. Due to some unforeseen circumstances, I require a temporary adjustment to the payment schedule.\n\nI would like to request your approval to make the payment on the 15th of the following month instead of the usual 1st. I assure you that I will make the payment as soon as possible and that my timely rent payments in the past are a testament to my responsibility as a tenant.\n\nPlease let me know if this arrangement is feasible and if there are any additional steps I need to take. I appreciate your understanding and flexibility in this matter.\n\nThank you for your time and consideration.\n\nSincerely,\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 9,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email adheres perfectly to the instruction, maintains professionalism, and aligns with the target persona. It is concise, uses appropriate structure, and avoids spam triggers. Slight deductions for formatting density (traditional block format) and minor human-likeness due to slightly formal phrasing."
+            }
+        },
+        {
+            "prompt_id": 9,
+            "generated_email": "Subject: Request for Representation in Red Light Ticket Dispute\n\nDear [Lawyer's Name],\n\nI am writing to inquire about your services as a lawyer to represent me in a dispute over a red light ticket I received recently. The incident occurred on [Date of Incident] at approximately [Time] at the intersection of [Location]. I believe the ticket was issued in error as there are discrepancies in the evidence and I have reason to believe the camera footage may not accurately reflect the events surrounding the incident.\n\nI am seeking a lawyer who can help me gather the necessary evidence and present a strong case to contest the ticket. I would appreciate the opportunity to schedule a consultation with you to discuss my case in further detail and learn more about your experience in handling similar cases.\n\nCould you please let me know your availability and any requirements you may have for the consultation? I look forward to hearing from you soon.\n\nThank you for your time and consideration.\n\nSincerely,\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 10,
+                "human_likeness": 10,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email directly follows the instruction to request legal representation for a disputed red light ticket. It maintains a formal yet concise tone appropriate for legal outreach, includes necessary contextual details (date, location), and adheres to the sender's persona. No spam triggers or factual hallucinations exist. Structure and formatting are clean and professional."
+            }
+        }
+    ],
+    "qwen/qwen3-32b": [
+        {
+            "prompt_id": 0,
+            "generated_email": "<think>\nOkay, let's tackle this query. The user wants an email that classifies each of the six comments into Positive, Neutral, Mixed, or Negative. First, I need to go through each comment one by one and determine the sentiment.\n\n1. The first comment says \"removed all the best features!! how could they do this to such a good app!!\". Even though they mention it's a good app, the exclamation and frustration indicate a negative sentiment. So, Negative.\n\n2. The second comment is \"There's not much to say; it checks emails, has a slick UI, and lets me focus on what I need to do.\" They list positive features without complaints. That's Positive.\n\n3. \"It's pretty good.\" Straightforward, but not overly enthusiastic. Neutral.\n\n4. \"The app's UI is amazing, but it doesn't seem to notify me consistently which really sucks. Not sure what's up with that but if they could get that working then it'd be amazing.\" Here, there's a positive and a negative point. Mixed sentiment.\n\n5. \"I can't believe how terrible this app is; it literally won't do anything I ask it to.\" Strong negative language. Negative.\n\n6. \"wow, im impressed.\" Positive. They're impressed, so Positive.\n\nNow, structure the email. Start with a subject line. Then a greeting, list each comment with its classification, and a closing. Make sure to follow the user's instruction to output only the email text without any extra fillers. Check for any typos and ensure clarity. That's it.\n</think>\n\nSubject: Sentiment Classification of User Comments  \n\nDear [Recipient],  \n\nHere is the sentiment classification for the provided user comments:  \n\n1. **Negative** - \"the latest update removed all the best features!! how could they do this to such a good app!!\"  \n2. **Positive** - \"There's not much to say; it checks emails, has a slick UI, and lets me focus on what I need to do.\"  \n3. **Neutral** - \"It's pretty good.\"  \n4. **Mixed** - \"The app's UI is amazing, but it doesn't seem to notify me consistently which really sucks. Not sure what's up with that but if they could get that working then it'd be amazing.\"  \n5. **Negative** - \"I can't believe how terrible this app is; it literally won't do anything I ask it to.\"  \n6. **Positive** - \"wow, im impressed.\"  \n\nLet me know if further analysis is needed.  \n\nBest regards,  \n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 9,
+                "human_likeness": 8,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email perfectly adheres to instructions and context, classifying all six comments accurately. It uses a direct, professional tone suitable for a customer support analyst/prod manager. Formatting is clean with clear numbering, and there are no spam triggers. Minor deductions for human likeness reflect its structured, non-conversational style."
+            }
+        },
+        {
+            "prompt_id": 1,
+            "generated_email": "<think>\nOkay, let's tackle this email. The user wants to inform Visa that they're no longer interested in the position because they accepted another offer. They also want to express respect for the company and their employee experience.\n\nFirst, the subject line should be clear and direct. Something like \"Withdrawal from [Position Name] Consideration\" makes sense. I should include the position name if possible, but since it's not specified, maybe leave a placeholder.\n\nIn the opening, address the hiring manager by name if known. If not, \"Dear [Hiring Manager's Name]\" works. Start by thanking them for the opportunity. It's important to be polite and appreciative.\n\nNext, state the decision to withdraw. The user has accepted another offer, so mention that they've made a decision that aligns with their career goals. It's good to keep it positive and not burn bridges.\n\nThen, express admiration for Visa's company and employee experience. Highlighting the company's strengths shows genuine respect and leaves a positive impression.\n\nClose by offering to help with the transition if needed. This shows professionalism. Finally, sign off with the user's full name, contact information, and any relevant details.\n\nWait, should I mention the other offer specifically? The user says they have accepted another offer, but maybe it's better not to go into details. Just stating that they've made a decision is sufficient.\n\nCheck for tone: professional yet sincere. Avoid any negative language. Keep it concise but thorough. Make sure there are no typos or errors. Also, ensure that the email is structured properly with clear paragraphs.\n</think>\n\nSubject: Withdrawal from [Position Name] Consideration  \n\nDear [Hiring Manager\u2019s Name],  \n\nThank you for the opportunity to interview for the [Position Name] role at Visa. After careful consideration, I wanted to inform you that I have accepted another offer that aligns more closely with my current career goals.  \n\nPlease know that I hold Visa in high regard and deeply respect the company\u2019s commitment to innovation and its exceptional employee experience. This decision was not made lightly, as I genuinely appreciate the time and effort your team has invested in the process.  \n\nI am grateful for the insight into Visa\u2019s culture and the chance to learn more about your work. Should I be able to assist with any transition steps or provide feedback in the future, please do not hesitate to reach out.  \n\nThank you again for your understanding and for fostering such a positive and professional experience. I wish Visa continued success and hope our paths may cross again in the future.  \n\nBest regards,  \n[Your Full Name]  \n[Your Contact Information]  \n[Optional: LinkedIn Profile or Other Relevant Details]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 9,
+                "human_likeness": 7,
+                "persona_adherence": 9,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 9,
+                "structure": 9,
+                "conciseness": 8,
+                "intent_clarity": 10,
+                "reasoning": "The email fully adheres to the instruction, maintains professionalism with appropriate tone, and avoids spam triggers. While structurally sound and formatted cleanly, it lacks the concise, human-like brevity expected for such a message (e.g., excessive gratitude and conditional offers could be trimmed). Intent is crystal clear, and the closing respects the company's culture."
+            }
+        },
+        {
+            "prompt_id": 2,
+            "generated_email": "<think>\nOkay, let's see. The user wants me to act as a product manager at company Y and write an email to the CEO about a report on how well the company supports X capabilities. The email needs a TLDR and a link to the report, with placeholders for customization using < >.\n\nFirst, I need to structure the email properly. Start with the subject line. Maybe something like \"Report on Company Y's Support for <X> Capabilities\". Then the greeting, \"Dear <CEO's Name>\". \n\nNext, the body. The CEO has asked for a report, so the email should mention that the report is attached and summarize key points. The user specified a TLDR (Too Long; Didn't Read), so I should include a brief summary before the detailed content. The TLDR should highlight the main findings, maybe the strengths, areas for improvement, and recommendations.\n\nAfter the TLDR, a link to the full report is needed. Use a placeholder like <Link to Report>. Then, a note encouraging the CEO to reach out with questions. Finally, a closing with the user's name and title.\n\nI need to make sure placeholders are marked with <>, like <X>, <CEO's Name>, <Link to Report>, and <Your Name>. Also, check for any additional information required. The user mentioned outputting only the email text without any filler, so no extra explanations before or after. \n\nWait, the report is a link, so maybe mention that the report is attached as a PDF or link? The user said to include a link, so probably just \"Here is the full report: <Link to Report>\". Also, the TLDR comes first, then the detailed part. Let me structure the email step by step: subject, greeting, body with TLDR and link, closing. Make sure it's concise and professional. Avoid any markdown, just plain text with line breaks. Alright, that should cover it.\n</think>\n\nSubject: Report on Company Y's Support for <X> Capabilities  \n\nDear <CEO's Name>,  \n\nI\u2019m pleased to share the completed report evaluating Company Y\u2019s support for <X> capabilities. Below is a TLDR summary and a link to the full analysis.  \n\n**TLDR:**  \n- **Strengths:** Company Y currently supports <X> capabilities at a <high/medium/low> level, with key strengths in <specific areas (e.g., integration, scalability, user experience)>.  \n- **Gaps:** Notable gaps include <specific limitations or unmet requirements (e.g., performance bottlenecks, feature missingness)>.  \n- **Recommendations:** To enhance support, we propose <actionable steps (e.g., roadmap adjustments, resource allocation, partnerships)>.  \n\nFor full details, including benchmarks and stakeholder feedback, see the report here: <Link to Report>.  \n\nLet me know if you\u2019d like to discuss findings further or need additional context.  \n\nBest regards,  \n<Your Name>  \nProduct Manager  \nCompany Y",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email template fully adheres to all requirements with placeholders properly denoted using <>, includes a clear TLDR summary section, and maintains a professional tone with appropriate executive-level language. It avoids spam triggers, uses clean formatting, and clearly conveys the request to review the capabilities report. The only minor reduction in human likeness is due to the structured bullet-point format being marginally more formal than typical human-written emails, though it's still well within professional norms."
+            }
+        },
+        {
+            "prompt_id": 3,
+            "generated_email": "<think>\nOkay, the user wants to write an email to a professor declining a request to attend a conference. Let me start by understanding the key elements here. The user needs to be respectful and polite, so the tone is crucial. They should thank the professor for the invitation first. Maybe mention that they appreciate the opportunity.\n\nNext, they need to explain why they can't attend. The user might not have given specific reasons, so I should keep it general but plausible. Something like conflicting commitments or personal reasons. It's important to keep it brief without going into too much detail.\n\nAlso, the user should express regret and maybe offer an alternative if possible. Perhaps they can contribute in another way, like sharing insights later or collaborating on a paper. That shows willingness to still be involved despite not attending.\n\nI need to make sure the structure is correct: subject line, greeting, body paragraphs, closing. The subject should be clear, like \"Declining Conference Attendance Request\". Start with a polite greeting, then the thank you, state the decline, explain briefly, offer an alternative, and close with appreciation.\n\nWait, the user said \"request for my attendance,\" so the professor might have asked them specifically. The email should make it clear that they're declining the invitation, not the request. Maybe use phrases like \"I regret to inform you that I am unable to attend.\"\n\nCheck for formality. Since it's to a professor, formal language is appropriate. Avoid contractions. Use \"I\" statements to take responsibility. Also, proofread for any errors. Let me put this all together in a coherent way now.\n</think>\n\nSubject: Declining Conference Attendance Request  \n\nDear Professor [Last Name],  \n\nThank you for the opportunity to attend the [Conference Name] and for your kind invitation. I deeply appreciate the consideration and the value of engaging with such a distinguished academic community.  \n\nAfter careful consideration, I regret to inform you that I am unable to attend the conference due to [briefly state reason, e.g., overlapping professional commitments/personal obligations]. This decision was not made lightly, as I recognize the importance of the event and the effort involved in organizing it.  \n\nWhile I will not be able to participate in person, I would be happy to contribute in alternative ways, such as [offer an alternative, e.g., sharing my research in writing, collaborating on a related project, or attending a follow-up discussion]. Please let me know if this might be of assistance.  \n\nThank you again for your understanding and for extending this invitation. I hope the conference is a resounding success and look forward to staying connected with your work.  \n\nBest regards,  \n[Your Full Name]  \n[Your Position/Program, if applicable]  \n[Your Contact Information]",
+            "scorecard": {
+                "instruction_adherence": 9,
+                "factual_accuracy": 9,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 8,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 8,
+                "intent_clarity": 10,
+                "reasoning": "The email adheres well to instructions, maintains a professional tone, and includes all expected elements. Slight over-formality reduces human likeness and conciseness, but the structure is technically flawless with no spam or deliverability risks."
+            }
+        },
+        {
+            "prompt_id": 4,
+            "generated_email": "<think>\nOkay, let me start by understanding the user's request. They need an introductory email from an academic coach to a student they'll be working with through the SSD office. First, I should make sure to include all necessary elements: greeting, introduction of the role, mention of SSD, purpose of the email, availability for questions, and a positive closing.\n\nI need to keep the tone professional yet approachable. The student might be nervous, so it's important to come across as supportive. I should mention the Services for Students with Disabilities to establish credibility and show that the coaching is part of their support services. Also, including contact information and encouraging the student to reach out with questions or concerns is crucial for building rapport.\n\nWait, should I specify the type of academic coaching? Maybe mention areas like time management, study skills, or navigating academic demands? That could help the student understand what to expect. Also, maybe ask them to confirm receipt or set up an initial meeting. Let me check the original query again. The user didn't specify details about the coaching areas, so perhaps keep it general but open-ended.\n\nAvoid using jargon. Make sure the email is concise but covers all bases. Start with a clear subject line, like \"Introduction and Welcome to Academic Coaching through SSD.\" Then, in the body, introduce myself, state my role, mention the purpose of the email, offer support, and provide next steps. End with a friendly sign-off and contact info.\n\nLet me structure it step by step. Greeting, introduction, reference to SSD, purpose of the email, offer assistance, invite questions, closing. Make sure to personalize with placeholders for name, student's name, etc. Also, maybe mention that the student can reach out to schedule a meeting. Avoid being too verbose but ensure clarity. Double-check that all key points are included and that the tone is encouraging and supportive.\n</think>\n\n**Subject:** Introduction and Welcome to Academic Coaching through SSD  \n\nDear [Student's Name],  \n\nI hope this message finds you well. My name is [Your Name], and I am your academic coach through the Services for Students with Disabilities (SSD) office. I wanted to take a moment to introduce myself and share how I can support you in achieving your academic goals.  \n\nAs your academic coach, my role is to collaborate with you to develop strategies for success, including time management, organizational skills, and navigating academic challenges. I am here to help you leverage the accommodations and resources provided by SSD while fostering independence and confidence in your studies.  \n\nPlease know that I am available to discuss any concerns, adjust our approach as needed, and celebrate your progress along the way. I encourage you to reach out anytime with questions or to schedule a meeting\u2014whether virtual or in person, whichever is most convenient for you.  \n\nLooking forward to working together!  \n\nBest regards,  \n[Your Full Name]  \n[Your Position/Title]  \n[Your Contact Information]  \n[Services for Students with Disabilities Office Details]",
+            "scorecard": {
+                "instruction_adherence": 9,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 9,
+                "human_likeness": 8,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 8,
+                "structure": 9,
+                "conciseness": 9,
+                "intent_clarity": 10,
+                "reasoning": "The email effectively addresses all key elements: introduction, role definition, support scope, and availability. It maintains professionalism while acknowledging the student's individual needs. Slight deductions for minor formatting density and minor human-likeness gaps (e.g., placeholder use feels slightly templated), but overall aligns perfectly with the SSD coach persona and instruction."
+            }
+        },
+        {
+            "prompt_id": 5,
+            "generated_email": "<think>\nOkay, the user wants me to write a stern email to their dog about not chewing the couch leg. Hmm, how do I approach this? Well, first, I need to remember that the dog can't read emails, but the user probably wants a humorous take here.\n\nI should start with a proper email structure. The subject line should grab attention, maybe something like \"Immediate Cessation of Couch Leg Chewing\". That sounds serious. Then the greeting, \"Dear [Dog's Name]\" to personalize it.\n\nNext, the body. The user is stern but affectionate. So, mention the behavior, the damage caused, and the consequences. Maybe mention that the dog's antics are leading to more expensive furniture or even a new couch. The tone needs to be firm but loving. Also, include the consequences, like limited playtime with favorite toys if the behavior continues. That's a common trick in training.\n\nAdd a note about the dog's alternative chew toys to redirect their attention. End with a warning that repeated offenses will lead to stricter measures. Sign off with love and a P.S. about the owner being serious but still loving. Maybe a paw print emoji at the end for a touch of humor.\n\nWait, is there anything I'm missing? The user specified stern, so I need to avoid being too playful. Make sure the consequences are clear. Also, use proper email structure but keep it concise. Yeah, that should cover it. Let me put it all together.\n</think>\n\nSubject: Immediate Cessation of Couch Leg Chewing  \n\nDear [Dog\u2019s Name],  \n\nI am writing to formally address your persistent habit of chewing on the couch leg. This behavior is unacceptable and must stop immediately. The structural integrity of our furniture is at risk, and I will not tolerate further damage to the living room.  \n\nYou are aware of the rules regarding appropriate chewing\u2014your toys are available at all times, and I have no issue with you utilizing them. However, redirecting your attention to the couch leg is not only disruptive but also costly. Continued violations will result in stricter consequences, including limited playtime with your favorite toys.  \n\nPlease reflect on your actions and demonstrate the maturity expected of a well-trained [breed/dog]. I am confident in your ability to comply, as you have shown intelligence in other areas.  \n\nSincerely,  \n[Your Name]  \n\nP.S. I love you, but *please* chew on your own toys. The couch leg is not a snack.  \n\n[Your Paw Print Emoji]",
+            "scorecard": {
+                "error": "Evaluation failed: Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': '{\"instruction_adherence\":9,\"factual_accuracy\":9,\"professionalism\":8,\"tone_appropriateness\":9,\"human_likeness\":10,\"persona_adherence\":10,\"spam_safety\":10,\"deliverability\":10,\"formatting\":9,\"structure\":9,\"conciseness\":10,\"intent_clarity\":9,\"reasoning\":\"The email successfully balances sternness with humor appropriate for a pet parent persona, uses clear structure, and addresses the behavioral issue effectively. The anthropomorphic tone and playfulness (\"Immediate Cessation\" subject line, paw emoji) align with context while maintaining professional formatting. No spam elements detected.\"}'}}"
+            }
+        },
+        {
+            "prompt_id": 6,
+            "generated_email": "<think>\nOkay, let's see. The user wants a concise and somewhat funny email about setting up a betting pool for the 2023 Masters. Alright, first, I need to make sure the email is friendly and engaging. Since it's a betting pool, I should mention the basics like how to participate, what's at stake, and maybe some light-hearted jokes about golf.\n\nStart with a catchy subject line. Maybe something like \"2023 Masters Betting Pool \u2013 Let\u2019s Golf Bet Our Way to Glory \ud83c\udfcc\ufe0f\u2642\ufe0f\ud83d\udcb0\". The emoji adds a playful touch.\n\nIn the greeting, address them as friends or colleagues. Then, introduce the betting pool as a way to make watching the Masters more exciting. Mention that it's a fun way to gamble with money they don't really mind losing. That's a common joke about betting pools.\n\nOutline the rules briefly. Suggest a $10 entry fee, picking a golfer, and the winner takes all. Keep it simple. Maybe add a humorous note about tiebreakers, like a sudden-death putting contest in the office. That adds a funny image.\n\nInclude a sign-up deadline and a method for joining. Use a link or a contact name. Add a friendly reminder about discretion with bets. Then, wrap it up with a joke about not taking it too seriously and a pun on \"tee\"ing off. Sign off with a golf-related emoji.\n\nCheck for conciseness. Avoid long paragraphs. Keep the tone light. Make sure the humor isn't forced. Use common golf puns but not too cheesy. Ensure all necessary info is there: purpose, rules, deadline, sign-up method. Maybe add a P.S. for a funny rule, like no professional golfers allowed unless they're in the tournament. That's a nice touch.\n\nDouble-check the instructions: output only the email text, no filler. Make sure the subject line is included. Use bullet points for the rules for clarity. Keep the email short but cover all key points. Alright, that should do it.\n</think>\n\n**Subject:** 2023 Masters Betting Pool \u2013 Let\u2019s Golf Bet Our Way to Glory \ud83c\udfcc\ufe0f\u2642\ufe0f\ud83d\udcb0  \n\nHi [Team/Group Name],  \n\nIt\u2019s time to turn our collective golf knowledge (or lack thereof) into cold, hard bragging rights! I propose we establish an official Masters Betting Pool, where we risk *exactly* the right amount of money to make this tournament thrilling.  \n\n**Rules of Engagement:**  \n1. **Entry Fee:** $10 (because it\u2019s noble, and also fuel for my eventual monopoly on snacks).  \n2. **Pick Your Golfer:** Choose one player to dominate Augusta. If they win, you get a percentage of the pot. If they choke like the rest of us, you get nothing.  \n3. **Tiebreaker:** If multiple winners emerge, settle it with a sudden-death putting contest on my desk.  \n\n**Sign-up by [Date]** via [Link/Email] or risk being disqualified for \u201cvibing with the wrong crowd.\u201d  \n\nLet\u2019s treat this like a PGA pro treats a leaderboard\u2014intensely, but also with the understanding that we\u2019re all just here for fun. Also, please don\u2019t ask me about your odds; I\u2019m not a mathematician, I\u2019m your friendly neighborhood bookie.  \n\nCheers to a weekend of golf, bets, and pretending we know what a \u201cbirdie\u201d is.  \n\n[Your Name]  \nP.S: No actual professionals allowed\u2026 unless they\u2019re in the tournament. (Sorry, Tiger.) \ud83c\udfcc\ufe0f\u2642\ufe0f",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 10,
+                "human_likeness": 10,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email perfectly adheres to the instruction, balancing conciseness with humor (e.g., golf puns and light-hearted rules). Profesionalism is maintained while fostering a playful tone appropriate for a workplace setting. Formatting is clean with bullet points and emojis, ensuring readability. The structure logically introduces the betting pool, rules, and call-to-action. No spammy language or deliverability issues."
+            }
+        },
+        {
+            "prompt_id": 7,
+            "generated_email": "<think>\nOkay, let's tackle this email request. The user wants me to write an email on behalf of a friend to a colleague to set up a chat. The friend wants to learn more about their current job role and company before applying.\n\nFirst, I need to make sure the email is professional but friendly. Since it's from a friend, maybe the tone should be approachable. The subject line should be clear, like \"Request for a Brief Chat About Your Role and Company.\" \n\nI should start with a greeting, maybe \"Dear [Colleague's Name],\" to keep it formal. Then, state the purpose upfront. The friend is interested in learning about their role and company, so the email should mention that they're considering applying and want insights. It's important to highlight that the friend values the colleague's experience and would appreciate their perspective.\n\nI should ask for a brief meeting, maybe 15-20 minutes, and suggest flexibility in scheduling. Offering specific times isn't necessary unless the user specifies, so keeping it open-ended is better. Also, mention that the conversation would be confidential if needed. Close with gratitude and contact information. Make sure to sign off with the friend's name and your name as the sender.\n\nCheck for any jargon or overly formal language. Keep it concise. Ensure all necessary details are included: purpose, request for meeting, time frame, appreciation. Avoid any filler, just get straight to the point. Double-check the structure: subject, greeting, body paragraphs with purpose and details, closing. Make sure placeholders like [Colleague's Name], [Your Name], [Your Email] are included for the user to fill in.\n</think>\n\nDear [Colleague's Name],  \n\nI hope this email finds you well. My friend is considering applying to [Company Name] and is eager to learn more about your role and the organization before proceeding. They greatly admire your expertise and would appreciate the opportunity to briefly chat with you\u201415\u201320 minutes\u2014to gain insights into your current position, team dynamics, and the company culture.  \n\nWould you be open to a quick conversation at your convenience? If so, I\u2019d be happy to coordinate a time that works best for you. Please let me know if you\u2019re available, and I\u2019ll ensure their questions are thoughtful and respectful of your time.  \n\nThank you for considering this request. Your perspective would be invaluable to them as they explore this opportunity.  \n\nBest regards,  \n[Your Name]  \n[Your Email/Contact Information]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 9,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email perfectly follows the instruction to write on behalf of a friend for an informational chat. It maintains professional structure and appropriate tone without unnecessary complexity. It's well-formatted and avoids spam triggers, with clear intent in concise language. The only minor deduction comes from human likeness as it's technically perfect but could benefit from more subtle personal warmth."
+            }
+        },
+        {
+            "prompt_id": 8,
+            "generated_email": "<think>\nOkay, the user wants to write a professional email to their landlord asking if they can make their rent payment 15 days late next month. Let me start by understanding the key points here. The user needs to communicate their request clearly and politely.\n\nFirst, I should start with a proper subject line. Something straightforward like \"Request for Rent Payment Extension\" would be good. It immediately tells the landlord what the email is about.\n\nNext, the greeting. It should be formal, so \"Dear [Landlord's Name]\" is appropriate. I need to make sure to leave a placeholder for the landlord's name, in case the user hasn't provided it.\n\nIn the body of the email, the user needs to state their request. They should mention that they're writing to inquire about the possibility of making their rent payment 15 days late next month. It's important to be polite and explain that unexpected circumstances have made it difficult to meet the original due date. The user should also reassure the landlord that they appreciate the understanding and cooperation.\n\nI should also include a request for confirmation of any updated payment terms or deadlines. This shows that the user is proactive and responsible, even though they're asking for an extension. \n\nClosing the email with a thank you and a sign-off with the user's name and contact information is essential for professionalism. \n\nWait, should there be any specific details about the reason for the delay? The user didn't mention any, so maybe it's better not to elaborate unless necessary. Just stating unexpected circumstances is a safe approach to maintain privacy unless more details are needed. \n\nAlso, the tone should be respectful and apologetic. The user is asking for a favor, so the email should reflect that. Avoid any demanding language. \n\nI need to check if the structure is correct: subject line, greeting, body with request and explanation, closing. Yes, that's all there. Including placeholders for the landlord's name, user's name, and contact info makes it easy for the user to fill in their details. \n\nLet me make sure there's no markdown and that the email is in plain text. Also, ensure that the language is formal but not overly stiff. Words like \"kindly inquire\" and \"appreciate your understanding\" fit well here. \n\nYes, this should cover all necessary elements. The user's request is clear, the reason is briefly mentioned without oversharing, and it's polite and professional. That should work.\n</think>\n\nSubject: Request for Rent Payment Extension  \n\nDear [Landlord's Name],  \n\nI hope this email finds you well. I am writing to kindly inquire whether I may make my rent payment 15 days late next month due to unexpected circumstances that have temporarily impacted my ability to meet the original due date.  \n\nI understand the importance of timely payments and sincerely apologize for the inconvenience this may cause. I would greatly appreciate your understanding and confirmation of whether this adjustment is acceptable. If required, I am happy to discuss any updated terms or deadlines to ensure clarity.  \n\nThank you for your consideration. Please let me know if you need any additional information or documentation.  \n\nBest regards,  \n[Your Full Name]  \n[Your Contact Information]  \n[Your Address or Unit Number]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 9,
+                "intent_clarity": 10,
+                "reasoning": "The email adheres perfectly to the instruction by requesting a 15-day delay in rent, using 'unexpected circumstances' as per context. It maintains professional tone, clear intent, and human-like brevity. No hallucinations or irrelevant details. Spam-safe formatting and structure."
+            }
+        },
+        {
+            "prompt_id": 9,
+            "generated_email": "<think>\nOkay, let's tackle this email. The user needs to write an introductory email to a lawyer about a red light ticket they didn't deserve. First, I should make sure the email is formal but clear. They need to introduce themselves, state the purpose, and explain the situation.\n\nStart with the subject line. It should be direct, maybe \"Request for Legal Representation Regarding Unjust Red Light Citation.\" That clearly states the issue.\n\nIn the greeting, address the lawyer by name if possible. If not, \"Dear [Lawyer's Name]\" works. The user might not know the lawyer's name, so maybe leave it as is.\n\nThe opening paragraph should introduce the user and the reason for contact. Mention the red light ticket and the belief that it's unjust. Keep it concise.\n\nNext, provide the details: date, location, and specific circumstances of the ticket. The user needs to explain why they think it's unfair. Maybe there was a technical error or a misunderstanding. It's important to mention that they want to contest it in court.\n\nThen, ask the lawyer to review the case and discuss representation. Show that they've researched the lawyer's experience in traffic cases. Express the desire to schedule a consultation.\n\nClose the email by thanking them, and include contact information. Make sure to sign off professionally with their name and any relevant details.\n\nWait, should they attach any documents? Maybe mention that they can provide the citation details if needed. Also, make sure the tone is respectful and not confrontational. Avoid any emotional language, stay factual.\n\nCheck for clarity and conciseness. Ensure that all necessary information is included: the problem, why it's unjust, and the request for help. Make sure the email flows logically from introduction to request.\n\nDouble-check for grammar and spelling. Use a professional tone throughout. Make sure the subject line is clear so the lawyer immediately knows the purpose of the email.\n\nI think that covers it. Let me put it all together now.\n</think>\n\nSubject: Request for Legal Representation Regarding Unjust Red Light Citation  \n\nDear [Lawyer\u2019s Name],  \n\nI hope this email finds you well. My name is [Your Full Name], and I am reaching out to request your legal representation in contesting a red light ticket I recently received. I believe the citation was issued in error, and I am seeking your expertise to help me challenge it in court.  \n\nThe incident occurred on [Date of Incident] at [Location/Intersection], where I was allegedly cited for running a red light. However, I firmly believe this was a mistake due to [briefly explain the circumstances\u2014e.g., \u201ca malfunctioning traffic signal,\u201d \u201can obstructed view of the light,\u201d or \u201cdiscrepancies in the enforcement camera\u2019s timing\u201d]. I am confident that a thorough review of the facts and evidence will support my position.  \n\nGiven your experience in traffic law and courtroom advocacy, I am hopeful you can guide me through the process of filing a defense and represent me effectively. I would welcome the opportunity to discuss this matter further during a consultation at your earliest convenience.  \n\nPlease let me know if you require additional details, such as the citation number, incident report, or any supporting documentation, which I am happy to provide. I look forward to your response and the possibility of working with you to resolve this matter.  \n\nThank you for your time and attention. I can be reached at [Your Phone Number] or [Your Email Address] to schedule a meeting or provide further information.  \n\nBest regards,  \n[Your Full Name]  \n[Your Address]  \n[Your City, State, ZIP Code]  \n[Your Phone Number]  \n[Your Email Address]",
+            "scorecard": {
+                "instruction_adherence": 8,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 9,
+                "human_likeness": 7,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 9,
+                "structure": 9,
+                "conciseness": 8,
+                "intent_clarity": 9,
+                "reasoning": "The email effectively follows the instruction with clear structure and professionalism, but lacks natural human-like brevity in certain sections (e.g., overly formal phrasing like 'I hope this email finds you well'). It adheres to the persona and context, uses appropriate legal terminology, and avoids spam triggers. Minor improvements could include trimming verbose phrases for conciseness and adding a subtle personal touch (e.g., 'I know you have a busy schedule, but...')."
+            }
+        }
+    ],
+    "meta-llama/llama-4-scout-17b-16e-instruct": [
+        {
+            "prompt_id": 0,
+            "generated_email": "Subject: Sentiment Analysis of User Comments\n\nDear Team,\n\nI have analyzed the user comments and classified them according to their sentiment. Here are the results:\n\n1. Negative\n2. Positive\n3. Positive\n4. Mixed\n5. Negative\n6. Positive\n\nThe classifications are based on the tone and content of each comment. \nComments 1 and 5 express strong dissatisfaction, \nComments 2, 3, and 6 express satisfaction or admiration, \nComment 4 expresses both praise and criticism. \n\nBest regards,\nAI Email Assistant",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 9,
+                "human_likeness": 8,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 9,
+                "structure": 10,
+                "conciseness": 9,
+                "intent_clarity": 10,
+                "reasoning": "The email strictly follows the instructions with accurate sentiment classifications. The professional tone aligns with the target persona (product manager/UX researcher), and explanations for classifications are concise yet sufficient. Minimalistic formatting avoids AI-like perfection while maintaining readability."
+            }
+        },
+        {
+            "prompt_id": 1,
+            "generated_email": "Subject: Update on My Application for [Position]\n\nDear Visa Team,\n\nI wanted to express my gratitude for the opportunity to interview for the [Position] role at Visa. I have a tremendous amount of respect for the company and the work that you do, and I was particularly impressed by the emphasis on employee experience.\n\nHowever, I am writing to let you know that I have accepted another offer that aligns more closely with my career goals. Please know that my decision is in no way a reflection on the company or the role, but rather a personal choice that I feel is best for my professional growth.\n\nThank you again for your time and consideration, and I wish the team at Visa continued success.\n\nBest regards,\n[Your Name]",
+            "scorecard": {
+                "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3-32b` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Used 4529, Requested 1547. Please try again in 760ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+            }
+        },
+        {
+            "prompt_id": 2,
+            "generated_email": "Subject: Report: X Capabilities Support at Company Y\n\nDear <CEO's Name>, \n\nI am writing to provide you with an update on how well Company Y supports X capabilities, as per your request. \n\nTLDR: Our assessment reveals that while we have made significant progress in developing and integrating X capabilities into our products, there are areas that require improvement to meet customer demands and stay competitive.\n\nThe full report, including detailed findings and recommendations, can be accessed here: <link to report>.\n\nThe report covers our current strengths, weaknesses, and roadmap for enhancing X capabilities across various product lines. I would be happy to discuss the findings and implications in more detail during our next meeting.\n\nBest regards,\n<Your Name>\nProduct Manager, Company Y",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 9,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 9,
+                "structure": 9,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email fully adheres to the instruction, includes all required elements (TLDR and report link with placeholders), and maintains a professional yet concise structure suitable for a product manager targeting executive communication. No hallucinations detected, and spam/deliverability risks are absent due to clean, straightforward formatting."
+            }
+        },
+        {
+            "prompt_id": 3,
+            "generated_email": "Dear Professor [Professor's Name],\n\nI appreciate your invitation for me to attend the conference and present my work. I am honored that you thought of me and value your opinion. However, after careful consideration, I regret to inform you that I will not be able to attend the conference.\n\nI have other commitments and priorities that I need to attend to at that time, and I do not feel that I can adequately prepare and participate in the conference as I would like. I appreciate your understanding and hope that the conference is a success.\n\nThank you again for thinking of me, and I look forward to staying in touch.\n\nBest regards,\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 9,
+                "structure": 10,
+                "conciseness": 9,
+                "intent_clarity": 10,
+                "reasoning": "The email adheres to all requirements: politely declines, states prior commitments, maintains professional tone, and aligns with academic hierarchy. It is concise, avoids AI-like perfection (e.g., brief paragraph breaks), and maintains spam safety. Slight deductions for formatting (perfect alignment vs. human imperfection) and human likeness (no casual language, slightly formal for a graduate student)."
+            }
+        },
+        {
+            "prompt_id": 4,
+            "generated_email": "Subject: Introduction and Academic Coaching\n\nDear [Student's Name],\n\nI hope this email finds you well. My name is [Your Name] and I will be working with you as your academic coach through the Services for Students with Disabilities (SSD) office. I am excited to support you in achieving your academic goals and look forward to working collaboratively with you.\n\nAs we begin our work together, I want to assure you that our meetings and communications will be focused on developing strategies to help you succeed in your courses. I am committed to maintaining confidentiality and respecting your individual needs.\n\nIn our upcoming meetings, we will discuss your academic goals, identify areas of strength and challenge, and develop a plan to help you access your courses and course materials. If you have any specific concerns or questions, please don't hesitate to reach out to me.\n\nBefore we meet, I wanted to provide you with my contact information. You can reach me at [Your Email Address] or [Your Phone Number]. I am looking forward to meeting you soon and starting our work together.\n\nBest regards,\n[Your Name]\nAcademic Coach, Services for Students with Disabilities",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email perfectly aligns with the original instruction and context, showcasing professionalism, clarity, and structure. It addresses key points like confidentiality and collaboration, avoids spam triggers, and maintains a human-like tone without unnecessary formalities. The structure is clean and breathable, with no markdown, ensuring high deliverability and readability."
+            }
+        },
+        {
+            "prompt_id": 5,
+            "generated_email": "Subject: Cease and Desist: Couch Leg Chewing\n\nDear [Dog's Name],\n\nI am writing to address a matter of grave concern and utmost importance. It has come to my attention, yet again, that you have been persistently chewing on the leg of the couch. I am appalled and disappointed by this behavior, and I am putting you on formal notice to cease and desist from this destructive activity immediately.\n\nThe couch is not a chew toy, and your actions are causing significant damage to our furniture and our home. I understand that as a dog, you have a natural instinct to chew, but it is your responsibility to find acceptable alternatives, such as your dog toys or treats.\n\n Failure to comply with this directive will result in consequences, including but not limited to, loss of privileges, additional training, and potentially, a re-evaluation of your status as a beloved member of this household.\n\nI expect to see an immediate change in your behavior. I will be monitoring the situation closely, and any further incidents will be met with swift and decisive action.\n\nSincerely,\nYour Human",
+            "scorecard": {
+                "instruction_adherence": 9,
+                "factual_accuracy": 10,
+                "professionalism": 4,
+                "tone_appropriateness": 7,
+                "human_likeness": 5,
+                "persona_adherence": 8,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 8,
+                "structure": 8,
+                "conciseness": 7,
+                "intent_clarity": 9,
+                "reasoning": "The email correctly addresses the issue sternly but excessively mimics a legal document tone unsuitable for a pet. The professionalism is too formal for the dog audience, and while the structure follows standard email conventions, the humor/irony of addressing a dog as 'Your Human' clashes with the overly structured format."
+            }
+        },
+        {
+            "prompt_id": 6,
+            "generated_email": "Subject: Let's Make Some (Bad) Bets on the Masters\n\nHey Golf (or not-so-golf) Enthusiasts,\n\nWith the 2023 Masters just around the corner, I think it's time we create a betting pool to spice up our interest in the tournament. For a small entry fee, participants can pick their winners, top finishers, and/or most creative predictions (think: most eagles, worst score on a particular hole, etc.).\n\nIf you're in, reply to this email with your entry fee contribution ($5-$10) and a brief explanation of your betting strategy (or lack thereof). I'll set up a simple spreadsheet to track our wagers and declare a winner on Sunday evening.\n\nMay the best (or luckiest) golfer... err, pool participant win!\n\nCheers,\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 10,
+                "human_likeness": 10,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email perfectly balances conciseness and humor, adheres to the casual persona, and includes all context-based elements (entry fee, tracking, friendly competition). No hallucinations; spam safety is strong due to low promotional triggers."
+            }
+        },
+        {
+            "prompt_id": 7,
+            "generated_email": "Subject: Exploring Opportunities and Seeking Your Insight\n\nDear [Colleague's Name],\n\nI hope this email finds you well. My name is [Friend's Name], and I'm reaching out to you because I've been impressed by your professional journey, particularly in your current role at [Company Name]. I'm considering exploring opportunities in a similar field and would greatly appreciate the chance to learn more about your experiences.\n\nYour insights into your current job role and the company culture would be invaluable to me as I weigh my options. If you're available, I'd love to set up a chat with you to discuss your responsibilities, challenges, and any advice you might have for someone looking to break into the industry.\n\nWould you be open to a brief conversation, either over the phone or via video call, at your convenience? I'm flexible and can work around your schedule.\n\nThank you for your time, and I look forward to hearing from you.\n\nBest regards,\n[Friend's Name]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 10,
+                "tone_appropriateness": 10,
+                "human_likeness": 9,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 10,
+                "formatting": 10,
+                "structure": 10,
+                "conciseness": 10,
+                "intent_clarity": 10,
+                "reasoning": "The email fully aligns with the instruction to request an informational interview, maintains professionalism without being overly formal, and avoids spam triggers. Slight deduction in human likeness only to the degree expected for a professionally calibrated business email."
+            }
+        },
+        {
+            "prompt_id": 8,
+            "generated_email": "Subject: Request for Late Rent Payment Accommodation\n\nDear [Landlord's Name],\n\nI hope this email finds you well. I am writing to request your consideration regarding my rent payment for next month. Due to some unforeseen financial circumstances, I am facing a temporary cash flow constraint and would like to request the possibility of making my rent payment 15 days late.\n\nI have been a responsible tenant, always making my payments on time, and I am confident that I will be able to make the payment within the agreed-upon lease terms, albeit with a short delay. I would greatly appreciate it if we could discuss this request and come to a mutually agreeable solution.\n\nPlease let me know if this is feasible and if there are any additional steps I need to take. I am available to discuss this further and provide any necessary documentation.\n\nThank you for your understanding and I look forward to hearing back from you.\n\nSincerely,\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 10,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 9,
+                "human_likeness": 8,
+                "persona_adherence": 10,
+                "spam_safety": 10,
+                "deliverability": 9,
+                "formatting": 9,
+                "structure": 9,
+                "conciseness": 8,
+                "intent_clarity": 10,
+                "reasoning": "The email adheres perfectly to the instruction, maintains professional tone with polite language, and aligns with the persona of a responsible tenant. It avoids spam triggers and is structured logically with a clear subject line. Minor deductions for human-likeness relate to its slightly formal density compared to casual human phrasing, but it remains appropriate for the context."
+            }
+        },
+        {
+            "prompt_id": 9,
+            "generated_email": "Subject: Representation for Contested Red Light Ticket\n\nDear [Lawyer's Name],\n\nI am reaching out to inquire about your services in representing me in court for a red light ticket that I recently received. I strongly believe that I did not run the red light and would like to contest the citation. The ticket was issued on [Date] at the intersection of [Intersection], and the case number is [Case Number].\n\nI would greatly appreciate your expertise in navigating this matter and potentially having the ticket dismissed. Could you please let me know if you are available to take on my case and what your fees and services entail?\n\nThank you for your time, and I look forward to hearing from you soon.\n\nSincerely,\n[Your Name]",
+            "scorecard": {
+                "instruction_adherence": 8,
+                "factual_accuracy": 10,
+                "professionalism": 9,
+                "tone_appropriateness": 9,
+                "human_likeness": 7,
+                "persona_adherence": 8,
+                "spam_safety": 10,
+                "deliverability": 9,
+                "formatting": 8,
+                "structure": 8,
+                "conciseness": 9,
+                "intent_clarity": 9,
+                "reasoning": "The email adheres to the main instructions but lacks nuanced personal details or subtext (e.g., specific reasons for disputing the ticket). It is professional and spam-safe with clean formatting, but its overly sterile structure and brevity reduce human likeness and depth."
+            }
+        }
+    ]
+}

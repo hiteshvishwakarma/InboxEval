@@ -1,0 +1,891 @@
+[
+    {
+        "id": 0,
+        "prompt": "Decide the sentiment of the following user comments. Classify each of them as \"Positive\", \"Neutral\", \"Mixed\", or \"Negative\".\n\n1. the latest update removed all the best features!! how could they do this to such a good app!!\n2. There's not much to say; it checks emails, has a slick UI, and lets me focus on what I need to do.\n3. It's pretty good.\n4. The app's UI is amazing, but it doesn't seem to notify me consistently which really sucks. Not sure what's up with that but if they could get that working then it'd be amazing.\n5. I can't believe how terrible this app is; it literally won't do anything I ask it to.\n6. wow, im impressed",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 8,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 8,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99997, Requested 918. Please try again in 13m10.56s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 6,
+                    "factual_accuracy": 5,
+                    "professionalism": 6,
+                    "tone_appropriateness": 4,
+                    "human_likeness": 7,
+                    "persona_adherence": 4,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 8
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99995, Requested 800. Please try again in 11m26.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 1
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99992, Requested 774. Please try again in 11m1.824s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "prompt": "Write an email to Visa alerting them that I am no longer interested in the position I\u2019m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 10,
+                    "human_likeness": 7,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99990, Requested 903. Please try again in 12m51.552s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 4,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 5,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 7,
+                    "structure": 6,
+                    "conciseness": 8,
+                    "intent_clarity": 8
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99987, Requested 794. Please try again in 11m14.784s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "click here"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 4,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99985, Requested 660. Please try again in 9m17.28s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "prompt": "You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use \u201c<\u201d and \u201c>\u201d to denote placeholder text I need to customize.",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99983, Requested 899. Please try again in 12m42.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 4,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 4
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99980, Requested 827. Please try again in 11m37.248s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 2,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 1
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99978, Requested 826. Please try again in 11m34.656s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "prompt": "Write me an email to a professor respectfully declining their request for my attendance at a conference",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 8,
+                    "factual_accuracy": 8,
+                    "professionalism": 7,
+                    "tone_appropriateness": 6,
+                    "human_likeness": 7,
+                    "persona_adherence": 8,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 7,
+                    "structure": 7,
+                    "conciseness": 7,
+                    "intent_clarity": 7
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99975, Requested 695. Please try again in 9m38.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99973, Requested 639. Please try again in 8m48.767999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "click here"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 4
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99970, Requested 776. Please try again in 10m44.544s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "prompt": "Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 8,
+                    "factual_accuracy": 9,
+                    "professionalism": 9,
+                    "tone_appropriateness": 7,
+                    "human_likeness": 6,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 7,
+                    "formatting": 6,
+                    "structure": 5,
+                    "conciseness": 8,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99968, Requested 942. Please try again in 13m6.24s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99965, Requested 787. Please try again in 10m49.728s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99963, Requested 783. Please try again in 10m44.544s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "prompt": "Write a stern email to your dog asking him not to chew on the couch leg anymore.",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 9,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 8,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99960, Requested 1021. Please try again in 14m7.584s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99958, Requested 775. Please try again in 10m33.312s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99956, Requested 779. Please try again in 10m35.04s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "prompt": "Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 7,
+                    "factual_accuracy": 7,
+                    "professionalism": 9,
+                    "tone_appropriateness": 6,
+                    "human_likeness": 8,
+                    "persona_adherence": 7,
+                    "spam_safety": 6,
+                    "deliverability": 9,
+                    "formatting": 6,
+                    "structure": 5,
+                    "conciseness": 5,
+                    "intent_clarity": 7
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99953, Requested 938. Please try again in 12m49.824s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99951, Requested 772. Please try again in 10m24.672s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "High Risk",
+                    "spam_triggers_found": [
+                        "free money",
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99948, Requested 781. Please try again in 10m29.856s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "prompt": "Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 8,
+                    "professionalism": 8,
+                    "tone_appropriateness": 7,
+                    "human_likeness": 7,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99946, Requested 889. Please try again in 12m1.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99943, Requested 793. Please try again in 10m35.904s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99941, Requested 792. Please try again in 10m33.312s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "prompt": "Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 5,
+                    "factual_accuracy": 5,
+                    "professionalism": 8,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 7,
+                    "persona_adherence": 2,
+                    "spam_safety": 9,
+                    "deliverability": 10,
+                    "formatting": 4,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 6
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99938, Requested 938. Please try again in 12m36.864s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99936, Requested 779. Please try again in 10m17.76s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "click here"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99933, Requested 777. Please try again in 10m13.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "prompt": "Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 8,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 8,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99931, Requested 758. Please try again in 9m55.296s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99928, Requested 650. Please try again in 8m19.392s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "error": "Evaluation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kwysjqbzf8xvybzea266cyda` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99926, Requested 786. Please try again in 10m15.168s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+                },
+                "calibration_deltas": {}
+            }
+        ]
+    }
+]

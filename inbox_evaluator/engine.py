@@ -76,9 +76,13 @@ class Engine:
             results.append(prompt_res)
             
         if output_path:
-            with open(output_path, "w") as f:
+            timestamp = int(time.time())
+            output_file = f"../data/calibration_results_{timestamp}.json"
+            
+            with open(output_file, "w") as f:
                 json.dump(results, f, indent=4)
-            print(f"\nCalibration results saved to {output_path}")
+                
+            print(f"\nCalibration results saved to {output_file}")
             
         return results
         

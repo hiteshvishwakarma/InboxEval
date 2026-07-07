@@ -35,8 +35,7 @@ class DynamicEvaluator:
             raise ValueError("GEMINI_API_KEY environment variable is missing.")
             
         self.client = genai.Client()
-        # We use gemini-2.5-pro as it's the most capable model for complex reasoning and judging
-        self.model_name = 'gemini-2.5-pro'
+        self.model_name = 'gemini-3.1-pro'
 
     def evaluate(self, original_instruction: str, context: str, target_persona: str, generated_email: str) -> Dict[str, Any]:
         """

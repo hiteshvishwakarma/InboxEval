@@ -26,33 +26,33 @@
                     "intent_clarity": 9
                 },
                 "ai_judge_scores": {
-                    "instruction_adherence": 8,
-                    "factual_accuracy": 9,
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 8,
                     "professionalism": 7,
                     "tone_appropriateness": 6,
                     "human_likeness": 4,
-                    "persona_adherence": 8,
+                    "persona_adherence": 7,
                     "spam_safety": 9,
-                    "deliverability": 9,
-                    "formatting": 10,
-                    "structure": 8,
-                    "conciseness": 9,
-                    "intent_clarity": 8,
-                    "reasoning": "The generated email effectively classifies user sentiments but lacks detailed explanations and human-like expressions, suggesting room for improvement in tone and language use. The overall structure and factual accuracy are strong, adhering well to the analytical requirements of the target persona."
+                    "deliverability": 8,
+                    "formatting": 5,
+                    "structure": 6,
+                    "conciseness": 8,
+                    "intent_clarity": 9,
+                    "reasoning": "The generated email adheres well to the instruction, accurately classifying the sentiments of the user comments. However, the tone and formatting could be improved for better human likeness and readability."
                 },
                 "calibration_deltas": {
-                    "instruction_adherence": -2,
-                    "factual_accuracy": 1,
+                    "instruction_adherence": -1,
+                    "factual_accuracy": 0,
                     "professionalism": -2,
                     "tone_appropriateness": -3,
                     "human_likeness": -5,
-                    "persona_adherence": -1,
+                    "persona_adherence": -2,
                     "spam_safety": -1,
-                    "deliverability": -1,
-                    "formatting": 2,
-                    "structure": 0,
-                    "conciseness": 1,
-                    "intent_clarity": -1
+                    "deliverability": -2,
+                    "formatting": -3,
+                    "structure": -2,
+                    "conciseness": 0,
+                    "intent_clarity": 0
                 }
             },
             {
@@ -86,11 +86,11 @@
                     "persona_adherence": 7,
                     "spam_safety": 9,
                     "deliverability": 8,
-                    "formatting": 3,
-                    "structure": 2,
-                    "conciseness": 6,
+                    "formatting": 5,
+                    "structure": 6,
+                    "conciseness": 8,
                     "intent_clarity": 8,
-                    "reasoning": "The generated email generally follows the original instruction but lacks professionalism and proper formatting. The inclusion of a hallucinated statement also detracts from its factual accuracy and structure."
+                    "reasoning": "The scores reflect the generated email's ability to classify sentiments mostly correctly, but lacking in professionalism, human likeness, and formatting due to its brief and somewhat robotic responses, and the inclusion of an irrelevant statement."
                 },
                 "calibration_deltas": {
                     "instruction_adherence": 2,
@@ -101,9 +101,9 @@
                     "persona_adherence": 3,
                     "spam_safety": 0,
                     "deliverability": -1,
-                    "formatting": -5,
-                    "structure": -6,
-                    "conciseness": -1,
+                    "formatting": -3,
+                    "structure": -2,
+                    "conciseness": 1,
                     "intent_clarity": 0
                 }
             },
@@ -132,6 +132,498 @@
                     "intent_clarity": 1
                 },
                 "ai_judge_scores": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 2,
+                    "formatting": 5,
+                    "structure": 2,
+                    "conciseness": 8,
+                    "intent_clarity": 6,
+                    "reasoning": "The email completely fails to follow the original instruction, lacking any attempt at sentiment analysis. It appears to be a spam message, which severely impacts its professionalism, tone, and adherence to the target persona."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 0,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 0,
+                    "persona_adherence": 0,
+                    "spam_safety": 0,
+                    "deliverability": 1,
+                    "formatting": 3,
+                    "structure": 0,
+                    "conciseness": -1,
+                    "intent_clarity": 5
+                }
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "prompt": "Write an email to Visa alerting them that I am no longer interested in the position I\u2019m interviewing for since I have accepted another offer. I have a lot of respect for the company and their employee experience is high!",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 10,
+                    "human_likeness": 7,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 10,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 8,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 9,
+                    "structure": 9,
+                    "conciseness": 8,
+                    "intent_clarity": 10,
+                    "reasoning": "The generated email effectively conveys the candidate's decision to withdraw from the interview process while maintaining a positive and respectful tone, aligning with the target persona and original instruction. However, minor deductions were made for human likeness and conciseness due to slightly formal language and sentence structure."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 0,
+                    "professionalism": 1,
+                    "tone_appropriateness": -1,
+                    "human_likeness": 1,
+                    "persona_adherence": 0,
+                    "spam_safety": 0,
+                    "deliverability": 0,
+                    "formatting": 1,
+                    "structure": 1,
+                    "conciseness": -1,
+                    "intent_clarity": 1
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 4,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 5,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 7,
+                    "structure": 6,
+                    "conciseness": 8,
+                    "intent_clarity": 8
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 1,
+                    "professionalism": 1,
+                    "tone_appropriateness": 2,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 8,
+                    "deliverability": 9,
+                    "formatting": 6,
+                    "structure": 4,
+                    "conciseness": 8,
+                    "intent_clarity": 6,
+                    "reasoning": "The generated email fails to adhere to the original instruction and context, lacking professionalism and factual accuracy, particularly with the claim of becoming the 'King of England.' The tone, while somewhat concise, does not align with the expected persona of a professional and gracious job candidate."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 0,
+                    "professionalism": -3,
+                    "tone_appropriateness": -3,
+                    "human_likeness": -3,
+                    "persona_adherence": -2,
+                    "spam_safety": -1,
+                    "deliverability": 0,
+                    "formatting": -1,
+                    "structure": -2,
+                    "conciseness": 0,
+                    "intent_clarity": -2
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "click here"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 4,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 2,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 2,
+                    "persona_adherence": 0,
+                    "spam_safety": 0,
+                    "deliverability": 5,
+                    "formatting": 6,
+                    "structure": 4,
+                    "conciseness": 8,
+                    "intent_clarity": 6,
+                    "reasoning": "The email completely fails to adhere to the original instruction, lacking professionalism and respect for the company. The tone is inappropriate and the language used is unbecoming of the target persona."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": -2,
+                    "professionalism": -1,
+                    "tone_appropriateness": -1,
+                    "human_likeness": 0,
+                    "persona_adherence": -1,
+                    "spam_safety": -1,
+                    "deliverability": 4,
+                    "formatting": 4,
+                    "structure": 2,
+                    "conciseness": -1,
+                    "intent_clarity": -3
+                }
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "prompt": "You are a product manager at an enterprise software company Y. Your CEO has asked you to write a report on how well the company supports X capabilities. Provide a template email to send to my CEO that includes a TLDR and a link to the report. Use \u201c<\u201d and \u201c>\u201d to denote placeholder text I need to customize.",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 7,
+                    "persona_adherence": 8,
+                    "spam_safety": 10,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 9,
+                    "conciseness": 8,
+                    "intent_clarity": 9,
+                    "reasoning": "The email adheres well to the original instruction, providing a clear TLDR and a link to the report. However, the tone and human likeness could be improved to better match the analytical and executive-facing Product Manager persona."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": 0,
+                    "professionalism": 0,
+                    "tone_appropriateness": -1,
+                    "human_likeness": -2,
+                    "persona_adherence": -1,
+                    "spam_safety": 0,
+                    "deliverability": -1,
+                    "formatting": 0,
+                    "structure": 1,
+                    "conciseness": 1,
+                    "intent_clarity": 0
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 4,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 4
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 0,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 2,
+                    "persona_adherence": 0,
+                    "spam_safety": 8,
+                    "deliverability": 9,
+                    "formatting": 6,
+                    "structure": 4,
+                    "conciseness": 8,
+                    "intent_clarity": 2,
+                    "reasoning": "The generated email does not adhere to the original instruction as it provides unrelated and nonsensical information. The tone and content are unprofessional and do not align with the expected persona of an analytical and structured Product Manager."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": -1,
+                    "professionalism": -4,
+                    "tone_appropriateness": -5,
+                    "human_likeness": -5,
+                    "persona_adherence": -3,
+                    "spam_safety": -1,
+                    "deliverability": 0,
+                    "formatting": -2,
+                    "structure": -4,
+                    "conciseness": 1,
+                    "intent_clarity": -2
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 2,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 1
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 0,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 0,
+                    "persona_adherence": 0,
+                    "spam_safety": 0,
+                    "deliverability": 2,
+                    "formatting": 5,
+                    "structure": 2,
+                    "conciseness": 8,
+                    "intent_clarity": 0,
+                    "reasoning": "The email fails to adhere to the original instruction, lacking a TLDR and a link to the report, and instead contains a spam-like request for bitcoin payment. The tone and language used are unprofessional and do not align with the expected persona of an analytical and executive-facing Product Manager."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": -2,
+                    "professionalism": -1,
+                    "tone_appropriateness": -1,
+                    "human_likeness": -2,
+                    "persona_adherence": -1,
+                    "spam_safety": -1,
+                    "deliverability": 1,
+                    "formatting": 3,
+                    "structure": 0,
+                    "conciseness": -1,
+                    "intent_clarity": -1
+                }
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "prompt": "Write me an email to a professor respectfully declining their request for my attendance at a conference",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 8,
+                    "factual_accuracy": 8,
+                    "professionalism": 7,
+                    "tone_appropriateness": 6,
+                    "human_likeness": 7,
+                    "persona_adherence": 8,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 7,
+                    "structure": 7,
+                    "conciseness": 7,
+                    "intent_clarity": 7
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 8,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 10,
+                    "structure": 9,
+                    "conciseness": 9,
+                    "intent_clarity": 9,
+                    "reasoning": "The email effectively declines the conference invitation while expressing gratitude and apologizing for any inconvenience, adhering well to the original instruction. The tone and language used are professional and respectful, matching the target persona of a polite university student."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 2,
+                    "professionalism": 2,
+                    "tone_appropriateness": 3,
+                    "human_likeness": 1,
+                    "persona_adherence": 1,
+                    "spam_safety": 0,
+                    "deliverability": 0,
+                    "formatting": 3,
+                    "structure": 2,
+                    "conciseness": 2,
+                    "intent_clarity": 2
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 2,
+                    "professionalism": 2,
+                    "tone_appropriateness": 2,
+                    "human_likeness": 4,
+                    "persona_adherence": 1,
+                    "spam_safety": 8,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 6,
+                    "conciseness": 7,
+                    "intent_clarity": 5,
+                    "reasoning": "The generated email fails to adhere to the original instruction and context, providing an unrealistic reason for declining the conference invitation, thus scoring low on professionalism, tone appropriateness, and persona adherence. The email's informal tone and lack of relevant details justify the low scores across several parameters."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": 1,
+                    "professionalism": -3,
+                    "tone_appropriateness": -3,
+                    "human_likeness": -3,
+                    "persona_adherence": -2,
+                    "spam_safety": -1,
+                    "deliverability": 0,
+                    "formatting": 0,
+                    "structure": -2,
+                    "conciseness": 0,
+                    "intent_clarity": 0
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "click here"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 4
+                },
+                "ai_judge_scores": {
                     "instruction_adherence": 0,
                     "factual_accuracy": 0,
                     "professionalism": 0,
@@ -143,12 +635,12 @@
                     "formatting": 5,
                     "structure": 1,
                     "conciseness": 8,
-                    "intent_clarity": 6,
-                    "reasoning": "The email fails to adhere to the original instruction and context, lacking any sentiment analysis of user comments. It appears to be a spam message unrelated to the task at hand, targeting the wrong persona and lacking professionalism."
+                    "intent_clarity": 0,
+                    "reasoning": "The email completely fails to adhere to the original instruction, lacks professionalism, and contains spam-like content, hence the low scores across most parameters. The high conciseness score is due to the brief nature of the response, but this does not redeem its overall failure to meet the requirements."
                 },
                 "calibration_deltas": {
                     "instruction_adherence": -1,
-                    "factual_accuracy": -1,
+                    "factual_accuracy": -5,
                     "professionalism": -1,
                     "tone_appropriateness": -1,
                     "human_likeness": -2,
@@ -158,7 +650,990 @@
                     "formatting": 3,
                     "structure": -1,
                     "conciseness": -1,
+                    "intent_clarity": -4
+                }
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "prompt": "Write an introductory email to a student I will be academically coaching through Services for Students with Disabilities office (SSD).",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 8,
+                    "factual_accuracy": 9,
+                    "professionalism": 9,
+                    "tone_appropriateness": 7,
+                    "human_likeness": 6,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 7,
+                    "formatting": 6,
+                    "structure": 5,
+                    "conciseness": 8,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 8,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 10,
+                    "structure": 9,
+                    "conciseness": 8,
+                    "intent_clarity": 9,
+                    "reasoning": "The email effectively introduces the academic coach, outlines the goals and scope of the coaching program, and presents a supportive tone, closely aligning with the target persona and original instruction. Minor deductions are for slight impersonality and a somewhat generic closing."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 0,
+                    "tone_appropriateness": 2,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 3,
+                    "formatting": 4,
+                    "structure": 4,
+                    "conciseness": 0,
+                    "intent_clarity": 0
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
                     "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 0,
+                    "professionalism": 2,
+                    "tone_appropriateness": 4,
+                    "human_likeness": 3,
+                    "persona_adherence": 1,
+                    "spam_safety": 8,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 6,
+                    "conciseness": 7,
+                    "intent_clarity": 2,
+                    "reasoning": "The generated email completely misses the original instruction's intent by focusing on an irrelevant skill, 'learning how to breathe underwater', instead of discussing the SSD coaching program, executive functioning, and learning strategies. This results in low scores across most parameters."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": -1,
+                    "professionalism": -3,
+                    "tone_appropriateness": -1,
+                    "human_likeness": -4,
+                    "persona_adherence": -2,
+                    "spam_safety": -1,
+                    "deliverability": 0,
+                    "formatting": 0,
+                    "structure": -2,
+                    "conciseness": 0,
+                    "intent_clarity": -3
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 0,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 0,
+                    "persona_adherence": 0,
+                    "spam_safety": 0,
+                    "deliverability": 2,
+                    "formatting": 1,
+                    "structure": 0,
+                    "conciseness": 8,
+                    "intent_clarity": 2,
+                    "reasoning": "The generated email completely fails to meet the original instruction and context, lacking any introduction to the SSD coaching program or mention of goals such as executive functioning and learning strategies. The email's tone and content are inappropriate, resembling a spam message rather than a supportive and encouraging introduction from an academic coach."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": -5,
+                    "professionalism": -1,
+                    "tone_appropriateness": -1,
+                    "human_likeness": -2,
+                    "persona_adherence": -1,
+                    "spam_safety": -1,
+                    "deliverability": 1,
+                    "formatting": -1,
+                    "structure": -2,
+                    "conciseness": -1,
+                    "intent_clarity": -7
+                }
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "prompt": "Write a stern email to your dog asking him not to chew on the couch leg anymore.",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 10,
+                    "factual_accuracy": 9,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 8,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 6,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 9,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 10,
+                    "structure": 9,
+                    "conciseness": 8,
+                    "intent_clarity": 10,
+                    "reasoning": "The email effectively conveys a stern message to the dog while maintaining a playful, loving tone, closely adhering to the target persona of a frustrated but ultimately loving pet owner. The use of humor and creative language enhances human likeness and persona adherence, though slightly detracts from professionalism."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": 1,
+                    "professionalism": -3,
+                    "tone_appropriateness": -1,
+                    "human_likeness": 1,
+                    "persona_adherence": 0,
+                    "spam_safety": 0,
+                    "deliverability": 0,
+                    "formatting": 2,
+                    "structure": 1,
+                    "conciseness": -1,
+                    "intent_clarity": 1
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 6,
+                    "factual_accuracy": 8,
+                    "professionalism": 2,
+                    "tone_appropriateness": 4,
+                    "human_likeness": 6,
+                    "persona_adherence": 7,
+                    "spam_safety": 9,
+                    "deliverability": 8,
+                    "formatting": 9,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9,
+                    "reasoning": "The email scores lower in professionalism and tone appropriateness due to its absurd threat, but scores higher in intent clarity and formatting due to its direct message and clear structure, reflecting the frustrated yet loving persona of the target owner."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 5,
+                    "factual_accuracy": 7,
+                    "professionalism": -3,
+                    "tone_appropriateness": -1,
+                    "human_likeness": -1,
+                    "persona_adherence": 4,
+                    "spam_safety": 0,
+                    "deliverability": -1,
+                    "formatting": 1,
+                    "structure": 0,
+                    "conciseness": 0,
+                    "intent_clarity": 4
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 8,
+                    "professionalism": 1,
+                    "tone_appropriateness": 2,
+                    "human_likeness": 4,
+                    "persona_adherence": 6,
+                    "spam_safety": 1,
+                    "deliverability": 6,
+                    "formatting": 2,
+                    "structure": 1,
+                    "conciseness": 8,
+                    "intent_clarity": 6,
+                    "reasoning": "The email lacks adherence to the instruction due to its promotional and unpersonalized nature. It fails to convey a stern but loving tone, instead resembling a spam message."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 3,
+                    "professionalism": 0,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 5,
+                    "spam_safety": 0,
+                    "deliverability": 5,
+                    "formatting": 0,
+                    "structure": -1,
+                    "conciseness": -1,
+                    "intent_clarity": -3
+                }
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "prompt": "Write a concise and somewhat funny email about making a betting pool for the 2023 Masters golf tournament",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 7,
+                    "factual_accuracy": 7,
+                    "professionalism": 9,
+                    "tone_appropriateness": 6,
+                    "human_likeness": 8,
+                    "persona_adherence": 7,
+                    "spam_safety": 6,
+                    "deliverability": 9,
+                    "formatting": 6,
+                    "structure": 5,
+                    "conciseness": 5,
+                    "intent_clarity": 7
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 6,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 8,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9,
+                    "reasoning": "The generated email effectively captures the casual and humorous tone expected of the target persona, with appropriate references to the Masters golf tournament and the betting pool, but slightly lacks in professionalism and conciseness, making it an overall engaging and clear invitation."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 3,
+                    "professionalism": -3,
+                    "tone_appropriateness": 3,
+                    "human_likeness": 0,
+                    "persona_adherence": 2,
+                    "spam_safety": 4,
+                    "deliverability": 0,
+                    "formatting": 2,
+                    "structure": 3,
+                    "conciseness": 2,
+                    "intent_clarity": 2
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 6,
+                    "factual_accuracy": 2,
+                    "professionalism": 4,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 7,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 8,
+                    "formatting": 5,
+                    "structure": 6,
+                    "conciseness": 9,
+                    "intent_clarity": 7,
+                    "reasoning": "The email scores low on factual accuracy and instruction adherence due to the unrealistic grand prize of a live dinosaur, but it effectively captures a casual and humorous tone suitable for the target persona, making it somewhat engaging and clear in its intent to invite friends to the betting pool."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 5,
+                    "factual_accuracy": 1,
+                    "professionalism": -1,
+                    "tone_appropriateness": 3,
+                    "human_likeness": 0,
+                    "persona_adherence": 5,
+                    "spam_safety": 0,
+                    "deliverability": -1,
+                    "formatting": -3,
+                    "structure": -2,
+                    "conciseness": 2,
+                    "intent_clarity": 2
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "High Risk",
+                    "spam_triggers_found": [
+                        "free money",
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 1,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 2,
+                    "formatting": 1,
+                    "structure": 1,
+                    "conciseness": 8,
+                    "intent_clarity": 4,
+                    "reasoning": "The generated email fails to adhere to the original instruction by not being concise and funny in an appropriate manner, instead using a spam-like tone. The email lacks professionalism and does not align with the expected persona of a casual, sports-loving friend."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": -4,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 0,
+                    "persona_adherence": 0,
+                    "spam_safety": 0,
+                    "deliverability": 1,
+                    "formatting": -1,
+                    "structure": -1,
+                    "conciseness": -1,
+                    "intent_clarity": -5
+                }
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "prompt": "Write an email on behalf of a friend to a colleague to set up a chat with them. The friend is interested in learning more about their current job role and current company before applying.",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 8,
+                    "professionalism": 8,
+                    "tone_appropriateness": 7,
+                    "human_likeness": 7,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 8,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 9,
+                    "formatting": 9,
+                    "structure": 9,
+                    "conciseness": 8,
+                    "intent_clarity": 9,
+                    "reasoning": "The generated email effectively follows the original instruction and context, showcasing a high level of professionalism and tone appropriateness. The only areas for improvement are in human likeness and conciseness, where the email could benefit from slightly more personalized language and a more direct approach to achieve a perfect score."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 2,
+                    "professionalism": 1,
+                    "tone_appropriateness": 2,
+                    "human_likeness": 1,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 0,
+                    "formatting": 1,
+                    "structure": 1,
+                    "conciseness": 1,
+                    "intent_clarity": 0
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 1,
+                    "professionalism": 2,
+                    "tone_appropriateness": 3,
+                    "human_likeness": 4,
+                    "persona_adherence": 2,
+                    "spam_safety": 6,
+                    "deliverability": 8,
+                    "formatting": 9,
+                    "structure": 5,
+                    "conciseness": 3,
+                    "intent_clarity": 4,
+                    "reasoning": "The email fails to clearly convey the purpose of the chat and includes an inaccurate statement about the friend inventing gravity, leading to low scores in instruction adherence, factual accuracy, and professionalism. The overall tone and structure are informal and lack the clarity expected from a professional networking liaison."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 0,
+                    "professionalism": -3,
+                    "tone_appropriateness": -2,
+                    "human_likeness": -3,
+                    "persona_adherence": -1,
+                    "spam_safety": -3,
+                    "deliverability": -1,
+                    "formatting": 1,
+                    "structure": -3,
+                    "conciseness": -4,
+                    "intent_clarity": -1
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 1,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 2,
+                    "deliverability": 4,
+                    "formatting": 6,
+                    "structure": 2,
+                    "conciseness": 8,
+                    "intent_clarity": 2,
+                    "reasoning": "The email fails to adhere to the original instruction and lacks professionalism, tone appropriateness, and persona adherence, as it uses an aggressive and threatening tone. The scores reflect the email's overall inadequacy in achieving its intended purpose."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": -4,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 0,
+                    "persona_adherence": 0,
+                    "spam_safety": 1,
+                    "deliverability": 3,
+                    "formatting": 4,
+                    "structure": 0,
+                    "conciseness": -1,
+                    "intent_clarity": -7
+                }
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "prompt": "Write a professional email to my landlord asking whether I can make my rent payment 15 days late next month",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 5,
+                    "factual_accuracy": 5,
+                    "professionalism": 8,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 7,
+                    "persona_adherence": 2,
+                    "spam_safety": 9,
+                    "deliverability": 10,
+                    "formatting": 4,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 6
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 9,
+                    "tone_appropriateness": 9,
+                    "human_likeness": 8,
+                    "persona_adherence": 9,
+                    "spam_safety": 10,
+                    "deliverability": 10,
+                    "formatting": 10,
+                    "structure": 9,
+                    "conciseness": 8,
+                    "intent_clarity": 9,
+                    "reasoning": "The email effectively conveys the tenant's request for a one-time 15-day extension on rent payment, showcasing respect and responsibility, but could be slightly more concise while maintaining professionalism and clarity."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 4,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 1,
+                    "persona_adherence": 7,
+                    "spam_safety": 1,
+                    "deliverability": 0,
+                    "formatting": 6,
+                    "structure": 1,
+                    "conciseness": 1,
+                    "intent_clarity": 3
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 2,
+                    "professionalism": 2,
+                    "tone_appropriateness": 2,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 8,
+                    "deliverability": 9,
+                    "formatting": 6,
+                    "structure": 4,
+                    "conciseness": 8,
+                    "intent_clarity": 6,
+                    "reasoning": "The generated email fails to adhere to the original instruction and context, as it provides an unrealistic reason for the late payment and does not demonstrate the respectful and communicative tone expected of the target persona. The email's low scores are due to its lack of professionalism and factual accuracy."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": -3,
+                    "tone_appropriateness": -3,
+                    "human_likeness": -5,
+                    "persona_adherence": -2,
+                    "spam_safety": -1,
+                    "deliverability": 0,
+                    "formatting": -2,
+                    "structure": -4,
+                    "conciseness": 1,
+                    "intent_clarity": 1
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "click here"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 0,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 0,
+                    "persona_adherence": 0,
+                    "spam_safety": 2,
+                    "deliverability": 8,
+                    "formatting": 2,
+                    "structure": 1,
+                    "conciseness": 8,
+                    "intent_clarity": 0,
+                    "reasoning": "The generated email completely fails to adhere to the original instruction, lacks professionalism, and does not align with the expected persona of a responsible and respectful tenant. The email's tone is confrontational and includes a suspicious link, significantly lowering its overall score."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": -5,
+                    "professionalism": -1,
+                    "tone_appropriateness": -1,
+                    "human_likeness": -2,
+                    "persona_adherence": -1,
+                    "spam_safety": 1,
+                    "deliverability": 7,
+                    "formatting": 0,
+                    "structure": -1,
+                    "conciseness": -1,
+                    "intent_clarity": -9
+                }
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "prompt": "Write me an introductory email to a lawyer to represent me in court for a red light ticket I did not deserve",
+        "evaluations": [
+            {
+                "type": "Human Baseline",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": true
+                },
+                "human_expected": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 10,
+                    "professionalism": 8,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 8,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 9,
+                    "factual_accuracy": 9,
+                    "professionalism": 9,
+                    "tone_appropriateness": 8,
+                    "human_likeness": 8,
+                    "persona_adherence": 8,
+                    "spam_safety": 10,
+                    "deliverability": 9,
+                    "formatting": 9,
+                    "structure": 9,
+                    "conciseness": 8,
+                    "intent_clarity": 9,
+                    "reasoning": "The email aligns well with the original instruction, is factually accurate, professional, and clear in its intent. However, it could slightly improve in tone appropriateness and human likeness by adding a bit more personal touch while maintaining professionalism."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 0,
+                    "factual_accuracy": -1,
+                    "professionalism": 1,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 0,
+                    "persona_adherence": 0,
+                    "spam_safety": 1,
+                    "deliverability": 0,
+                    "formatting": 1,
+                    "structure": 1,
+                    "conciseness": 1,
+                    "intent_clarity": 0
+                }
+            },
+            {
+                "type": "Hallucination Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 1,
+                    "professionalism": 5,
+                    "tone_appropriateness": 5,
+                    "human_likeness": 7,
+                    "persona_adherence": 3,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 8,
+                    "structure": 8,
+                    "conciseness": 7,
+                    "intent_clarity": 5
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 1,
+                    "professionalism": 2,
+                    "tone_appropriateness": 3,
+                    "human_likeness": 4,
+                    "persona_adherence": 5,
+                    "spam_safety": 8,
+                    "deliverability": 9,
+                    "formatting": 6,
+                    "structure": 5,
+                    "conciseness": 7,
+                    "intent_clarity": 4,
+                    "reasoning": "The generated email fails to adhere to the original instruction and lacks factual accuracy, as traffic laws apply to all vehicles, including hovercrafts, and it is unlikely that the recipient was driving such a vehicle. The tone and professionalism are also not well-suited for a formal email to a lawyer."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 0,
+                    "professionalism": -3,
+                    "tone_appropriateness": -2,
+                    "human_likeness": -3,
+                    "persona_adherence": 2,
+                    "spam_safety": -1,
+                    "deliverability": 0,
+                    "formatting": -2,
+                    "structure": -3,
+                    "conciseness": 0,
+                    "intent_clarity": -1
+                }
+            },
+            {
+                "type": "Spam Edge Case",
+                "static_results": {
+                    "spam_score": "Low Risk",
+                    "spam_triggers_found": [
+                        "urgent"
+                    ],
+                    "link_density": "Normal",
+                    "has_basic_formatting": false
+                },
+                "human_expected": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": 5,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 1,
+                    "deliverability": 1,
+                    "formatting": 2,
+                    "structure": 2,
+                    "conciseness": 9,
+                    "intent_clarity": 9
+                },
+                "ai_judge_scores": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 1,
+                    "professionalism": 1,
+                    "tone_appropriateness": 1,
+                    "human_likeness": 2,
+                    "persona_adherence": 1,
+                    "spam_safety": 2,
+                    "deliverability": 5,
+                    "formatting": 1,
+                    "structure": 1,
+                    "conciseness": 8,
+                    "intent_clarity": 6,
+                    "reasoning": "The generated email fails to adhere to the original instruction and context, lacking professionalism and tone appropriateness, while being concise but unclear in its intent. The email's informal and demanding tone does not match the target persona of a frustrated but formal citizen."
+                },
+                "calibration_deltas": {
+                    "instruction_adherence": 1,
+                    "factual_accuracy": -4,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 0,
+                    "persona_adherence": 0,
+                    "spam_safety": 1,
+                    "deliverability": 4,
+                    "formatting": -1,
+                    "structure": -1,
+                    "conciseness": -1,
+                    "intent_clarity": -3
                 }
             }
         ]

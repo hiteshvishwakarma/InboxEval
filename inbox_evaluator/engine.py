@@ -23,9 +23,8 @@ class Engine:
         
         results = []
         
-        # For initial calibration, we will just run the first prompt (3 emails)
-        # to avoid massive API costs/time until we are happy with the prompts.
-        test_subset = dataset[:1]
+        # Run across all prompts in the dataset
+        test_subset = dataset
         
         for item in test_subset:
             print(f"\nEvaluating Prompt ID: {item['id']}")

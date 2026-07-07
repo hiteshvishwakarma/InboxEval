@@ -34,7 +34,15 @@ Target Persona (The implied sender of the email): {target_persona}
 Generated Email to Evaluate:
 {generated_email}
 
-Grade this email strictly based on our 12 parameters. Remember our Human Baseline Target: a 10 means robotic mathematical perfection. For Human Likeness and Persona Adherence, grade against what is expected of the Target Persona.
+Grade this email strictly based on our 12 parameters. Remember our Human Baseline Target: a 10 means perfect calibration to human expectations.
+
+CRITICAL GRADING CALIBRATION RULES:
+1. Human Likeness & Structure: Humans are often terse, informal, or use lists. Do not penalize an email for lacking conversational filler or a traditional greeting/sign-off if the context implies a brief response.
+2. Professionalism & Tone: Do not expect formal, corporate language if the Target Persona is casual (e.g., a friend, or talking to a pet). Professionalism means matching the appropriate tone for the scenario.
+3. Intent Clarity: Do not expect the intent to be explicitly spelled out (e.g., "The purpose of this email is..."). Recognize human subtext.
+4. Formatting: Penalize clunky or overly-dense formatting. AI-generated blocks are often too perfect; humans use simple, breathable formatting.
+5. Deliverability & Spam: Be extremely harsh on spam edge cases. Assume promotional triggers will immediately block the email.
+6. Instruction Adherence: Be strict. If the email hallucinates details not in the context, penalize instruction adherence heavily.
 
 You must return your evaluation strictly as a valid JSON object matching the following schema.
 Output ONLY JSON, nothing else.

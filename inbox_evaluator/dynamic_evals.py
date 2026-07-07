@@ -38,7 +38,7 @@ class DynamicEvaluator:
         # We use gemini-2.5-pro as it's the most capable model for complex reasoning and judging
         self.model_name = 'gemini-2.5-pro'
 
-    def evaluate(self, original_instruction: str, context: str, generated_email: str) -> Dict[str, Any]:
+    def evaluate(self, original_instruction: str, context: str, target_persona: str, generated_email: str) -> Dict[str, Any]:
         """
         Calls Gemini to evaluate the email against the specific prompt instructions.
         """
@@ -47,14 +47,12 @@ You are an expert AI evaluator. Your job is to grade the provided 'Generated Ema
 
 Original Instruction: {original_instruction}
 Context Provided to AI: {context}
+Target Persona (The implied sender of the email): {target_persona}
 
 Generated Email to Evaluate:
 {generated_email}
 
-Grade this email strictly. Look for:
-1. Did it follow the exact instructions?
-2. Did it make up facts not present in the context?
-3. Is the tone appropriate?
+Grade this email strictly based on our 12 parameters. Remember our Human Baseline Target: a 10 means robotic mathematical perfection. For Human Likeness and Persona Adherence, grade against what is expected of the Target Persona.
 """
 
         try:
@@ -82,6 +80,7 @@ if __name__ == "__main__":
     res = evaluator.evaluate(
         original_instruction="Remind John about the meeting.",
         context="Meeting is at 5 PM EST on Friday.",
+        target_persona="Casual friend",
         generated_email="Hey John, don't forget our meeting at 9 AM tomorrow!"
     )
     print(json.dumps(res, indent=4))

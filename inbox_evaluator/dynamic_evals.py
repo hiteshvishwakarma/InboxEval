@@ -18,7 +18,7 @@ class DynamicEvaluator:
             raise ValueError("GROQ_API_KEY environment variable is missing.")
             
         self.client = Groq(api_key=api_key)
-        self.model_name = 'llama3-70b-8192' # Excellent reasoning model on Groq
+        self.model_name = 'llama-3.3-70b-versatile' # Excellent reasoning model on Groq
 
     def evaluate(self, original_instruction: str, context: str, target_persona: str, generated_email: str) -> Dict[str, Any]:
         """

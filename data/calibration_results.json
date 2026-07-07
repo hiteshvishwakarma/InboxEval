@@ -26,9 +26,34 @@
                     "intent_clarity": 9
                 },
                 "ai_judge_scores": {
-                    "error": "Evaluation failed: Error code: 400 - {'error': {'message': 'The model `llama3-70b-8192` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}"
+                    "instruction_adherence": 8,
+                    "factual_accuracy": 9,
+                    "professionalism": 7,
+                    "tone_appropriateness": 6,
+                    "human_likeness": 4,
+                    "persona_adherence": 8,
+                    "spam_safety": 9,
+                    "deliverability": 9,
+                    "formatting": 10,
+                    "structure": 8,
+                    "conciseness": 9,
+                    "intent_clarity": 8,
+                    "reasoning": "The generated email effectively classifies user sentiments but lacks detailed explanations and human-like expressions, suggesting room for improvement in tone and language use. The overall structure and factual accuracy are strong, adhering well to the analytical requirements of the target persona."
                 },
-                "calibration_deltas": {}
+                "calibration_deltas": {
+                    "instruction_adherence": -2,
+                    "factual_accuracy": 1,
+                    "professionalism": -2,
+                    "tone_appropriateness": -3,
+                    "human_likeness": -5,
+                    "persona_adherence": -1,
+                    "spam_safety": -1,
+                    "deliverability": -1,
+                    "formatting": 2,
+                    "structure": 0,
+                    "conciseness": 1,
+                    "intent_clarity": -1
+                }
             },
             {
                 "type": "Hallucination Edge Case",
@@ -53,9 +78,34 @@
                     "intent_clarity": 8
                 },
                 "ai_judge_scores": {
-                    "error": "Evaluation failed: Error code: 400 - {'error': {'message': 'The model `llama3-70b-8192` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}"
+                    "instruction_adherence": 8,
+                    "factual_accuracy": 8,
+                    "professionalism": 6,
+                    "tone_appropriateness": 7,
+                    "human_likeness": 4,
+                    "persona_adherence": 7,
+                    "spam_safety": 9,
+                    "deliverability": 8,
+                    "formatting": 3,
+                    "structure": 2,
+                    "conciseness": 6,
+                    "intent_clarity": 8,
+                    "reasoning": "The generated email generally follows the original instruction but lacks professionalism and proper formatting. The inclusion of a hallucinated statement also detracts from its factual accuracy and structure."
                 },
-                "calibration_deltas": {}
+                "calibration_deltas": {
+                    "instruction_adherence": 2,
+                    "factual_accuracy": 3,
+                    "professionalism": 0,
+                    "tone_appropriateness": 3,
+                    "human_likeness": -3,
+                    "persona_adherence": 3,
+                    "spam_safety": 0,
+                    "deliverability": -1,
+                    "formatting": -5,
+                    "structure": -6,
+                    "conciseness": -1,
+                    "intent_clarity": 0
+                }
             },
             {
                 "type": "Spam Edge Case",
@@ -82,9 +132,34 @@
                     "intent_clarity": 1
                 },
                 "ai_judge_scores": {
-                    "error": "Evaluation failed: Error code: 400 - {'error': {'message': 'The model `llama3-70b-8192` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}"
+                    "instruction_adherence": 0,
+                    "factual_accuracy": 0,
+                    "professionalism": 0,
+                    "tone_appropriateness": 0,
+                    "human_likeness": 0,
+                    "persona_adherence": 0,
+                    "spam_safety": 0,
+                    "deliverability": 2,
+                    "formatting": 5,
+                    "structure": 1,
+                    "conciseness": 8,
+                    "intent_clarity": 6,
+                    "reasoning": "The email fails to adhere to the original instruction and context, lacking any sentiment analysis of user comments. It appears to be a spam message unrelated to the task at hand, targeting the wrong persona and lacking professionalism."
                 },
-                "calibration_deltas": {}
+                "calibration_deltas": {
+                    "instruction_adherence": -1,
+                    "factual_accuracy": -1,
+                    "professionalism": -1,
+                    "tone_appropriateness": -1,
+                    "human_likeness": -2,
+                    "persona_adherence": -1,
+                    "spam_safety": -1,
+                    "deliverability": 1,
+                    "formatting": 3,
+                    "structure": -1,
+                    "conciseness": -1,
+                    "intent_clarity": 5
+                }
             }
         ]
     }

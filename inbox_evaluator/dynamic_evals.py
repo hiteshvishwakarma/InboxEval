@@ -20,10 +20,44 @@ class DynamicEvaluator:
         self.client = Groq(api_key=api_key)
         self.model_name = 'llama-3.3-70b-versatile' # Excellent reasoning model on Groq
 
-    def evaluate(self, original_instruction: str, context: str, target_persona: str, generated_email: str) -> Dict[str, Any]:
+    def _infer_context_and_persona(self, instruction: str) -> tuple:
+        """
+        If the user does not provide context or persona, we infer it directly from the prompt.
+        """
+        infer_prompt = f"""
+Analyze the following instruction for an email.
+Instruction: "{instruction}"
+
+Extract the implied 'Context' (the background scenario) and the implied 'Target Persona' (who is writing the email, e.g. 'A professional PM', 'A casual friend').
+Return ONLY a valid JSON object matching this schema:
+{{
+    "inferred_context": "<string>",
+    "inferred_persona": "<string>"
+}}
+"""
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant. Output only JSON."},
+                    {"role": "user", "content": infer_prompt}
+                ],
+                response_format={"type": "json_object"}
+            )
+            data = json.loads(response.choices[0].message.content)
+            return data.get("inferred_context", "General Context"), data.get("inferred_persona", "General User")
+        except:
+            return "General context inferred from prompt.", "General User"
+
+    def evaluate(self, original_instruction: str, generated_email: str, context: str = None, target_persona: str = None) -> Dict[str, Any]:
         """
         Calls Groq to evaluate the email against the specific prompt instructions.
         """
+        if not context or not target_persona:
+            inferred_context, inferred_persona = self._infer_context_and_persona(original_instruction)
+            context = context or inferred_context
+            target_persona = target_persona or inferred_persona
+
         judge_prompt = f"""
 You are an expert AI evaluator. Your job is to grade the provided 'Generated Email' against the 'Original Instruction' and 'Context'.
 
@@ -74,7 +108,6 @@ Output ONLY JSON, nothing else.
                 response_format={"type": "json_object"}
             )
             
-            # The response text will be a JSON string
             return json.loads(response.choices[0].message.content)
             
         except Exception as e:
@@ -87,9 +120,7 @@ if __name__ == "__main__":
     evaluator = DynamicEvaluator()
     print("Testing dynamic evaluator...")
     res = evaluator.evaluate(
-        original_instruction="Remind John about the meeting.",
-        context="Meeting is at 5 PM EST on Friday.",
-        target_persona="Casual friend",
+        original_instruction="Remind John about the meeting. It's at 5 PM EST on Friday.",
         generated_email="Hey John, don't forget our meeting at 9 AM tomorrow!"
     )
     print(json.dumps(res, indent=4))

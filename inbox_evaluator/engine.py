@@ -44,10 +44,10 @@ class Engine:
                 
                 # 2. Run Dynamic Evaluator
                 print("  Running LLM-as-a-Judge (Gemini Pro)...")
+                # Notice we are NO LONGER passing context or target_persona. 
+                # The engine must infer them automatically from the original_instruction!
                 dynamic_scores = self.dynamic_eval.evaluate(
                     original_instruction=item["prompt"],
-                    context=item["context"],
-                    target_persona=item["target_persona"],
                     generated_email=email_case["email_text"]
                 )
                 

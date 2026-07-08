@@ -123,7 +123,8 @@ def run():
     completed_ids = get_completed_ids()
     golden_dataset = load_golden_dataset()
     
-    MAX_EMAILS = 100 # Batch size for this run
+    # We process infinitely until the dataset is completely exhausted
+    MAX_EMAILS = float('inf')
     processed_count = 0
     
     print(f"Starting batch process for {MAX_EMAILS} emails. Resuming from checkpoint...")

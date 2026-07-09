@@ -12,11 +12,19 @@ except ImportError:
     exit(1)
 
 load_dotenv(dotenv_path="../.env")
-api_key = os.environ.get("GROQ_API_KEY")
-client = Groq(api_key=api_key)
 
-# We use Qwen3-32B because of its massive 500k TPD limit
-MODEL = "qwen/qwen3-32b" 
+# Optional Local Ollama Support for Secondary Laptop
+USE_OLLAMA = os.environ.get("USE_OLLAMA", "false").lower() == "true"
+
+if USE_OLLAMA:
+    from openai import OpenAI
+    print("Initializing Local Ollama Client...")
+    client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+    MODEL = "llama3" # Local model name
+else:
+    api_key = os.environ.get("GROQ_API_KEY")
+    client = Groq(api_key=api_key)
+    MODEL = "qwen/qwen3-32b" # Groq API model 
 DATASET_FILE = "../data/golden_dataset.json"
 CHECKPOINT_FILE = "../data/completed_ids.json"
 

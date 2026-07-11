@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+import Link from 'next/link';
 
 export default function Home() {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -153,27 +155,56 @@ export default function Home() {
 
           {evalResult && evalResult.scorecard && (
             <div style={{ marginTop: '3rem', borderTop: '1px solid var(--card-border)', paddingTop: '2rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.5rem' }}>Overall Score:</h3>
-                <span style={{ fontSize: '2.5rem', fontWeight: '800', color: '#10b981' }}>
-                  {evalResult.overall_score}/10
-                </span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <h3 style={{ fontSize: '1.5rem' }}>Final Moderated Score:</h3>
+                  <span style={{ fontSize: '2.5rem', fontWeight: '800', color: '#10b981' }}>
+                    {evalResult.overall_score}/10
+                  </span>
+                </div>
+                <Link href={`/eval/${evalResult.id}`} style={{
+                  padding: '0.5rem 1rem', background: 'rgba(59, 130, 246, 0.2)', 
+                  color: '#60a5fa', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold'
+                }}>
+                  View Full Evidence Report &rarr;
+                </Link>
               </div>
               <p style={{ fontStyle: 'italic', color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-                "{evalResult.reasoning}"
+                Moderator Reasoning: "{evalResult.reasoning}"
               </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                {/* Visual Radar Chart */}
+                <div style={{ height: '400px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px', padding: '1rem' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={
+                      Object.entries(evalResult.scorecard).map(([key, val]) => ({
+                        subject: key.replace('_', ' '),
+                        A: val,
+                        fullMark: 10
+                      }))
+                    }>
+                      <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                      <PolarRadiusAxis angle={30} domain={[0, 10]} tick={{ fill: 'transparent' }} />
+                      <Radar name="Email Score" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </div>
               
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
-                {Object.entries(evalResult.scorecard).map(([param, score]) => (
-                  <div key={param} style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)' }}>
-                    <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                      {param.replace('_', ' ')}
+                {/* Numeric Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem', alignContent: 'start' }}>
+                  {Object.entries(evalResult.scorecard).map(([param, score]) => (
+                    <div key={param} style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)' }}>
+                      <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', marginBottom: '0.5rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {param.replace('_', ' ')}
+                      </div>
+                      <div style={{ fontSize: '1.5rem', fontWeight: '700', color: score >= 8 ? '#34d399' : score >= 5 ? '#fbbf24' : '#ef4444' }}>
+                        {score}/10
+                      </div>
                     </div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: '700', color: score >= 8 ? '#34d399' : score >= 5 ? '#fbbf24' : '#ef4444' }}>
-                      {score}/10
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}

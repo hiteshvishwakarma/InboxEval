@@ -8,6 +8,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   // Sandbox State
+  const [promptInput, setPromptInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [isGrading, setIsGrading] = useState(false);
   const [evalResult, setEvalResult] = useState(null);
@@ -26,14 +27,14 @@ export default function Home() {
   }, []);
 
   const handleGradeEmail = async () => {
-    if (!emailInput.trim()) return;
+    if (!emailInput.trim() || !promptInput.trim()) return;
     setIsGrading(true);
     setEvalResult(null);
     try {
       const res = await fetch('/api/evaluate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailText: emailInput })
+        body: JSON.stringify({ promptText: promptInput, emailText: emailInput })
       });
       const data = await res.json();
       setEvalResult(data);
@@ -112,9 +113,30 @@ export default function Home() {
         <section className="glass" style={{ padding: '2rem', marginTop: '4rem', marginBottom: '4rem' }}>
           <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>Live Evaluator Sandbox</h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-            Paste any AI-generated email below. Our elite Judge model will grade it against our 12 world-class parameters in real-time.
+            Paste the Original Prompt and the AI-generated email below. Our elite Judge model will grade it against our 12 world-class parameters in real-time.
           </p>
           
+          <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem', fontSize: '1.2rem' }}>1. The Prompt (Instructions given to the AI)</h3>
+          <textarea 
+            value={promptInput}
+            onChange={(e) => setPromptInput(e.target.value)}
+            placeholder="Write a highly professional email to my team about the Q3 targets..."
+            style={{
+              width: '100%',
+              height: '100px',
+              backgroundColor: 'rgba(0,0,0,0.3)',
+              border: '1px solid var(--card-border)',
+              borderRadius: '12px',
+              padding: '1rem',
+              color: 'var(--text-primary)',
+              fontFamily: 'inherit',
+              fontSize: '1rem',
+              resize: 'vertical',
+              marginBottom: '1.5rem'
+            }}
+          />
+
+          <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem', fontSize: '1.2rem' }}>2. The Generated Email</h3>
           <textarea 
             value={emailInput}
             onChange={(e) => setEmailInput(e.target.value)}
@@ -136,7 +158,7 @@ export default function Home() {
           
           <button 
             onClick={handleGradeEmail}
-            disabled={isGrading || !emailInput.trim()}
+            disabled={isGrading || !emailInput.trim() || !promptInput.trim()}
             style={{
               background: isGrading ? '#475569' : 'var(--accent-gradient)',
               color: '#fff',

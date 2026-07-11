@@ -10,8 +10,8 @@ const PARAMETERS = `1. instruction_adherence\n2. factual_accuracy\n3. profession
 
 export async function POST(req) {
   try {
-    const { emailText } = await req.json();
-    if (!emailText) return NextResponse.json({ error: "Email text is required" }, { status: 400 });
+    const { promptText, emailText } = await req.json();
+    if (!emailText || !promptText) return NextResponse.json({ error: "Both Prompt and Email text are required" }, { status: 400 });
 
     // Multi-Agent Debate Protocol
     // Agent 1: The Harsh Critic
@@ -19,8 +19,8 @@ export async function POST(req) {
       model: "qwen/qwen3-32b",
       temperature: 0,
       messages: [
-        { role: "system", content: `You are an extremely harsh AI critic. Evaluate this email on the following 12 parameters:\n${PARAMETERS}\nFocus entirely on flaws, robotic language, and structural errors. Output a 3-sentence critique.` },
-        { role: "user", content: emailText }
+        { role: "system", content: `You are an extremely harsh AI critic. Evaluate this email on the following 12 parameters:\n${PARAMETERS}\nFocus entirely on flaws, hallucinated facts not in the prompt, and missed instructions. Output a 3-sentence critique.` },
+        { role: "user", content: `Original Prompt Given to AI:\n${promptText}\n\nGenerated Email:\n${emailText}` }
       ]
     });
 
@@ -29,8 +29,8 @@ export async function POST(req) {
       model: "llama-3.1-8b-instant",
       temperature: 0,
       messages: [
-        { role: "system", content: `You are a constructive AI advocate. Evaluate this email on the following 12 parameters:\n${PARAMETERS}\nFocus on the strengths, intent clarity, and effective communication. Output a 3-sentence defense.` },
-        { role: "user", content: emailText }
+        { role: "system", content: `You are a constructive AI advocate. Evaluate this email on the following 12 parameters:\n${PARAMETERS}\nFocus on how well it followed the prompt's intent and strengths. Output a 3-sentence defense.` },
+        { role: "user", content: `Original Prompt Given to AI:\n${promptText}\n\nGenerated Email:\n${emailText}` }
       ]
     });
 
@@ -38,13 +38,16 @@ export async function POST(req) {
     const harshCritique = harshRes.choices[0].message.content;
     const advocateDefense = advoRes.choices[0].message.content;
 
-    // Agent 3: The Moderator (Final Scoring)
+// Agent 3: The Moderator (Final Scoring)
     const moderatorPrompt = `
 You are the Executive Moderator. 
-Read the Email, the Harsh Critique, and the Constructive Defense.
+Read the Original Prompt, the Generated Email, the Harsh Critique, and the Constructive Defense.
 Synthesize the debate and issue the final, unbiased scores for all 12 parameters (1-10).
 
-Email:
+Original Prompt:
+${promptText}
+
+Generated Email:
 ${emailText}
 
 Harsh Critique:
@@ -88,6 +91,7 @@ Return ONLY a valid JSON object:
     const fullRecord = {
       id: evalId,
       timestamp: new Date().toISOString(),
+      prompt_text: promptText,
       email_text: emailText,
       debate: {
         critic: harshCritique,

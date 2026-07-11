@@ -14,7 +14,7 @@ export default function Home() {
   const [selectedModel, setSelectedModel] = useState("qwen/qwen3-32b");
   const [isGrading, setIsGrading] = useState(false);
   const [evalResult, setEvalResult] = useState(null);
-  const [expandedRow, setExpandedRow] = useState(null);
+  const [expandedRows, setExpandedRows] = useState([]); // Array to allow multi-model comparison
 
   useEffect(() => {
     // Check if models exist in local storage, else fetch
@@ -63,6 +63,30 @@ export default function Home() {
     }
   };
 
+  const toggleRow = (modelId) => {
+    setExpandedRows(prev => 
+      prev.includes(modelId) ? prev.filter(id => id !== modelId) : [...prev, modelId]
+    );
+  };
+
+  // Prepare data for the Multi-Model Comparison Radar Chart
+  const radarData = [];
+  if (leaderboard.length > 0 && leaderboard[0].paramScores) {
+    const params = Object.keys(leaderboard[0].paramScores);
+    params.forEach(param => {
+      const dataPoint = { subject: param.replace('_', ' ') };
+      expandedRows.forEach(modelId => {
+        const modelData = leaderboard.find(l => l.model === modelId);
+        if (modelData && modelData.paramScores) {
+          dataPoint[modelId] = modelData.paramScores[param];
+        }
+      });
+      radarData.push(dataPoint);
+    });
+  }
+
+  const colors = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'];
+
   return (
     <main>
       <div className="bg-gradient-blob"></div>
@@ -100,10 +124,48 @@ export default function Home() {
                <h2>No benchmarks run yet.</h2>
             </div>
           ) : (
-            <table className="leaderboard">
-              <thead>
-                <tr>
-                  <th style={{ width: '10%' }}>Rank</th>
+            <>
+              {/* Observability Panel: Multi-Model Comparison Radar Chart */}
+              {expandedRows.length > 0 && (
+                <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '2rem', marginBottom: '2rem', border: '1px solid var(--card-border)' }}>
+                  <h3 style={{ marginBottom: '1rem', textAlign: 'center', color: 'var(--text-primary)' }}>Dimensional Delta Analysis (Control System Observability)</h3>
+                  <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.9rem' }}>
+                    Visualizing multi-variable error margins across {expandedRows.length} selected model(s).
+                  </p>
+                  <div style={{ height: '500px' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                        <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                        <PolarRadiusAxis angle={30} domain={[0, 10]} tick={{ fill: 'transparent' }} />
+                        {expandedRows.map((modelId, idx) => (
+                          <Radar 
+                            key={modelId}
+                            name={modelId} 
+                            dataKey={modelId} 
+                            stroke={colors[idx % colors.length]} 
+                            fill={colors[idx % colors.length]} 
+                            fillOpacity={0.3} 
+                          />
+                        ))}
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+                    {expandedRows.map((modelId, idx) => (
+                      <div key={modelId} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colors[idx % colors.length] }}></div>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{modelId}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <table className="leaderboard">
+                <thead>
+                  <tr>
+                    <th style={{ width: '10%' }}>Rank</th>
                   <th style={{ width: '40%' }}>Model</th>
                   <th style={{ width: '20%' }}>Size</th>
                   <th style={{ width: '30%' }}>Overall Score (Out of 10)</th>
@@ -114,8 +176,8 @@ export default function Home() {
                 {leaderboard.map((item, index) => (
                   <React.Fragment key={item.model}>
                     <tr 
-                      onClick={() => setExpandedRow(expandedRow === item.model ? null : item.model)}
-                      style={{ cursor: 'pointer' }}
+                      onClick={() => toggleRow(item.model)}
+                      style={{ cursor: 'pointer', background: expandedRows.includes(item.model) ? 'rgba(255,255,255,0.05)' : 'transparent' }}
                     >
                       <td>
                         <span className="rank">#{index + 1}</span>
@@ -139,7 +201,7 @@ export default function Home() {
                         </div>
                       </td>
                     </tr>
-                    {expandedRow === item.model && item.paramScores && (
+                    {expandedRows.includes(item.model) && item.paramScores && (
                       <tr>
                         <td colSpan="4" style={{ background: 'rgba(0,0,0,0.3)', padding: '2rem', borderTop: 'none' }}>
                           <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Granular Parameter Breakdown (Out of 10)</h4>
@@ -185,6 +247,7 @@ export default function Home() {
                 ))}
               </tbody>
             </table>
+            </>
           )}
         </section>
 

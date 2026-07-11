@@ -3,7 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 export default async function EvalPage({ params }) {
-  const { id } = params;
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
   const dataPath = path.join(process.cwd(), '../data/evals', `${id}.json`);
 
   if (!fs.existsSync(dataPath)) {

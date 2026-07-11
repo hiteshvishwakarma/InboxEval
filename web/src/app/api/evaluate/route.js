@@ -72,7 +72,8 @@ ${harshCritique}
 Constructive Defense:
 ${advocateDefense}
 
-Return ONLY a valid JSON object:
+Return ONLY a valid JSON object in a markdown code block like this:
+\`\`\`json
 {
   "scorecard": {
     ${isBlindMode ? `"professionalism": 10,
@@ -99,16 +100,26 @@ Return ONLY a valid JSON object:
   "overall_score": 8.5,
   "reasoning": "Synthesized 2-sentence reasoning."
 }
+\`\`\`
 `;
 
     const finalCompletion = await client.chat.completions.create({
       model: selectedJudge,
       messages: [{ role: "user", content: moderatorPrompt }],
-      response_format: { type: "json_object" },
       temperature: 0,
     });
 
-    const result = JSON.parse(finalCompletion.choices[0].message.content);
+    const rawResponse = finalCompletion.choices[0].message.content;
+    let parsedResult;
+    try {
+      // Safely extract JSON from markdown if present
+      const jsonMatch = rawResponse.match(/\`\`\`json\s*(\{[\s\S]*?\})\s*\`\`\`/);
+      const jsonString = jsonMatch ? jsonMatch[1] : rawResponse;
+      parsedResult = JSON.parse(jsonString.trim());
+    } catch (e) {
+      console.error("Failed to parse JSON:", rawResponse);
+      return NextResponse.json({ error: "Judge failed to return valid JSON" }, { status: 500 });
+    }
     
     // Add Metadata & UUID for Shareable Evidence
     const evalId = uuidv4().slice(0,8); // Short ID for permalink
@@ -121,14 +132,14 @@ Return ONLY a valid JSON object:
         critic: harshCritique,
         advocate: advocateDefense
       },
-      ...result
+      ...parsedResult
     };
 
     // Save to Disk
     const savePath = path.join(process.cwd(), '../data/evals', `${evalId}.json`);
     fs.writeFileSync(savePath, JSON.stringify(fullRecord, null, 2));
 
-    return NextResponse.json({ id: evalId, debate: fullRecord.debate, ...result });
+    return NextResponse.json({ id: evalId, debate: fullRecord.debate, ...parsedResult });
   } catch (error) {
     console.error("Evaluation Error:", error);
     return NextResponse.json({ error: "Failed to evaluate email" }, { status: 500 });

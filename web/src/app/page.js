@@ -10,11 +10,27 @@ export default function Home() {
   // Sandbox State
   const [promptInput, setPromptInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
+  const [availableModels, setAvailableModels] = useState([]);
   const [selectedModel, setSelectedModel] = useState("qwen/qwen3-32b");
   const [isGrading, setIsGrading] = useState(false);
   const [evalResult, setEvalResult] = useState(null);
 
   useEffect(() => {
+    // Check if models exist in local storage, else fetch
+    const fetchModels = async () => {
+      try {
+        const res = await fetch('/api/models');
+        const models = await res.json();
+        if (models && models.length > 0) {
+          setAvailableModels(models);
+        }
+      } catch (e) {
+        console.error("Failed to load models");
+      }
+    };
+    
+    fetchModels();
+
     fetch('/api/leaderboard')
       .then(res => res.json())
       .then(data => {
@@ -171,9 +187,17 @@ export default function Home() {
                 cursor: 'pointer'
               }}
             >
-              <option value="qwen/qwen3-32b">Judge: Qwen 32B (Highest Precision)</option>
-              <option value="llama-3.1-8b-instant">Judge: Llama 3.1 8B (Fastest)</option>
-              <option value="llama3-70b-8192">Judge: Llama 3 70B (Heavyweight)</option>
+              {availableModels.length > 0 ? (
+                availableModels.map(modelId => (
+                  <option key={modelId} value={modelId}>Judge: {modelId}</option>
+                ))
+              ) : (
+                <>
+                  <option value="qwen/qwen3-32b">Judge: Qwen 32B</option>
+                  <option value="llama-3.1-8b-instant">Judge: Llama 3.1 8B</option>
+                  <option value="llama3-70b-8192">Judge: Llama 3 70B</option>
+                </>
+              )}
             </select>
 
             <button 

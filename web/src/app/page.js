@@ -173,7 +173,7 @@ export default function Home() {
             >
               <option value="qwen/qwen3-32b">Judge: Qwen 32B (Highest Precision)</option>
               <option value="llama-3.1-8b-instant">Judge: Llama 3.1 8B (Fastest)</option>
-              <option value="mixtral-8x7b-32768">Judge: Mixtral 8x7B (Balanced)</option>
+              <option value="llama3-70b-8192">Judge: Llama 3 70B (Heavyweight)</option>
             </select>
 
             <button 

@@ -15,7 +15,7 @@ function calculateElo(ratingA, ratingB, scoreA) {
 
 export async function POST(req) {
   try {
-    const { modelA, modelB, winner, timeToVoteMs, approxTokens } = await req.json();
+    const { prompt, modelA, textA, modelB, textB, winner, timeToVoteMs, approxTokens } = await req.json();
 
     // 1. Read Velocity Filter (Telemetry & Calibration)
     // Assume average human reading speed is ~250 words/min = ~4 words/sec = ~5 tokens/sec
@@ -51,6 +51,24 @@ export async function POST(req) {
       eloData[modelB].matches += 1;
 
       fs.writeFileSync(dataPath, JSON.stringify(eloData, null, 2));
+
+      // 3. Save Full RLHF Training Data (JSONL Format)
+      const datasetPath = path.join(process.cwd(), '../data/arena_training_dataset.jsonl');
+      const rlhfRecord = {
+        timestamp: new Date().toISOString(),
+        prompt: prompt,
+        model_a: modelA,
+        text_a: textA,
+        model_b: modelB,
+        text_b: textB,
+        winner: winner,
+        telemetry: {
+          time_to_vote_ms: timeToVoteMs,
+          approx_tokens: approxTokens
+        }
+      };
+      
+      fs.appendFileSync(datasetPath, JSON.stringify(rlhfRecord) + '\n', 'utf8');
     }
 
     return NextResponse.json({

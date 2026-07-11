@@ -60,8 +60,11 @@ export default function ArenaPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          prompt: promptInput,
           modelA: battleData.modelA,
+          textA: battleData.textA,
           modelB: battleData.modelB,
+          textB: battleData.textB,
           winner,
           timeToVoteMs,
           approxTokens

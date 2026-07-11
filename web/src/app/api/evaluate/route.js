@@ -10,8 +10,9 @@ const PARAMETERS = `1. instruction_adherence\n2. factual_accuracy\n3. profession
 
 export async function POST(req) {
   try {
-    let { promptText, emailText } = await req.json();
+    let { promptText, emailText, judgeModel } = await req.json();
     if (!emailText) return NextResponse.json({ error: "Email text is required" }, { status: 400 });
+    const selectedJudge = judgeModel || "qwen/qwen3-32b";
 
     // Dynamic Back-Translation (Reverse Engineering) if prompt is missing
     if (!promptText || promptText.trim() === "") {
@@ -91,7 +92,7 @@ Return ONLY a valid JSON object:
 `;
 
     const finalCompletion = await client.chat.completions.create({
-      model: "qwen/qwen3-32b",
+      model: selectedJudge,
       messages: [{ role: "user", content: moderatorPrompt }],
       response_format: { type: "json_object" },
       temperature: 0,

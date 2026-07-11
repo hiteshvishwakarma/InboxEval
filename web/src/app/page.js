@@ -10,6 +10,7 @@ export default function Home() {
   // Sandbox State
   const [promptInput, setPromptInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
+  const [selectedModel, setSelectedModel] = useState("qwen/qwen3-32b");
   const [isGrading, setIsGrading] = useState(false);
   const [evalResult, setEvalResult] = useState(null);
 
@@ -34,7 +35,7 @@ export default function Home() {
       const res = await fetch('/api/evaluate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ promptText: promptInput, emailText: emailInput })
+        body: JSON.stringify({ promptText: promptInput, emailText: emailInput, judgeModel: selectedModel })
       });
       const data = await res.json();
       setEvalResult(data);
@@ -156,24 +157,45 @@ export default function Home() {
             }}
           />
           
-          <button 
-            onClick={handleGradeEmail}
-            disabled={isGrading || !emailInput.trim()}
-            style={{
-              background: isGrading ? '#475569' : 'var(--accent-gradient)',
-              color: '#fff',
-              border: 'none',
-              padding: '1rem 2rem',
-              borderRadius: '8px',
-              fontSize: '1.1rem',
-              fontWeight: '600',
-              cursor: isGrading ? 'not-allowed' : 'pointer',
-              transition: 'transform 0.2s',
-              boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)'
-            }}
-          >
-            {isGrading ? 'Evaluating (This takes ~5s)...' : 'Grade My Email'}
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <select 
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              style={{
+                padding: '1rem',
+                borderRadius: '8px',
+                background: 'rgba(0,0,0,0.5)',
+                color: 'white',
+                border: '1px solid var(--card-border)',
+                fontSize: '1rem',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="qwen/qwen3-32b">Judge: Qwen 32B (Highest Precision)</option>
+              <option value="llama-3.1-8b-instant">Judge: Llama 3.1 8B (Fastest)</option>
+              <option value="mixtral-8x7b-32768">Judge: Mixtral 8x7B (Balanced)</option>
+            </select>
+
+            <button 
+              onClick={handleGradeEmail}
+              disabled={isGrading || !emailInput.trim()}
+              style={{
+                flex: 1,
+                background: isGrading ? '#475569' : 'var(--accent-gradient)',
+                color: '#fff',
+                border: 'none',
+                padding: '1rem 2rem',
+                borderRadius: '8px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                cursor: isGrading ? 'not-allowed' : 'pointer',
+                transition: 'transform 0.2s',
+                boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)'
+              }}
+            >
+              {isGrading ? 'Evaluating (This takes ~5s)...' : 'Grade My Email'}
+            </button>
+          </div>
 
           {evalResult && evalResult.scorecard && (
             <div style={{ marginTop: '3rem', borderTop: '1px solid var(--card-border)', paddingTop: '2rem' }}>

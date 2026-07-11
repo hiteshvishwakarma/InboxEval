@@ -14,6 +14,7 @@ export default function Home() {
   const [selectedModel, setSelectedModel] = useState("qwen/qwen3-32b");
   const [isGrading, setIsGrading] = useState(false);
   const [evalResult, setEvalResult] = useState(null);
+  const [expandedRow, setExpandedRow] = useState(null);
 
   useEffect(() => {
     // Check if models exist in local storage, else fetch
@@ -77,6 +78,19 @@ export default function Home() {
         </header>
 
         <section className="glass" style={{ padding: '1rem', marginTop: '2rem', minHeight: '300px' }}>
+          <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--card-border)' }}>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Evaluation Context</h3>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <span className="badge" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa' }}>Dataset: InboxEval Golden (Enterprise Scenarios)</span>
+              <span className="badge" style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}>Rubric: 12-Parameter IPR Standard</span>
+              <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399' }}>Method: 3-Stage Debate (Temp: 0.0)</span>
+            </div>
+            <p style={{ marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+              Transparency is our core principle. Every model below was strictly evaluated against our proprietary Enterprise Golden Dataset. 
+              Click on any scored model to view its granular performance across all 12 rigorous parameters.
+            </p>
+          </div>
+
           {loading ? (
             <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--accent-1)' }}>
                <h2>Loading Live Evaluator Data...</h2>
@@ -98,29 +112,53 @@ export default function Home() {
               <tbody>
                 {/* 1. Show models that have scores, sorted by score */}
                 {leaderboard.map((item, index) => (
-                  <tr key={item.model}>
-                    <td>
-                      <span className="rank">#{index + 1}</span>
-                    </td>
-                    <td>
-                      <div className="model-name">
-                        {item.model}
-                        {index === 0 && <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399' }}>SOTA</span>}
-                      </div>
-                    </td>
-                    <td>
-                      <span className="badge">{item.parameters}</span>
-                    </td>
-                    <td>
-                      <div className="score">{item.score.toFixed(2)}</div>
-                      <div className="score-bar-container">
-                        <div 
-                          className="score-bar" 
-                          style={{ width: `${(item.score / 10) * 100}%` }}
-                        ></div>
-                      </div>
-                    </td>
-                  </tr>
+                  <React.Fragment key={item.model}>
+                    <tr 
+                      onClick={() => setExpandedRow(expandedRow === item.model ? null : item.model)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <td>
+                        <span className="rank">#{index + 1}</span>
+                      </td>
+                      <td>
+                        <div className="model-name">
+                          {item.model}
+                          {index === 0 && <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399' }}>SOTA</span>}
+                        </div>
+                      </td>
+                      <td>
+                        <span className="badge">{item.parameters}</span>
+                      </td>
+                      <td>
+                        <div className="score">{item.score.toFixed(2)}</div>
+                        <div className="score-bar-container">
+                          <div 
+                            className="score-bar" 
+                            style={{ width: `${(item.score / 10) * 100}%` }}
+                          ></div>
+                        </div>
+                      </td>
+                    </tr>
+                    {expandedRow === item.model && item.paramScores && (
+                      <tr>
+                        <td colSpan="4" style={{ background: 'rgba(0,0,0,0.3)', padding: '2rem', borderTop: 'none' }}>
+                          <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Granular Parameter Breakdown (Out of 10)</h4>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem' }}>
+                            {Object.entries(item.paramScores).map(([param, pScore]) => (
+                              <div key={param} style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)' }}>
+                                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', marginBottom: '0.5rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                  {param.replace('_', ' ')}
+                                </div>
+                                <div style={{ fontSize: '1.25rem', fontWeight: '700', color: pScore >= 8 ? '#34d399' : pScore >= 5 ? '#fbbf24' : '#ef4444' }}>
+                                  {pScore.toFixed(2)}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
                 
                 {/* 2. Show active models that are pending benchmarking */}

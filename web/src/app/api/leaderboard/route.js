@@ -17,20 +17,32 @@ export async function GET() {
     const leaderboard = [];
     
     for (const [model, prompts] of Object.entries(rawData)) {
-      let totalScore = 0;
       let count = 0;
+      let totalScore = 0;
+      let paramScores = {};
       
       prompts.forEach(p => {
-        // Filter out any string reasoning, just take numeric scores
-        const scores = Object.values(p.scorecard).filter(val => typeof val === 'number');
+        const scores = Object.entries(p.scorecard).filter(([k, v]) => typeof v === 'number');
         if (scores.length > 0) {
-          const avgPromptScore = scores.reduce((a, b) => a + b, 0) / scores.length;
-          totalScore += avgPromptScore;
+          let promptTotal = 0;
+          scores.forEach(([key, val]) => {
+            promptTotal += val;
+            paramScores[key] = (paramScores[key] || 0) + val;
+          });
+          totalScore += promptTotal / scores.length;
           count++;
         }
       });
       
       const finalScore = count > 0 ? (totalScore / count) : 0;
+      
+      // Compute averages for each parameter
+      const averagedParams = {};
+      if (count > 0) {
+        Object.entries(paramScores).forEach(([key, total]) => {
+          averagedParams[key] = total / count;
+        });
+      }
       
       // Determine size heuristically based on the name
       let parameters = "Unknown";
@@ -45,7 +57,8 @@ export async function GET() {
         model,
         score: finalScore,
         parameters,
-        type: "Open Source"
+        type: "Open Source",
+        paramScores: averagedParams
       });
     }
     

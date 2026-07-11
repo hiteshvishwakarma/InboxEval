@@ -37,6 +37,9 @@ export async function POST(req) {
     if (!eloData[modelA]) eloData[modelA] = { elo: 1000, matches: 0 };
     if (!eloData[modelB]) eloData[modelB] = { elo: 1000, matches: 0 };
 
+    const oldEloA = eloData[modelA].elo;
+    const oldEloB = eloData[modelB].elo;
+
     if (!isSpam) {
       let scoreA = 0.5; // Tie
       if (winner === 'A') scoreA = 1;
@@ -65,18 +68,36 @@ export async function POST(req) {
         telemetry: {
           time_to_vote_ms: timeToVoteMs,
           approx_tokens: approxTokens
+        },
+        elo_math: {
+          model_a_old: oldEloA,
+          model_a_new: newA,
+          model_b_old: oldEloB,
+          model_b_new: newB
         }
       };
       
       fs.appendFileSync(datasetPath, JSON.stringify(rlhfRecord) + '\n', 'utf8');
+    } else {
+      feedbackMsg += " Vote accepted and appended to RLHF training set.";
     }
 
     return NextResponse.json({
       success: true,
       isSpam,
       feedback: feedbackMsg,
-      newEloA: eloData[modelA]?.elo,
-      newEloB: eloData[modelB]?.elo
+      telemetry: {
+        timeToVoteMs,
+        approxTokens
+      },
+      math: {
+        oldEloA: eloData[modelA]?.elo || 1000,
+        oldEloB: eloData[modelB]?.elo || 1000,
+        newEloA: !isSpam ? eloData[modelA].elo : "Unchanged (Spam)",
+        newEloB: !isSpam ? eloData[modelB].elo : "Unchanged (Spam)",
+        deltaA: !isSpam ? (eloData[modelA].elo - (eloData[modelA]?.elo || 1000)) : 0,
+        deltaB: !isSpam ? (eloData[modelB].elo - (eloData[modelB]?.elo || 1000)) : 0
+      }
     });
 
   } catch (error) {

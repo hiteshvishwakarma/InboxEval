@@ -11,6 +11,7 @@ export default function ArenaPage() {
   const [startTime, setStartTime] = useState(0);
   
   const [voteStatus, setVoteStatus] = useState(null);
+  const [voteStatusDetails, setVoteStatusDetails] = useState(null);
   const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
@@ -73,6 +74,7 @@ export default function ArenaPage() {
       const data = await res.json();
       if (data.success) {
         setVoteStatus(data.feedback);
+        setVoteStatusDetails(data);
       } else {
         setVoteStatus(`Error: ${data.error}`);
       }
@@ -155,14 +157,44 @@ export default function ArenaPage() {
         )}
 
         {revealed && (
-          <div className="glass" style={{ padding: '2rem', textAlign: 'center', animation: 'fadeIn 0.5s', marginBottom: '4rem' }}>
+          <div className="glass" style={{ padding: '2rem', textAlign: 'center', animation: 'fadeIn 0.5s', marginBottom: '2rem' }}>
             <h2 style={{ color: 'var(--text-primary)', marginBottom: '1rem' }}>Identities Revealed!</h2>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '4rem', marginBottom: '1.5rem', fontSize: '1.2rem' }}>
               <div><strong>Model A:</strong> <span style={{ color: '#60a5fa' }}>{battleData.modelA}</span></div>
               <div><strong>Model B:</strong> <span style={{ color: '#34d399' }}>{battleData.modelB}</span></div>
             </div>
-            <div style={{ padding: '1rem', background: voteStatus.includes("ignored") ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: voteStatus.includes("ignored") ? '#ef4444' : '#34d399', borderRadius: '8px', border: `1px solid ${voteStatus.includes("ignored") ? '#ef4444' : '#10b981'}` }}>
+            <div style={{ padding: '1rem', background: voteStatus?.includes("ignored") ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: voteStatus?.includes("ignored") ? '#ef4444' : '#34d399', borderRadius: '8px', border: `1px solid ${voteStatus?.includes("ignored") ? '#ef4444' : '#10b981'}` }}>
               {voteStatus}
+            </div>
+          </div>
+        )}
+
+        {/* Development Debug & Telemetry Matrix */}
+        {revealed && voteStatusDetails && (
+          <div className="glass" style={{ padding: '2rem', background: 'rgba(0,0,0,0.5)', border: '1px solid #475569', marginBottom: '4rem', fontFamily: 'monospace' }}>
+            <h3 style={{ color: '#94a3b8', marginBottom: '1rem', borderBottom: '1px solid #475569', paddingBottom: '0.5rem' }}>🔧 Developer Debug: Telemetry & Elo Math</h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+              <div>
+                <h4 style={{ color: '#fbbf24', marginBottom: '0.5rem' }}>Human Telemetry</h4>
+                <ul style={{ listStyle: 'none', padding: 0, color: '#cbd5e1', lineHeight: '1.8' }}>
+                  <li><strong>Time-to-Vote:</strong> {voteStatusDetails.telemetry?.timeToVoteMs} ms</li>
+                  <li><strong>Approx Tokens:</strong> {voteStatusDetails.telemetry?.approxTokens}</li>
+                  <li><strong>Read Velocity Filter:</strong> {voteStatusDetails.isSpam ? <span style={{ color: '#ef4444' }}>TRIGGERED (&lt; 1500ms)</span> : <span style={{ color: '#10b981' }}>PASSED</span>}</li>
+                  <li><strong>RLHF Database:</strong> {voteStatusDetails.isSpam ? "Ignored" : "Appended to arena_training_dataset.jsonl"}</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 style={{ color: '#fbbf24', marginBottom: '0.5rem' }}>Elo Rating Math (K=32)</h4>
+                <ul style={{ listStyle: 'none', padding: 0, color: '#cbd5e1', lineHeight: '1.8' }}>
+                  <li><strong>Model A ({battleData.modelA}):</strong> {typeof voteStatusDetails.math?.oldEloA === 'number' ? voteStatusDetails.math.oldEloA.toFixed(2) : voteStatusDetails.math?.oldEloA} &rarr; <span style={{ color: voteStatusDetails.math?.deltaA > 0 ? '#10b981' : voteStatusDetails.math?.deltaA < 0 ? '#ef4444' : '#cbd5e1' }}>{typeof voteStatusDetails.math?.newEloA === 'number' ? voteStatusDetails.math.newEloA.toFixed(2) : voteStatusDetails.math?.newEloA}</span> ({voteStatusDetails.math?.deltaA > 0 ? '+' : ''}{typeof voteStatusDetails.math?.deltaA === 'number' ? voteStatusDetails.math.deltaA.toFixed(2) : voteStatusDetails.math?.deltaA})</li>
+                  <li><strong>Model B ({battleData.modelB}):</strong> {typeof voteStatusDetails.math?.oldEloB === 'number' ? voteStatusDetails.math.oldEloB.toFixed(2) : voteStatusDetails.math?.oldEloB} &rarr; <span style={{ color: voteStatusDetails.math?.deltaB > 0 ? '#10b981' : voteStatusDetails.math?.deltaB < 0 ? '#ef4444' : '#cbd5e1' }}>{typeof voteStatusDetails.math?.newEloB === 'number' ? voteStatusDetails.math.newEloB.toFixed(2) : voteStatusDetails.math?.newEloB}</span> ({voteStatusDetails.math?.deltaB > 0 ? '+' : ''}{typeof voteStatusDetails.math?.deltaB === 'number' ? voteStatusDetails.math.deltaB.toFixed(2) : voteStatusDetails.math?.deltaB})</li>
+                </ul>
+              </div>
+            </div>
+            <div style={{ marginTop: '1.5rem', color: '#64748b', fontSize: '0.85rem' }}>
+              <em>Note: The Elo algorithm uses a K-factor of 32. If a human votes faster than the Read Velocity threshold (1500ms), the system assumes the vote is noisy/spam, blocks the Elo update, and ignores the data to protect the RLHF training set integrity.</em>
             </div>
           </div>
         )}

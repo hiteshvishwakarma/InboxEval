@@ -6,13 +6,18 @@ import path from 'path';
 
 const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const PARAMETERS = `1. instruction_adherence\n2. factual_accuracy\n3. professionalism\n4. tone_appropriateness\n5. human_likeness\n6. persona_adherence\n7. spam_safety\n8. deliverability\n9. formatting\n10. structure\n11. conciseness\n12. intent_clarity`;
+const FULL_PARAMETERS = `1. instruction_adherence\n2. factual_accuracy\n3. professionalism\n4. tone_appropriateness\n5. human_likeness\n6. persona_adherence\n7. spam_safety\n8. deliverability\n9. formatting\n10. structure\n11. conciseness\n12. intent_clarity`;
+
+const STATIC_PARAMETERS = `1. professionalism\n2. tone_appropriateness\n3. human_likeness\n4. spam_safety\n5. deliverability\n6. formatting\n7. structure\n8. conciseness\n9. clarity`;
 
 export async function POST(req) {
   try {
     let { promptText, emailText, judgeModel } = await req.json();
     if (!emailText) return NextResponse.json({ error: "Email text is required" }, { status: 400 });
     const selectedJudge = judgeModel || "qwen/qwen3-32b";
+
+    const isBlindMode = !promptText || promptText.trim() === "";
+    const activeParams = isBlindMode ? STATIC_PARAMETERS : FULL_PARAMETERS;
 
     // Dynamic Back-Translation (Reverse Engineering) if prompt is missing
     if (!promptText || promptText.trim() === "") {
@@ -33,8 +38,8 @@ export async function POST(req) {
       model: "qwen/qwen3-32b",
       temperature: 0,
       messages: [
-        { role: "system", content: `You are an extremely harsh AI critic. Evaluate this email on the following 12 parameters:\n${PARAMETERS}\nFocus entirely on flaws, hallucinated facts not in the prompt, and missed instructions. Output a 3-sentence critique.` },
-        { role: "user", content: `Original Prompt Given to AI:\n${promptText}\n\nGenerated Email:\n${emailText}` }
+        { role: "system", content: `You are an extremely harsh AI critic. Evaluate this email on the following parameters:\n${activeParams}\nFocus entirely on flaws, robotic language, and structural errors. Output a 3-sentence critique.` },
+        { role: "user", content: isBlindMode ? `Generated Email:\n${emailText}` : `Original Prompt Given to AI:\n${promptText}\n\nGenerated Email:\n${emailText}` }
       ]
     });
 
@@ -43,8 +48,8 @@ export async function POST(req) {
       model: "llama-3.1-8b-instant",
       temperature: 0,
       messages: [
-        { role: "system", content: `You are a constructive AI advocate. Evaluate this email on the following 12 parameters:\n${PARAMETERS}\nFocus on how well it followed the prompt's intent and strengths. Output a 3-sentence defense.` },
-        { role: "user", content: `Original Prompt Given to AI:\n${promptText}\n\nGenerated Email:\n${emailText}` }
+        { role: "system", content: `You are a constructive AI advocate. Evaluate this email on the following parameters:\n${activeParams}\nFocus on strengths and effective communication. Output a 3-sentence defense.` },
+        { role: "user", content: isBlindMode ? `Generated Email:\n${emailText}` : `Original Prompt Given to AI:\n${promptText}\n\nGenerated Email:\n${emailText}` }
       ]
     });
 
@@ -55,13 +60,10 @@ export async function POST(req) {
 // Agent 3: The Moderator (Final Scoring)
     const moderatorPrompt = `
 You are the Executive Moderator. 
-Read the Original Prompt, the Generated Email, the Harsh Critique, and the Constructive Defense.
-Synthesize the debate and issue the final, unbiased scores for all 12 parameters (1-10).
+Read the ${isBlindMode ? "Generated Email" : "Original Prompt, the Generated Email"}, the Harsh Critique, and the Constructive Defense.
+Synthesize the debate and issue the final, unbiased scores for all parameters (1-10).
 
-Original Prompt:
-${promptText}
-
-Generated Email:
+${isBlindMode ? "" : `Original Prompt:\n${promptText}\n\n`}Generated Email:
 ${emailText}
 
 Harsh Critique:
@@ -73,7 +75,15 @@ ${advocateDefense}
 Return ONLY a valid JSON object:
 {
   "scorecard": {
-    "instruction_adherence": 8,
+    ${isBlindMode ? `"professionalism": 10,
+    "tone_appropriateness": 8,
+    "human_likeness": 7,
+    "spam_safety": 10,
+    "deliverability": 10,
+    "formatting": 9,
+    "structure": 8,
+    "conciseness": 7,
+    "clarity": 10` : `"instruction_adherence": 8,
     "factual_accuracy": 9,
     "professionalism": 10,
     "tone_appropriateness": 8,
@@ -84,7 +94,7 @@ Return ONLY a valid JSON object:
     "formatting": 9,
     "structure": 8,
     "conciseness": 7,
-    "intent_clarity": 10
+    "intent_clarity": 10`}
   },
   "overall_score": 8.5,
   "reasoning": "Synthesized 2-sentence reasoning."

@@ -96,30 +96,37 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                {leaderboard.map((item) => (
+                {/* 1. Show models that have scores, sorted by score */}
+                {leaderboard.map((item, index) => (
                   <tr key={item.model}>
+                    <td><div className={`rank-badge ${index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : ''}`}>#{index + 1}</div></td>
+                    <td style={{ fontWeight: '600' }}>{item.model}</td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{item.parameters}</td>
                     <td>
-                      <span className="rank">#{item.rank}</span>
-                    </td>
-                    <td>
-                      <div className="model-name">
-                        {item.model}
-                        {item.rank === 1 && <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399' }}>SOTA</span>}
-                      </div>
-                    </td>
-                    <td>
-                      <span className="badge">{item.parameters}</span>
-                    </td>
-                    <td>
-                      <div className="score">{item.score.toFixed(2)}</div>
-                      <div className="score-bar-container">
-                        <div 
-                          className="score-bar" 
-                          style={{ width: `${(item.score / 10) * 100}%` }}
-                        ></div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div className="score-bar-container" style={{ flex: 1 }}>
+                          <div className="score-bar" style={{ width: `${(item.score / 10) * 100}%` }}></div>
+                        </div>
+                        <span style={{ fontWeight: '700', width: '40px' }}>{item.score.toFixed(1)}</span>
                       </div>
                     </td>
                   </tr>
+                ))}
+                
+                {/* 2. Show active models that are pending benchmarking */}
+                {availableModels
+                  .filter(modelId => !leaderboard.find(l => l.model === modelId))
+                  .map((modelId) => (
+                    <tr key={modelId} style={{ opacity: 0.5 }}>
+                      <td><div className="rank-badge" style={{ background: 'transparent', border: '1px solid var(--text-secondary)' }}>-</div></td>
+                      <td style={{ fontWeight: '600' }}>{modelId}</td>
+                      <td style={{ color: 'var(--text-secondary)' }}>Live on Groq</td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <span style={{ fontStyle: 'italic', color: 'var(--text-secondary)' }}>Pending Benchmark Data</span>
+                        </div>
+                      </td>
+                    </tr>
                 ))}
               </tbody>
             </table>

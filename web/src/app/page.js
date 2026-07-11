@@ -195,7 +195,7 @@ export default function Home() {
                 <>
                   <option value="qwen/qwen3-32b">Judge: Qwen 32B</option>
                   <option value="llama-3.1-8b-instant">Judge: Llama 3.1 8B</option>
-                  <option value="llama3-70b-8192">Judge: Llama 3 70B</option>
+                  <option value="llama-3.3-70b-versatile">Judge: Llama 3.3 70B</option>
                 </>
               )}
             </select>

@@ -10,8 +10,21 @@ const PARAMETERS = `1. instruction_adherence\n2. factual_accuracy\n3. profession
 
 export async function POST(req) {
   try {
-    const { promptText, emailText } = await req.json();
-    if (!emailText || !promptText) return NextResponse.json({ error: "Both Prompt and Email text are required" }, { status: 400 });
+    let { promptText, emailText } = await req.json();
+    if (!emailText) return NextResponse.json({ error: "Email text is required" }, { status: 400 });
+
+    // Dynamic Back-Translation (Reverse Engineering) if prompt is missing
+    if (!promptText || promptText.trim() === "") {
+      const backTranslation = await client.chat.completions.create({
+        model: "llama-3.1-8b-instant",
+        temperature: 0,
+        messages: [
+          { role: "system", content: "You are an expert reverse-engineer. Read the email and deduce the exact prompt/instructions that would have generated it. Output ONLY the prompt." },
+          { role: "user", content: emailText }
+        ]
+      });
+      promptText = backTranslation.choices[0].message.content;
+    }
 
     // Multi-Agent Debate Protocol
     // Agent 1: The Harsh Critic

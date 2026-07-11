@@ -27,7 +27,7 @@ export default function Home() {
   }, []);
 
   const handleGradeEmail = async () => {
-    if (!emailInput.trim() || !promptInput.trim()) return;
+    if (!emailInput.trim()) return;
     setIsGrading(true);
     setEvalResult(null);
     try {
@@ -116,7 +116,7 @@ export default function Home() {
             Paste the Original Prompt and the AI-generated email below. Our elite Judge model will grade it against our 12 world-class parameters in real-time.
           </p>
           
-          <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem', fontSize: '1.2rem' }}>1. The Prompt (Instructions given to the AI)</h3>
+          <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem', fontSize: '1.2rem' }}>1. The Prompt (Optional - We will auto-reverse engineer if left blank)</h3>
           <textarea 
             value={promptInput}
             onChange={(e) => setPromptInput(e.target.value)}
@@ -158,7 +158,7 @@ export default function Home() {
           
           <button 
             onClick={handleGradeEmail}
-            disabled={isGrading || !emailInput.trim() || !promptInput.trim()}
+            disabled={isGrading || !emailInput.trim()}
             style={{
               background: isGrading ? '#475569' : 'var(--accent-gradient)',
               color: '#fff',

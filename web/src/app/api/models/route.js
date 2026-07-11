@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { Groq } from 'groq-sdk';
 
+export const dynamic = 'force-dynamic';
+
 const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function GET() {

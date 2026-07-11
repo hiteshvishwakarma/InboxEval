@@ -17,6 +17,7 @@ export async function POST(req) {
     // Agent 1: The Harsh Critic
     const harshPromise = client.chat.completions.create({
       model: "qwen/qwen3-32b",
+      temperature: 0,
       messages: [
         { role: "system", content: `You are an extremely harsh AI critic. Evaluate this email on the following 12 parameters:\n${PARAMETERS}\nFocus entirely on flaws, robotic language, and structural errors. Output a 3-sentence critique.` },
         { role: "user", content: emailText }
@@ -26,6 +27,7 @@ export async function POST(req) {
     // Agent 2: The Constructive Advocate
     const advocatePromise = client.chat.completions.create({
       model: "llama-3.1-8b-instant",
+      temperature: 0,
       messages: [
         { role: "system", content: `You are a constructive AI advocate. Evaluate this email on the following 12 parameters:\n${PARAMETERS}\nFocus on the strengths, intent clarity, and effective communication. Output a 3-sentence defense.` },
         { role: "user", content: emailText }
@@ -76,7 +78,7 @@ Return ONLY a valid JSON object:
       model: "qwen/qwen3-32b",
       messages: [{ role: "user", content: moderatorPrompt }],
       response_format: { type: "json_object" },
-      temperature: 0.1,
+      temperature: 0,
     });
 
     const result = JSON.parse(finalCompletion.choices[0].message.content);

@@ -11,7 +11,7 @@ export default function Home() {
   const [promptInput, setPromptInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [availableModels, setAvailableModels] = useState([]);
-  const [selectedModel, setSelectedModel] = useState("qwen/qwen3-32b");
+  const [selectedModel, setSelectedModel] = useState("auto"); // Default to Intelligent Router
   const [isGrading, setIsGrading] = useState(false);
   const [evalResult, setEvalResult] = useState(null);
   const [expandedRows, setExpandedRows] = useState([]); // Array to allow multi-model comparison
@@ -49,15 +49,52 @@ export default function Home() {
     setIsGrading(true);
     setEvalResult(null);
     try {
+      let judgeToUse = selectedModel;
+      let routingInfo = null;
+
+      if (selectedModel === "auto") {
+        setEvalResult({ routingState: "Engaging Intelligent Model Router..." });
+        const routeRes = await fetch('/api/route-model', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email_text: emailInput,
+            prompt: promptInput,
+            available_models: availableModels
+          })
+        });
+        const routeData = await routeRes.json();
+        if (routeData.selected_model) {
+          judgeToUse = routeData.selected_model;
+          routingInfo = {
+            model: routeData.selected_model,
+            reasoning: routeData.reasoning
+          };
+        } else {
+          judgeToUse = availableModels.length > 0 ? availableModels[0] : "qwen/qwen3-32b";
+        }
+      }
+
       const res = await fetch('/api/evaluate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ promptText: promptInput, emailText: emailInput, judgeModel: selectedModel })
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email_text: emailInput,
+          prompt: promptInput,
+          selectedJudge: judgeToUse
+        })
       });
+
       const data = await res.json();
-      setEvalResult(data);
+      if (res.ok) {
+        setEvalResult({ ...data, routingInfo });
+      } else {
+        setEvalResult({ error: data.error });
+      }
     } catch (err) {
-      console.error(err);
+      setEvalResult({ error: "Failed to connect to the evaluation server." });
     } finally {
       setIsGrading(false);
     }
@@ -313,14 +350,18 @@ export default function Home() {
               }}
             >
               {availableModels.length > 0 ? (
-                availableModels.map(modelId => (
-                  <option key={modelId} value={modelId}>Judge: {modelId}</option>
-                ))
+                <>
+                  <option value="auto" style={{ fontWeight: 'bold', color: '#10b981' }}>⚡ Auto-Select (Intelligent Engine)</option>
+                  {availableModels.map(modelId => (
+                    <option key={modelId} value={modelId}>Judge: {modelId}</option>
+                  ))}
+                </>
               ) : (
                 <>
+                  <option value="auto">⚡ Auto-Select (Intelligent Engine)</option>
                   <option value="qwen/qwen3-32b">Judge: Qwen 32B</option>
                   <option value="llama-3.1-8b-instant">Judge: Llama 3.1 8B</option>
-                  <option value="llama-3.3-70b-versatile">Judge: Llama 3.3 70B</option>
+                  <option value="meta-llama/llama-4-scout-17b-16e-instruct">Judge: Llama 4 Scout 17B</option>
                 </>
               )}
             </select>
@@ -346,8 +387,43 @@ export default function Home() {
             </button>
           </div>
 
+          {/* Intelligent Router Feedback (UAT) */}
+          {isGrading && evalResult?.routingState && (
+            <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.3)', textAlign: 'center' }}>
+              <div style={{ color: '#34d399', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '0.5rem' }}>
+                {evalResult.routingState}
+              </div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                Analyzing contextual complexity, token density, and semantic intent...
+              </div>
+            </div>
+          )}
+
+          {evalResult && evalResult.error && (
+            <div style={{ color: '#ef4444', textAlign: 'center', marginTop: '2rem', padding: '1rem', border: '1px solid #ef4444', borderRadius: '8px' }}>
+              <h3>Evaluation Error</h3>
+              <p>{evalResult.error}</p>
+            </div>
+          )}
+
           {evalResult && evalResult.scorecard && (
             <div style={{ marginTop: '3rem', borderTop: '1px solid var(--card-border)', paddingTop: '2rem' }}>
+              
+              {/* Intelligent Routing Banner (Completed) */}
+              {evalResult.routingInfo && (
+                <div style={{ marginBottom: '2rem', padding: '1.5rem', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '12px', borderLeft: '4px solid #3b82f6', borderTop: '1px solid rgba(59, 130, 246, 0.2)', borderRight: '1px solid rgba(59, 130, 246, 0.2)', borderBottom: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                  <h4 style={{ color: '#60a5fa', marginBottom: '0.5rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ fontSize: '1.5rem' }}>🤖</span> Intelligent Routing Executed
+                  </h4>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem', lineHeight: '1.5' }}>
+                    {evalResult.routingInfo.reasoning}
+                  </p>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', padding: '0.5rem 1rem', background: 'rgba(0,0,0,0.4)', borderRadius: '6px', fontSize: '0.9rem', color: 'var(--text-primary)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    Auto-Routed to Judge:&nbsp;<strong style={{ color: '#3b82f6', marginLeft: '0.25rem' }}>{evalResult.routingInfo.model}</strong>
+                  </div>
+                </div>
+              )}
+
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                   <h3 style={{ fontSize: '1.5rem' }}>Final Moderated Score:</h3>

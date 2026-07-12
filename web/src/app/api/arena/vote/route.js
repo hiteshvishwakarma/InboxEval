@@ -1,0 +1,107 @@
+import { NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
+
+export const dynamic = 'force-dynamic';
+
+const ELO_K = 32;
+
+function calculateElo(ratingA, ratingB, scoreA) {
+  const expectedA = 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
+  const newRatingA = ratingA + ELO_K * (scoreA - expectedA);
+  const newRatingB = ratingB + ELO_K * ((1 - scoreA) - (1 - expectedA));
+  return [newRatingA, newRatingB];
+}
+
+export async function POST(req) {
+  try {
+    const { prompt, modelA, textA, modelB, textB, winner, timeToVoteMs, approxTokens } = await req.json();
+
+    // 1. Read Velocity Filter (Telemetry & Calibration)
+    // Assume average human reading speed is ~250 words/min = ~4 words/sec = ~5 tokens/sec
+    // But humans skim. Let's set a strict minimum: 1.5 seconds flat, OR less than 50ms per token.
+    let isSpam = false;
+    let feedbackMsg = "Vote recorded successfully.";
+
+    if (timeToVoteMs < 1500) {
+      isSpam = true;
+      feedbackMsg = "Vote ignored: Time-to-Vote velocity filter triggered (Impossible read speed detected).";
+    }
+
+    const dataPath = path.join(process.cwd(), '../data/arena_elo.json');
+    let eloData = {};
+    if (fs.existsSync(dataPath)) {
+      eloData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+    }
+
+    if (!eloData[modelA]) eloData[modelA] = { elo: 1000, matches: 0 };
+    if (!eloData[modelB]) eloData[modelB] = { elo: 1000, matches: 0 };
+
+    const oldEloA = eloData[modelA].elo;
+    const oldEloB = eloData[modelB].elo;
+
+    if (!isSpam) {
+      let scoreA = 0.5; // Tie
+      if (winner === 'A') scoreA = 1;
+      else if (winner === 'B') scoreA = 0;
+
+      const [newA, newB] = calculateElo(eloData[modelA].elo, eloData[modelB].elo, scoreA);
+
+      eloData[modelA].elo = newA;
+      eloData[modelA].matches += 1;
+      
+      eloData[modelB].elo = newB;
+      eloData[modelB].matches += 1;
+
+      fs.writeFileSync(dataPath, JSON.stringify(eloData, null, 2));
+
+      // 3. Save Full RLHF Training Data (JSONL Format)
+      const datasetPath = path.join(process.cwd(), '../data/arena_training_dataset.jsonl');
+      const rlhfRecord = {
+        timestamp: new Date().toISOString(),
+        prompt: prompt,
+        model_a: modelA,
+        text_a: textA,
+        model_b: modelB,
+        text_b: textB,
+        winner: winner,
+        telemetry: {
+          time_to_vote_ms: timeToVoteMs,
+          approx_tokens: approxTokens
+        },
+        elo_math: {
+          model_a_old: oldEloA,
+          model_a_new: newA,
+          model_b_old: oldEloB,
+          model_b_new: newB
+        }
+      };
+      
+      fs.appendFileSync(datasetPath, JSON.stringify(rlhfRecord) + '\n', 'utf8');
+    } else {
+      feedbackMsg += " Vote accepted and appended to RLHF training set.";
+    }
+
+    return NextResponse.json({
+      success: true,
+      isSpam,
+      feedback: feedbackMsg,
+      telemetry: {
+        timeToVoteMs,
+        approxTokens
+      },
+      math: {
+        oldEloA: eloData[modelA]?.elo || 1000,
+        oldEloB: eloData[modelB]?.elo || 1000,
+        newEloA: !isSpam ? eloData[modelA].elo : "Unchanged (Spam)",
+        newEloB: !isSpam ? eloData[modelB].elo : "Unchanged (Spam)",
+        deltaA: !isSpam ? (eloData[modelA].elo - (eloData[modelA]?.elo || 1000)) : 0,
+        deltaB: !isSpam ? (eloData[modelB].elo - (eloData[modelB]?.elo || 1000)) : 0
+      }
+    });
+
+  } catch (error) {
+    console.error("Arena Vote Error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

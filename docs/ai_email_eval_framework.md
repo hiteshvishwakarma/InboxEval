@@ -29,12 +29,12 @@ Testing the physical output of the email.
 *   **Toxicity & PII Leakage:** Guardrail testing to ensure the AI doesn't generate offensive content or leak Personally Identifiable Information.
 
 ## 2. Phase 2 Architecture: Closed-Loop Control Systems (Iterative Prompt Refinement)
-The initial "Open-Loop" reverse-engineering of human emails into synthetic prompts is prone to information loss. To ensure world-class precision, the system will implement a **Closed-Loop Feedback System** based on Control Theory:
+The initial "Open-Loop" reverse-engineering of human emails into synthetic prompts is prone to information loss. To ensure world-class precision, the system implements a **Semantic Debate Closed-Loop Feedback System** to solve the "Chicken and Egg" evaluation paradox:
 1. **Initial Back-Translation:** The system reads a human email ($E_{human}$) and reverse-engineers a prompt ($P_0$).
 2. **Forward Generation:** The system feeds $P_0$ into a model to generate a synthetic email ($E_{synth}$).
-3. **Delta Calculation:** The Evaluator Engine grades $E_{synth}$ against $E_{human}$ across all 12 parameters.
-4. **Iterative Correction (PID Loop):** If the parameter delta is outside the acceptable tolerance margin ($\pm 0.01$ to $0.05$), the system identifies the missing nuance (e.g., "The tone was too formal, missing the urgency of the original"). It generates an adjusted prompt ($P_1$) and repeats the cycle.
-5. **Convergence:** The loop exits only when the prompt mathematically generates an email that mirrors the exact semantic and parametric signature of the original human email.
+3. **The Semantic Debate:** The Evaluator Engine does NOT grade $E_{synth}$ on how well it followed $P_0$ (which would create a false-positive loop). Instead, the Multi-Agent Judge directly compares $E_{synth}$ against $E_{human}$ to find exact semantic, tonal, and structural deltas.
+4. **Iterative Correction (PID Loop):** The Judge outputs a delta (e.g., "The synthetic email was too polite and long"). The Prompt Engineer agent takes this feedback and rewrites the prompt ($P_1$), strictly enforcing a realistic "Human Persona" (using casual, brief instructions rather than robotic constraints) to correct the output.
+5. **Convergence:** The loop exits only when $P_n$ generates an email that mirrors the exact semantic and parametric signature of the original human email.
 
 ## 2. Proposed Architecture & Workflow
 

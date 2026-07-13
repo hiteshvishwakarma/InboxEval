@@ -13,13 +13,36 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 AVAILABLE_MODELS = [
     "qwen/qwen3-32b",
     "llama-3.1-8b-instant",
-    "meta-llama/llama-4-scout-17b-16e-instruct",
-    "gemma2-9b-it"
+    "meta-llama/llama-4-scout-17b-16e-instruct"
 ]
 
 JUDGE_MODEL = "llama-3.3-70b-versatile"  # High-intelligence model to simulate the human
 
 ELO_K = 32
+
+# The Constitutional AI Multi-Persona Emotive Matrix
+CONSTITUTIONAL_MATRIX = [
+    {
+        "persona": "The Ruthless Executive",
+        "principle": "You hate filler words, corporate fluff, and unnecessary pleasantries. You value emails that get straight to the point with maximum brevity and clarity."
+    },
+    {
+        "persona": "The Empathetic HR Director",
+        "principle": "You value emotional intelligence, soft tones, and psychological safety. You penalize emails that sound overly robotic, aggressive, or cold."
+    },
+    {
+        "persona": "The Meticulous Legal Counsel",
+        "principle": "You are anxious about compliance and factual accuracy. You value emails that are extremely precise, professional, and leave absolutely no room for misinterpretation."
+    },
+    {
+        "persona": "The Chaotic Sales Rep",
+        "principle": "You value high-energy, persuasive, and engaging language. You hate emails that are boring, overly formal, or lack a clear, exciting call-to-action."
+    },
+    {
+        "persona": "The Overwhelmed Customer Support Lead",
+        "principle": "You value extreme simplicity and step-by-step clarity. You penalize emails that use confusing jargon or make the reader think too hard to find the solution."
+    }
+]
 
 def calculate_elo(rating_a, rating_b, score_a):
     expected_a = 1 / (1 + 10 ** ((rating_b - rating_a) / 400))
@@ -40,11 +63,13 @@ def generate_email(prompt, model_id):
         print(f"Error generating with {model_id}: {e}")
         return None
 
-def simulate_human_vote(prompt, text_a, text_b):
-    judge_prompt = f"""You are an exhausted corporate manager. You don't have time for AI jargon or robotic corporate speak.
-You need to pick the email that sounds the most NATURAL, HUMAN, and DIRECT.
+def constitutional_critique_and_vote(prompt, text_a, text_b, emotion):
+    # Step 1: The Critique (Chain of Thought)
+    critique_prompt = f"""[SYSTEM PERSONA]
+Persona: {emotion['persona']}
+Guiding Principle: {emotion['principle']}
 
-Original Context/Prompt: {prompt}
+Original Email Prompt Context: {prompt}
 
 --- MODEL A ---
 {text_a}
@@ -52,29 +77,39 @@ Original Context/Prompt: {prompt}
 --- MODEL B ---
 {text_b}
 
-Evaluate both. Which one feels more like a real human wrote it? 
-You must output EXACTLY one of these three strings and nothing else:
-"A" if Model A is better.
-"B" if Model B is better.
-"Tie" if they are equally good or bad."""
+[TASK 1: CRITIQUE]
+Act strictly as your Persona. Read both emails. Write a brutal 2-sentence critique comparing how well Model A and Model B adhered to your specific Guiding Principle.
+
+[TASK 2: VOTE]
+Based ONLY on your critique and persona, declare the winner. End your response with exactly one of these strings on a new line:
+[VOTE: A]
+[VOTE: B]
+[VOTE: Tie]"""
 
     try:
         response = client.chat.completions.create(
             model=JUDGE_MODEL,
-            messages=[{"role": "user", "content": judge_prompt}],
-            temperature=0.1,
-            max_tokens=10
+            messages=[{"role": "user", "content": critique_prompt}],
+            temperature=0.3,
+            max_tokens=200
         )
-        vote = response.choices[0].message.content.strip().replace('"', '')
-        if vote in ["A", "B", "Tie"]:
-            return vote
-        return "Tie" # Fallback
+        full_response = response.choices[0].message.content.strip()
+        
+        # Parse the Vote
+        vote = "Tie"
+        if "[VOTE: A]" in full_response.upper(): vote = "A"
+        elif "[VOTE: B]" in full_response.upper(): vote = "B"
+        
+        # Extract the Critique
+        critique = full_response.split("[VOTE:")[0].strip()
+        
+        return vote, critique
     except Exception as e:
         print(f"Judge error: {e}")
-        return "Tie"
+        return "Tie", "Error generating critique"
 
 def run_arena_bot(iterations=5):
-    print("🤖 Booting AI-Simulated Human Arena Bot...")
+    print("🤖 Booting Constitutional AI-Simulated Arena Bot...")
     
     dataset_path = "../data/golden_dataset.json"
     elo_path = "../data/arena_elo.json"
@@ -91,31 +126,27 @@ def run_arena_bot(iterations=5):
     for i in range(iterations):
         print(f"\n--- Match {i+1}/{iterations} ---")
         
-        # 1. Pick a random proprietary prompt
         scenario = random.choice(golden_data)
         prompt = scenario.get("prompt", "")
-        
         if not prompt: continue
         
-        # 2. Pick 2 random models
         models = random.sample(AVAILABLE_MODELS, 2)
         model_a, model_b = models[0], models[1]
         
         print(f"Summoning: {model_a} vs {model_b}")
         
-        # 3. Generate outputs
         text_a = generate_email(prompt, model_a)
         text_b = generate_email(prompt, model_b)
-        
         if not text_a or not text_b: continue
         
-        # 4. Simulate the Human Vote
-        print(f"🧠 Simulated Human (Judge: {JUDGE_MODEL}) is reading...")
-        time.sleep(1) # Simulate think time
-        vote = simulate_human_vote(prompt, text_a, text_b)
+        # Inject the Constitutional Emotive Persona
+        active_persona = random.choice(CONSTITUTIONAL_MATRIX)
+        print(f"🧠 Simulated Human activated: {active_persona['persona']}")
+        
+        vote, critique = constitutional_critique_and_vote(prompt, text_a, text_b, active_persona)
+        print(f"📝 Critique: {critique}")
         print(f"🗳️  Vote Cast: {vote}")
         
-        # 5. Update Elo
         if model_a not in elo_data: elo_data[model_a] = {"elo": 1000, "matches": 0}
         if model_b not in elo_data: elo_data[model_b] = {"elo": 1000, "matches": 0}
         
@@ -125,7 +156,6 @@ def run_arena_bot(iterations=5):
         
         old_a = elo_data[model_a]["elo"]
         old_b = elo_data[model_b]["elo"]
-        
         new_a, new_b = calculate_elo(old_a, old_b, score_a)
         
         elo_data[model_a]["elo"] = new_a
@@ -133,15 +163,10 @@ def run_arena_bot(iterations=5):
         elo_data[model_b]["elo"] = new_b
         elo_data[model_b]["matches"] += 1
         
-        print(f"📈 Elo Update:")
-        print(f"   {model_a}: {old_a:.1f} -> {new_a:.1f}")
-        print(f"   {model_b}: {old_b:.1f} -> {new_b:.1f}")
-        
-        # Save Elo
         with open(elo_path, "w") as f:
             json.dump(elo_data, f, indent=2)
             
-        # Save RLHF Data
+        # Log RLHF Data with Constitutional Reasoning
         approx_tokens = int((len(text_a) + len(text_b)) / 4)
         rlhf_record = {
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -152,9 +177,10 @@ def run_arena_bot(iterations=5):
             "text_b": text_b,
             "winner": vote,
             "telemetry": {
-                "time_to_vote_ms": random.randint(4000, 12000), # Simulated human read time
-                "approx_tokens": approx_tokens,
-                "simulated_by": JUDGE_MODEL
+                "simulated_by": JUDGE_MODEL,
+                "persona": active_persona["persona"],
+                "principle": active_persona["principle"],
+                "critique": critique
             }
         }
         
@@ -162,5 +188,4 @@ def run_arena_bot(iterations=5):
             f.write(json.dumps(rlhf_record) + "\n")
 
 if __name__ == "__main__":
-    # Run 5 simulated battles
-    run_arena_bot(5)
+    run_arena_bot(3)

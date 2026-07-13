@@ -1,10 +1,22 @@
 {
   "qwen/qwen3-32b": {
-    "elo": 1016,
-    "matches": 1
+    "elo": 1016.0676591404803,
+    "matches": 3
   },
   "meta-llama/llama-4-scout-17b-16e-instruct": {
     "elo": 984,
     "matches": 1
+  },
+  "qwen/qwen3.6-27b": {
+    "elo": 1016,
+    "matches": 1
+  },
+  "openai/gpt-oss-20b": {
+    "elo": 984,
+    "matches": 1
+  },
+  "llama-3.1-8b-instant": {
+    "elo": 999.9323408595197,
+    "matches": 2
   }
 }

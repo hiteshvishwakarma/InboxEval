@@ -72,18 +72,28 @@ function Player() {
     const serverMaxZ = 0 + 0.5 + padding;
     const hitServer = (newX > serverMinX && newX < serverMaxX && newZ > serverMinZ && newZ < serverMaxZ);
 
+    // Bounding Box 3: Core Database (Position X: -5, Z: 5, Radius: 1.2)
+    // Treating as AABB for speed
+    const dbMinX = -5 - 1.2 - padding;
+    const dbMaxX = -5 + 1.2 + padding;
+    const dbMinZ = 5 - 1.2 - padding;
+    const dbMaxZ = 5 + 1.2 + padding;
+    const hitDb = (newX > dbMinX && newX < dbMaxX && newZ > dbMinZ && newZ < dbMaxZ);
+
     // Only apply movement if no collision
-    if (!hitDesk && !hitServer) {
+    if (!hitDesk && !hitServer && !hitDb) {
       camera.position.x = newX;
       camera.position.z = newZ;
     } else {
       // Allow sliding against walls by testing axes independently
       if (!(newX > deskMinX && newX < deskMaxX && camera.position.z > deskMinZ && camera.position.z < deskMaxZ) && 
-          !(newX > serverMinX && newX < serverMaxX && camera.position.z > serverMinZ && camera.position.z < serverMaxZ)) {
+          !(newX > serverMinX && newX < serverMaxX && camera.position.z > serverMinZ && camera.position.z < serverMaxZ) &&
+          !(newX > dbMinX && newX < dbMaxX && camera.position.z > dbMinZ && camera.position.z < dbMaxZ)) {
         camera.position.x = newX;
       }
       if (!(camera.position.x > deskMinX && camera.position.x < deskMaxX && newZ > deskMinZ && newZ < deskMaxZ) && 
-          !(camera.position.x > serverMinX && camera.position.x < serverMaxX && newZ > serverMinZ && newZ < serverMaxZ)) {
+          !(camera.position.x > serverMinX && camera.position.x < serverMaxX && newZ > serverMinZ && newZ < serverMaxZ) &&
+          !(camera.position.x > dbMinX && camera.position.x < dbMaxX && newZ > dbMinZ && newZ < dbMaxZ)) {
         camera.position.z = newZ;
       }
     }
@@ -308,6 +318,51 @@ function Pliers({ hasPliers, setHasPliers }) {
   );
 }
 
+function CoreDatabase() {
+  const [hovered, setHover] = useState(false);
+  const ref = useRef();
+
+  useFrame((state) => {
+    if (ref.current) {
+      ref.current.rotation.y += 0.01;
+    }
+  });
+
+  return (
+    <group position={[-5, 2, 5]} onClick={(e) => e.stopPropagation()} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+      {/* Outer Glass Casing */}
+      <mesh>
+        <cylinderGeometry args={[1.2, 1.2, 4, 16]} />
+        <meshStandardMaterial color="#000" metalness={0.9} roughness={0.1} transparent opacity={0.4} />
+      </mesh>
+      
+      {/* Spinning Core */}
+      <mesh ref={ref}>
+        <cylinderGeometry args={[0.8, 0.8, 3.8, 8]} />
+        <meshStandardMaterial color="#00ffff" emissive="#00aaaa" emissiveIntensity={hovered ? 2 : 1} wireframe={true} />
+      </mesh>
+
+      {/* Database Rings */}
+      {[-1, 0, 1].map((y, i) => (
+        <mesh key={i} position={[0, y, 0]}>
+          <torusGeometry args={[1.3, 0.05, 8, 24]} />
+          <meshStandardMaterial color="#00ffff" emissive="#00ffff" emissiveIntensity={0.5} />
+        </mesh>
+      ))}
+
+      {hovered && (
+        <Html position={[0, 0, 1.5]} center>
+          <div className="bg-black/90 text-cyan-400 font-mono text-xs p-2 border border-cyan-500 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+            <h4 className="font-bold border-b border-cyan-900 mb-1">CORE_DB</h4>
+            <p className="text-[10px] text-neutral-400">golden_dataset.jsonl</p>
+            <p className="text-[10px] text-green-400 mt-1">STATUS: ENCRYPTED_SYNC</p>
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
+
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [lightsOn, setLightsOn] = useState(true);
@@ -354,6 +409,7 @@ export default function Home() {
           <Player />
           <ServerRack hasPliers={hasPliers} />
           <Desk />
+          <CoreDatabase />
           <Pliers hasPliers={hasPliers} setHasPliers={setHasPliers} />
           <LightSwitch lightsOn={lightsOn} setLightsOn={setLightsOn} />
           <AirVent lightsOn={lightsOn} />

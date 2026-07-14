@@ -62,7 +62,7 @@ function Player() {
     if (camera.position.z < -14) camera.position.z = -14;
   });
 
-  return <PointerLockControls />;
+  return <PointerLockControls selector="#click-to-start" />;
 }
 
 function FloppyDisk() {
@@ -124,9 +124,10 @@ function AirVent({ lightsOn }) {
   );
 }
 
-function ServerRack() {
+function ServerRack({ hasPliers }) {
   const [hovered, setHover] = useState(false);
   const [interacting, setInteracting] = useState(false);
+  const [isWired, setIsWired] = useState(false);
 
   return (
     <group position={[4, 0, 0]} onClick={(e) => { e.stopPropagation(); setInteracting(true); }} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
@@ -150,10 +151,26 @@ function ServerRack() {
               <button onClick={(e) => { e.stopPropagation(); setInteracting(false); }} className="text-red-500 hover:text-white">X</button>
             </div>
             <p className="text-green-400 mb-1">{'>'} STATUS: ONLINE</p>
-            <p className="text-neutral-500 mb-1">{'>'} MISSING PHYSICAL PLIERS CONNECTION</p>
-            <button className="w-full bg-cyan-900/50 hover:bg-cyan-500 hover:text-black border border-cyan-500 py-1 transition-colors mt-2">
-              Initialize Socket
-            </button>
+            
+            {!isWired ? (
+              <>
+                <p className="text-red-500 mb-1">{'>'} ERROR: PHYSICAL WIRING DISCONNECTED</p>
+                {hasPliers ? (
+                  <button onClick={(e) => { e.stopPropagation(); setIsWired(true); }} className="w-full bg-red-900/50 hover:bg-red-500 hover:text-black border border-red-500 py-1 transition-colors mt-2">
+                    [USE PLIERS TO SPLICE WIRE]
+                  </button>
+                ) : (
+                  <p className="text-neutral-500 mt-2 text-[10px]">Find the heavy-duty pliers to fix connection.</p>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="text-cyan-400 mb-1">{'>'} HARDWARE SOCKET: CONNECTED</p>
+                <button className="w-full bg-cyan-900/50 hover:bg-cyan-500 hover:text-black border border-cyan-500 py-1 transition-colors mt-2">
+                  Initialize Socket
+                </button>
+              </>
+            )}
           </div>
         </Html>
       )}
@@ -216,31 +233,76 @@ function LightSwitch({ lightsOn, setLightsOn }) {
   );
 }
 
+function Pliers({ hasPliers, setHasPliers }) {
+  const [hovered, setHover] = useState(false);
+  if (hasPliers) return null; // Disappear when collected
+
+  return (
+    <group position={[-2, 0.55, -2]} onClick={(e) => { e.stopPropagation(); setHasPliers(true); alert("You picked up the API PLIERS."); }} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+      {/* Pliers Handles */}
+      <mesh position={[0.1, 0, 0]} rotation={[0, 0, 0.2]}>
+        <boxGeometry args={[0.3, 0.05, 0.1]} />
+        <meshStandardMaterial color={hovered ? "#ff3333" : "#cc0000"} />
+      </mesh>
+      <mesh position={[-0.1, 0, 0]} rotation={[0, 0, -0.2]}>
+        <boxGeometry args={[0.3, 0.05, 0.1]} />
+        <meshStandardMaterial color={hovered ? "#ff3333" : "#cc0000"} />
+      </mesh>
+      {/* Pliers Head */}
+      <mesh position={[0, 0, 0.2]}>
+        <boxGeometry args={[0.2, 0.1, 0.2]} />
+        <meshStandardMaterial color="#888" metalness={0.9} />
+      </mesh>
+      {hovered && (
+        <Html position={[0, 0.2, 0]} center>
+          <div className="bg-black/90 text-red-500 font-mono text-[10px] p-1 border border-red-500 whitespace-nowrap">
+            [PICK UP] HEAVY-DUTY PLIERS
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
+
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [lightsOn, setLightsOn] = useState(true);
+  const [hasPliers, setHasPliers] = useState(false); // Global inventory state
 
   useEffect(() => { setIsClient(true); }, []);
-  if (!isClient) return <div className="min-h-screen bg-black" />;
+  if (!isClient) return <div style={{ width: '100vw', height: '100vh', backgroundColor: 'black' }} />;
 
   return (
-    <div className="w-screen h-screen bg-[#0a0a0a] overflow-hidden relative">
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: '#0a0a0a', overflow: 'hidden' }}>
+      
+      {/* FPS Click-to-Start Trigger (Fixes PointerLock API Error) */}
+      <div id="click-to-start" style={{ position: 'absolute', inset: 0, zIndex: 40, cursor: 'pointer' }} className="flex items-center justify-center bg-black/20 hover:bg-transparent transition-all">
+         <span className="bg-black text-white px-4 py-2 font-mono border border-white pointer-events-none">CLICK TO ENTER FIRST-PERSON MODE</span>
+      </div>
+
       {/* 2D HUD / Crosshair */}
       <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-white/50 rounded-full -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none mix-blend-difference" />
       
-      <div className="absolute top-0 left-0 w-full p-6 z-10 flex justify-between items-start pointer-events-none">
-        <div>
-          <h1 className="text-3xl font-black text-white tracking-tighter">InboxEval</h1>
-          <p className="text-neutral-500 font-mono text-xs">FPS SPATIAL UI PROTOTYPE v1.1</p>
+      {/* HUD Inventory */}
+      <div className="absolute top-0 right-0 p-6 z-50 pointer-events-none flex flex-col items-end">
+        <div className={`font-mono text-xs p-2 border ${hasPliers ? 'border-red-500 text-red-500 bg-red-950/50' : 'border-neutral-800 text-neutral-600'}`}>
+          INVENTORY: {hasPliers ? '[PLIERS]' : '[EMPTY]'}
         </div>
       </div>
 
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-neutral-400 font-mono text-sm pointer-events-none text-center bg-black/50 p-2 rounded backdrop-blur-sm border border-neutral-800">
+      <div className="absolute top-0 left-0 w-full p-6 z-10 flex justify-between items-start pointer-events-none">
+        <div>
+          <h1 className="text-3xl font-black text-white tracking-tighter">InboxEval</h1>
+          <p className="text-neutral-500 font-mono text-xs">FPS SPATIAL UI PROTOTYPE v1.2</p>
+        </div>
+      </div>
+
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-neutral-400 font-mono text-sm pointer-events-none text-center bg-black/80 p-2 rounded backdrop-blur-sm border border-neutral-800">
         <strong>WASD</strong> to Move | <strong>Click</strong> to Interact | <strong>ESC</strong> to Unlock Mouse
       </div>
 
-      <div className="absolute inset-0 z-0 w-full h-full">
-        <Canvas camera={{ position: [0, 2, 8], fov: 60 }} className="w-full h-full">
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0 }}>
+        <Canvas style={{ width: '100vw', height: '100vh' }} camera={{ position: [0, 2, 8], fov: 60 }}>
           <color attach="background" args={['#0a0a0a']} />
           
           {/* Base illumination so objects are always somewhat visible */}
@@ -257,8 +319,9 @@ export default function Home() {
           <gridHelper args={[30, 30, lightsOn ? '#00aaaa' : '#222', lightsOn ? '#333' : '#111']} position={[0, -0.01, 0]} />
           
           <Player />
-          <ServerRack />
+          <ServerRack hasPliers={hasPliers} />
           <Desk />
+          <Pliers hasPliers={hasPliers} setHasPliers={setHasPliers} />
           <LightSwitch lightsOn={lightsOn} setLightsOn={setLightsOn} />
           <AirVent lightsOn={lightsOn} />
         </Canvas>

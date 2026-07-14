@@ -80,20 +80,29 @@ function Player() {
     const dbMaxZ = 5 + 1.2 + padding;
     const hitDb = (newX > dbMinX && newX < dbMaxX && newZ > dbMinZ && newZ < dbMaxZ);
 
+    // Bounding Box 4: Leaderboard Wall (Position X: -13.5, Z: 0, Width: 0.5, Depth: 16)
+    const boardMinX = -13.5 - 0.25 - padding;
+    const boardMaxX = -13.5 + 0.25 + padding;
+    const boardMinZ = 0 - 8 - padding;
+    const boardMaxZ = 0 + 8 + padding;
+    const hitBoard = (newX > boardMinX && newX < boardMaxX && newZ > boardMinZ && newZ < boardMaxZ);
+
     // Only apply movement if no collision
-    if (!hitDesk && !hitServer && !hitDb) {
+    if (!hitDesk && !hitServer && !hitDb && !hitBoard) {
       camera.position.x = newX;
       camera.position.z = newZ;
     } else {
       // Allow sliding against walls by testing axes independently
       if (!(newX > deskMinX && newX < deskMaxX && camera.position.z > deskMinZ && camera.position.z < deskMaxZ) && 
           !(newX > serverMinX && newX < serverMaxX && camera.position.z > serverMinZ && camera.position.z < serverMaxZ) &&
-          !(newX > dbMinX && newX < dbMaxX && camera.position.z > dbMinZ && camera.position.z < dbMaxZ)) {
+          !(newX > dbMinX && newX < dbMaxX && camera.position.z > dbMinZ && camera.position.z < dbMaxZ) &&
+          !(newX > boardMinX && newX < boardMaxX && camera.position.z > boardMinZ && camera.position.z < boardMaxZ)) {
         camera.position.x = newX;
       }
       if (!(camera.position.x > deskMinX && camera.position.x < deskMaxX && newZ > deskMinZ && newZ < deskMaxZ) && 
           !(camera.position.x > serverMinX && camera.position.x < serverMaxX && newZ > serverMinZ && newZ < serverMaxZ) &&
-          !(camera.position.x > dbMinX && camera.position.x < dbMaxX && newZ > dbMinZ && newZ < dbMaxZ)) {
+          !(camera.position.x > dbMinX && camera.position.x < dbMaxX && newZ > dbMinZ && newZ < dbMaxZ) &&
+          !(camera.position.x > boardMinX && camera.position.x < boardMaxX && newZ > boardMinZ && newZ < boardMaxZ)) {
         camera.position.z = newZ;
       }
     }
@@ -399,6 +408,65 @@ function Cables({ hasPliers }) {
   );
 }
 
+function LeaderboardWall() {
+  return (
+    <group position={[-13.5, 4, 0]} rotation={[0, Math.PI / 2, 0]}>
+      {/* Screen Frame */}
+      <mesh>
+        <boxGeometry args={[16, 8, 0.5]} />
+        <meshStandardMaterial color="#111" metalness={0.9} roughness={0.1} />
+      </mesh>
+      
+      {/* Screen Surface */}
+      <mesh position={[0, 0, 0.26]}>
+        <planeGeometry args={[15.5, 7.5]} />
+        <meshBasicMaterial color="#000" />
+      </mesh>
+      
+      {/* Screen Content via HTML */}
+      {/* We use occlude so it hides behind other 3D objects */}
+      <Html position={[0, 0, 0.3]} transform distanceFactor={5} occlude>
+        <div 
+          className="w-[1200px] h-[600px] bg-black/90 border border-cyan-900 rounded p-12 text-cyan-400 font-mono flex flex-col shadow-[0_0_150px_rgba(0,255,255,0.15)]"
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-end border-b border-cyan-900 pb-6 mb-6">
+            <h2 className="text-5xl font-black tracking-widest text-white">GLOBAL AI EMAIL EVALUATION</h2>
+            <span className="text-2xl text-red-500 animate-pulse font-bold">● LIVE</span>
+          </div>
+
+          <div className="grid grid-cols-5 gap-4 text-2xl font-bold border-b border-cyan-900/50 pb-4 mb-4 text-neutral-500">
+            <div>RANK</div>
+            <div className="col-span-2">MODEL NAME</div>
+            <div>ELO SCORE</div>
+            <div>WIN RATE</div>
+          </div>
+
+          <div className="flex-1 flex flex-col gap-2">
+             {[
+               { name: "gpt-4o (OpenAI)", elo: 1284, wr: "76%" },
+               { name: "claude-3.5-sonnet (Anthropic)", elo: 1251, wr: "71%" },
+               { name: "llama-3.1-70b (Meta)", elo: 1198, wr: "64%" },
+               { name: "qwen2-72b-instruct (Alibaba)", elo: 1145, wr: "58%" },
+               { name: "mixtral-8x7b-32768 (Mistral)", elo: 1089, wr: "51%" },
+               { name: "gemma2-9b-it (Google)", elo: 1042, wr: "48%" },
+               { name: "llama-3.1-8b (Meta)", elo: 980, wr: "41%" },
+             ].map((m, i) => (
+                <div key={i} className={`grid grid-cols-5 gap-4 text-3xl py-3 ${i === 0 ? 'text-yellow-400 font-bold' : ''} border-b border-cyan-900/20 items-center`}>
+                  <div className="opacity-80">#{i+1}</div>
+                  <div className="col-span-2 font-bold">{m.name}</div>
+                  <div className="font-light">{m.elo}</div>
+                  <div className="font-light">{m.wr}</div>
+                </div>
+             ))}
+          </div>
+        </div>
+      </Html>
+    </group>
+  );
+}
+
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [lightsOn, setLightsOn] = useState(true);
@@ -444,6 +512,7 @@ export default function Home() {
           
           <Player />
           <Cables hasPliers={hasPliers} />
+          <LeaderboardWall />
           <ServerRack hasPliers={hasPliers} />
           <Desk />
           <CoreDatabase />

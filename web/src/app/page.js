@@ -8,7 +8,7 @@ import { Terminal, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { PointerLockControls, PerformanceMonitor } from '@react-three/drei';
+import { PointerLockControls, PerformanceMonitor, Line } from '@react-three/drei';
 
 // --- FIRST PERSON PLAYER CONTROLLER ---
 function Player() {
@@ -122,8 +122,12 @@ function FloppyDisk() {
         <meshBasicMaterial color="#fff" />
       </mesh>
       {hovered && (
-        <Html position={[0, 0.2, 0]} center>
-          <div className="bg-black/80 text-cyan-400 font-mono text-[10px] p-1 border border-cyan-500 whitespace-nowrap">
+        <Html position={[0, 0, 0.2]} center>
+          <div 
+            className="bg-black/80 text-cyan-400 font-mono text-[10px] p-1 border border-cyan-500 whitespace-nowrap"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
             download_dataset.csv
           </div>
         </Html>
@@ -352,13 +356,45 @@ function CoreDatabase() {
 
       {hovered && (
         <Html position={[0, 0, 1.5]} center>
-          <div className="bg-black/90 text-cyan-400 font-mono text-xs p-2 border border-cyan-500 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+          <div 
+            className="bg-black/90 text-cyan-400 font-mono text-xs p-2 border border-cyan-500 shadow-[0_0_20px_rgba(0,255,255,0.2)]"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
             <h4 className="font-bold border-b border-cyan-900 mb-1">CORE_DB</h4>
             <p className="text-[10px] text-neutral-400">golden_dataset.jsonl</p>
             <p className="text-[10px] text-green-400 mt-1">STATUS: ENCRYPTED_SYNC</p>
           </div>
         </Html>
       )}
+    </group>
+  );
+}
+
+function Cables({ hasPliers }) {
+  // Cables connecting the DB [-5,0,5] to the Server Rack [4,0,0] to the Desk [-4,0,0]
+  const isWired = hasPliers; // simplified logic: if they have pliers, maybe they wired it. We will just show them pulsing if wired.
+
+  return (
+    <group>
+      {/* Cable 1: Server to DB */}
+      <Line
+        points={[ [4, 0.1, 0], [4, 0.1, 4], [-4, 0.1, 4], [-5, 0.1, 5] ]}
+        color={isWired ? "#00ffff" : "#444"}
+        lineWidth={3}
+      />
+      {/* Cable 2: Server to Desk */}
+      <Line
+        points={[ [4, 0.1, -1], [4, 0.1, -2], [-4, 0.1, -2], [-4, 0.1, 0] ]}
+        color={isWired ? "#00ffff" : "#444"}
+        lineWidth={3}
+      />
+      {/* Cable 3: Ceiling Conduit from DB to Desk */}
+      <Line
+        points={[ [-5, 4, 5], [-5, 6, 5], [-4, 6, 0], [-4, 4, 0] ]}
+        color="#00aaaa"
+        lineWidth={5}
+      />
     </group>
   );
 }
@@ -407,6 +443,7 @@ export default function Home() {
           <gridHelper args={[30, 30, lightsOn ? '#00aaaa' : '#222', lightsOn ? '#333' : '#111']} position={[0, -0.01, 0]} />
           
           <Player />
+          <Cables hasPliers={hasPliers} />
           <ServerRack hasPliers={hasPliers} />
           <Desk />
           <CoreDatabase />

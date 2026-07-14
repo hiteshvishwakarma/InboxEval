@@ -51,8 +51,44 @@ function Player() {
     direction.copy(velocity).applyQuaternion(camera.quaternion);
     direction.y = 0; 
 
-    camera.position.addScaledVector(direction, speed * delta);
+    // Calculate proposed new position
+    const newX = camera.position.x + direction.x * speed * delta;
+    const newZ = camera.position.z + direction.z * speed * delta;
+
+    // Simple AABB Collision Detection (Highly Optimized, no physics engine)
+    const padding = 0.5; // Player radius
+
+    // Bounding Box 1: Desk (Position X: -4, Z: 0, Width: 3, Depth: 1.5)
+    const deskMinX = -4 - 1.5 - padding;
+    const deskMaxX = -4 + 1.5 + padding;
+    const deskMinZ = 0 - 0.75 - padding;
+    const deskMaxZ = 0 + 0.75 + padding;
+    const hitDesk = (newX > deskMinX && newX < deskMaxX && newZ > deskMinZ && newZ < deskMaxZ);
+
+    // Bounding Box 2: Server Rack (Position X: 4, Z: 0, Width: 1.5, Depth: 1)
+    const serverMinX = 4 - 0.75 - padding;
+    const serverMaxX = 4 + 0.75 + padding;
+    const serverMinZ = 0 - 0.5 - padding;
+    const serverMaxZ = 0 + 0.5 + padding;
+    const hitServer = (newX > serverMinX && newX < serverMaxX && newZ > serverMinZ && newZ < serverMaxZ);
+
+    // Only apply movement if no collision
+    if (!hitDesk && !hitServer) {
+      camera.position.x = newX;
+      camera.position.z = newZ;
+    } else {
+      // Allow sliding against walls by testing axes independently
+      if (!(newX > deskMinX && newX < deskMaxX && camera.position.z > deskMinZ && camera.position.z < deskMaxZ) && 
+          !(newX > serverMinX && newX < serverMaxX && camera.position.z > serverMinZ && camera.position.z < serverMaxZ)) {
+        camera.position.x = newX;
+      }
+      if (!(camera.position.x > deskMinX && camera.position.x < deskMaxX && newZ > deskMinZ && newZ < deskMaxZ) && 
+          !(camera.position.x > serverMinX && camera.position.x < serverMaxX && newZ > serverMinZ && newZ < serverMaxZ)) {
+        camera.position.z = newZ;
+      }
+    }
     
+    // Room Boundaries
     if (camera.position.y !== 2) camera.position.y = 2; 
     if (camera.position.x > 14) camera.position.x = 14;
     if (camera.position.x < -14) camera.position.x = -14;

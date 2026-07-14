@@ -8,7 +8,7 @@ import { Terminal, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { PointerLockControls } from '@react-three/drei';
+import { PointerLockControls, PerformanceMonitor } from '@react-three/drei';
 
 // --- FIRST PERSON PLAYER CONTROLLER ---
 function Player() {
@@ -48,14 +48,12 @@ function Player() {
 
     velocity.normalize();
     
-    // Move relative to where the camera is looking
     direction.copy(velocity).applyQuaternion(camera.quaternion);
-    direction.y = 0; // Prevent flying
+    direction.y = 0; 
 
     camera.position.addScaledVector(direction, speed * delta);
     
-    // Hardcode a basic floor/wall collision boundary
-    if (camera.position.y !== 2) camera.position.y = 2; // Fixed eye level
+    if (camera.position.y !== 2) camera.position.y = 2; 
     if (camera.position.x > 14) camera.position.x = 14;
     if (camera.position.x < -14) camera.position.x = -14;
     if (camera.position.z > 14) camera.position.z = 14;
@@ -235,11 +233,10 @@ function LightSwitch({ lightsOn, setLightsOn }) {
 
 function Pliers({ hasPliers, setHasPliers }) {
   const [hovered, setHover] = useState(false);
-  if (hasPliers) return null; // Disappear when collected
+  if (hasPliers) return null;
 
   return (
     <group position={[-2, 0.55, -2]} onClick={(e) => { e.stopPropagation(); setHasPliers(true); alert("You picked up the API PLIERS."); }} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
-      {/* Pliers Handles */}
       <mesh position={[0.1, 0, 0]} rotation={[0, 0, 0.2]}>
         <boxGeometry args={[0.3, 0.05, 0.1]} />
         <meshStandardMaterial color={hovered ? "#ff3333" : "#cc0000"} />
@@ -248,7 +245,6 @@ function Pliers({ hasPliers, setHasPliers }) {
         <boxGeometry args={[0.3, 0.05, 0.1]} />
         <meshStandardMaterial color={hovered ? "#ff3333" : "#cc0000"} />
       </mesh>
-      {/* Pliers Head */}
       <mesh position={[0, 0, 0.2]}>
         <boxGeometry args={[0.2, 0.1, 0.2]} />
         <meshStandardMaterial color="#888" metalness={0.9} />
@@ -267,7 +263,8 @@ function Pliers({ hasPliers, setHasPliers }) {
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [lightsOn, setLightsOn] = useState(true);
-  const [hasPliers, setHasPliers] = useState(false); // Global inventory state
+  const [hasPliers, setHasPliers] = useState(false);
+  const [dpr, setDpr] = useState(1); // Dynamic Device Pixel Ratio
 
   useEffect(() => { setIsClient(true); }, []);
   if (!isClient) return <div style={{ width: '100vw', height: '100vh', backgroundColor: 'black' }} />;
@@ -275,15 +272,13 @@ export default function Home() {
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: '#0a0a0a', overflow: 'hidden' }}>
       
-      {/* FPS Click-to-Start Trigger (Fixes PointerLock API Error) */}
+      {/* FPS Click-to-Start Trigger */}
       <div id="click-to-start" style={{ position: 'absolute', inset: 0, zIndex: 40, cursor: 'pointer' }} className="flex items-center justify-center bg-black/20 hover:bg-transparent transition-all">
          <span className="bg-black text-white px-4 py-2 font-mono border border-white pointer-events-none">CLICK TO ENTER FIRST-PERSON MODE</span>
       </div>
 
-      {/* 2D HUD / Crosshair */}
       <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-white/50 rounded-full -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none mix-blend-difference" />
       
-      {/* HUD Inventory */}
       <div className="absolute top-0 right-0 p-6 z-50 pointer-events-none flex flex-col items-end">
         <div className={`font-mono text-xs p-2 border ${hasPliers ? 'border-red-500 text-red-500 bg-red-950/50' : 'border-neutral-800 text-neutral-600'}`}>
           INVENTORY: {hasPliers ? '[PLIERS]' : '[EMPTY]'}
@@ -302,20 +297,15 @@ export default function Home() {
       </div>
 
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0 }}>
-        <Canvas style={{ width: '100vw', height: '100vh' }} camera={{ position: [0, 2, 8], fov: 60 }}>
+        {/* The Canvas dpr dynamically scales resolution to maintain 60FPS on slow hardware */}
+        <Canvas style={{ width: '100vw', height: '100vh' }} camera={{ position: [0, 2, 8], fov: 60 }} dpr={dpr}>
+          <PerformanceMonitor onDecline={() => setDpr(0.5)} onIncline={() => setDpr(1.5)} />
+          
           <color attach="background" args={['#0a0a0a']} />
-          
-          {/* Base illumination so objects are always somewhat visible */}
           <ambientLight intensity={lightsOn ? 1.2 : 0.2} />
-          
-          {/* Main overhead room light */}
           {lightsOn && <pointLight position={[0, 10, 0]} intensity={1.5} color="#ffffff" distance={20} />}
-          
-          {/* Softened Spotlights to prevent blowout */}
           {lightsOn && <spotLight position={[4, 8, 2]} angle={0.8} penumbra={0.5} intensity={1} color="#00ffff" />}
           {lightsOn && <spotLight position={[-4, 6, 2]} angle={0.8} penumbra={0.5} intensity={1} color="#ffffff" />}
-          
-          {/* Brighter Grid for better spatial awareness */}
           <gridHelper args={[30, 30, lightsOn ? '#00aaaa' : '#222', lightsOn ? '#333' : '#111']} position={[0, -0.01, 0]} />
           
           <Player />

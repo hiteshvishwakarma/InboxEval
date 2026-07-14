@@ -60,7 +60,7 @@ function Player() {
     if (camera.position.z < -14) camera.position.z = -14;
   });
 
-  return <PointerLockControls selector="#click-to-start" />;
+  return <PointerLockControls />;
 }
 
 function FloppyDisk() {
@@ -109,7 +109,11 @@ function AirVent({ lightsOn }) {
 
       {unlocked && isSecretRevealed && (
         <Html position={[0, 1, 0]} center>
-          <div className="w-96 p-6 bg-red-950/90 border border-red-500 rounded text-red-500 font-mono text-sm text-center shadow-[0_0_50px_rgba(255,0,0,0.5)]">
+          <div 
+            className="w-96 p-6 bg-red-950/90 border border-red-500 rounded text-red-500 font-mono text-sm text-center shadow-[0_0_50px_rgba(255,0,0,0.5)]"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
             <h2 className="text-xl font-black mb-4">THE ARCHITECT'S TERMINAL</h2>
             <p className="mb-4">PRESS ESC TO UNLOCK MOUSE.</p>
             <p className="mb-4 text-xs">AWAITING CRYPTOGRAPHIC KEY...</p>
@@ -143,7 +147,11 @@ function ServerRack({ hasPliers }) {
 
       {interacting && (
         <Html position={[0, 1.5, 0.6]} transform distanceFactor={2}>
-          <div className="w-64 p-4 bg-black/90 border border-cyan-500 rounded-lg text-cyan-400 font-mono text-xs">
+          <div 
+            className="w-64 p-4 bg-black/90 border border-cyan-500 rounded-lg text-cyan-400 font-mono text-xs"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
             <div className="flex justify-between items-center mb-2 border-b border-cyan-900 pb-2">
               <span className="flex items-center gap-2"><Terminal size={14} /> MCP_SERVER</span>
               <button onClick={(e) => { e.stopPropagation(); setInteracting(false); }} className="text-red-500 hover:text-white">X</button>
@@ -192,7 +200,11 @@ function Desk() {
       <FloppyDisk />
 
       <Html position={[0, 1.2, -0.3]} transform distanceFactor={1.5}>
-        <div className="w-48 p-2 bg-black border border-white text-white font-mono text-center shadow-lg">
+        <div 
+          className="w-48 p-2 bg-black border border-white text-white font-mono text-center shadow-lg"
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
           <h3 className="mb-2 font-bold uppercase">Eval Arena</h3>
           <p className="text-[8px] text-neutral-400 mb-2">PRESS ESC TO UNLOCK MOUSE</p>
           <Link href="/arena" className="block w-full bg-white text-black py-1 hover:bg-cyan-400 transition-colors pointer-events-auto">
@@ -272,11 +284,6 @@ export default function Home() {
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: '#0a0a0a', overflow: 'hidden' }}>
       
-      {/* FPS Click-to-Start Trigger */}
-      <div id="click-to-start" style={{ position: 'absolute', inset: 0, zIndex: 40, cursor: 'pointer' }} className="flex items-center justify-center bg-black/20 hover:bg-transparent transition-all">
-         <span className="bg-black text-white px-4 py-2 font-mono border border-white pointer-events-none">CLICK TO ENTER FIRST-PERSON MODE</span>
-      </div>
-
       <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-white/50 rounded-full -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none mix-blend-difference" />
       
       <div className="absolute top-0 right-0 p-6 z-50 pointer-events-none flex flex-col items-end">

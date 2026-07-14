@@ -10,20 +10,40 @@ export default function Arena() {
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [results, setResults] = useState(null);
   
-  // Dummy data for visual layout testing
-  const handleEvaluate = (e) => {
+  const handleEvaluate = async (e) => {
     e.preventDefault();
     if (!prompt) return;
     
     setIsEvaluating(true);
-    // Simulate network request
-    setTimeout(() => {
-      setResults({
-        modelA: { name: 'Model_Alpha_7B', output: 'Thank you for reaching out. Based on your request, I have processed the refund. It should appear in your account within 3-5 business days.' },
-        modelB: { name: 'Model_Omega_8B', output: 'I have successfully initiated the refund process for your recent transaction. Please allow up to 5 business days for the funds to reflect in your banking statement. Is there anything else I can assist you with?' },
+    try {
+      const response = await fetch('/api/arena/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt,
+          available_models: [
+            "llama-3.1-8b-instant",
+            "llama-3.3-70b-versatile",
+            "gemma2-9b-it",
+            "mixtral-8x7b-32768"
+          ]
+        })
       });
+
+      if (!response.ok) throw new Error("Failed to generate");
+      
+      const data = await response.json();
+      
+      setResults({
+        modelA: { name: data.modelA, output: data.textA },
+        modelB: { name: data.modelB, output: data.textB },
+      });
+    } catch (error) {
+      console.error(error);
+      alert("Error generating responses. Is your GROQ_API_KEY set?");
+    } finally {
       setIsEvaluating(false);
-    }, 2000);
+    }
   };
 
   const handleVote = (winner) => {

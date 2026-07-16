@@ -86,9 +86,10 @@ This is the internal process InboxEval uses to build the flawless `golden_datase
 2. **Vectorization:** The email is embedded into a semantic vector and logged.
 3. **Genesis Generation:** The LLM generates 5 vastly different "Generation 0" prompts attempting to recreate the human email.
 4. **N-Way Tournament Selection:** All 5 prompts generate synthetic emails. The LLM Judge ranks them 1st through 5th based on their distance to the human original. Ranks 3, 4, and 5 are discarded.
-5. **KDA-Adjusted Elo & Genetic Crossover:** The top 2 prompts are evaluated on parameter-specific KDA (Tone, Detail, Formatting). The Genetic Algorithm extracts the winning traits from both and breeds a new "Super Prompt" (Generation 1).
-6. **DPBC Loop:** The system fetches the dynamic target threshold from the Vector DB (using KNN). The Super Prompt generates 5 new mutations, and the loop repeats until a generated email mathematically crosses the DPBC threshold.
-7. **Commit:** The winning prompt and the target email are saved as a perfect pair to the Golden Dataset.
+5. **The Closed Feedback Loop & Crossover:** The Judge provides explicit, written feedback on *why* the top 2 failed to be perfect. The Genetic Algorithm ingests this feedback and extracts the winning traits (KDA) from both to breed a new "Super Prompt" (Generation 1).
+6. **DPBC Loop & Elitism (Preventing Degradation):** To prevent generational degradation (where Gen 2 is worse than Gen 1), the engine uses **Elitism**: The all-time best prompt is always carried over untouched into the next generation's tournament. The Super Prompt generates 4 new mutations to battle the reigning Champion. 
+7. **Early Stopping (Plateau Detection):** The loop continues until it crosses the DPBC KNN threshold. However, if the Elo score plateaus for 2 consecutive generations (a flat, linear graph indicating wasted resources), the system triggers an **Early Stop**, taking the reigning Champion to prevent resource drain.
+8. **Commit:** The winning prompt and the target email are saved as a perfect pair to the Golden Dataset.
 
 ### Pipeline B: The Eval Engine (User/Client Facing)
 This is how a corporate client uses InboxEval to grade their brand-new, unknown AI model.

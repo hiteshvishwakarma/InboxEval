@@ -81,7 +81,18 @@ To achieve world-class precision, InboxEval abandons static tags and utilizes **
 ## 7. Step-by-Step Pipeline (From 0 to 1)
 
 ### Pipeline A: Golden Dataset Generation (Backend Prep)
-This is the internal, closed-loop process InboxEval uses to build the flawless `golden_dataset.jsonl`.
+
+**Executive Summary:**
+Pipeline A is the internal, closed-loop engine responsible for generating the world-class `golden_dataset.jsonl`. It ingests historical human emails, extracts their persona via Vector Embeddings, and uses Evolutionary Prompt Optimization to reverse-engineer flawless synthetic prompts. The system mathematically prevents generational degradation via Elitism and optimizes for Delta Minimization against Dynamic Persona-Based Calibration (DPBC) thresholds.
+
+**Architecture Blueprint:**
+* **Phase 1 (Preparation):** Raw Ingestion -> Persona Extraction -> DPBC Vectorization
+* **Phase 2 (Genesis):** Lazy Base Prompt Generation -> 5-Way Persona Mutation
+* **Phase 3 (Evaluation):** Forward Generation -> Isolated Parameter Judging -> KDA Matrix & Delta Ranking
+* **Phase 4 (Evolution):** Closed Feedback Loop -> Polygenic Crossover (Super Prompt) -> Elitism / Early Stopping -> Dataset Commit
+
+**In-Depth Execution Steps:**
+This is the step-by-step internal process InboxEval uses to build the flawless dataset.
 1. **Raw Ingestion (`mass_ingestion.py`):** Harvests a real, historical human email ($E_{human}$).
 2. **Reverse Engineering & Persona Extraction:** Before any prompts are written, an Evidence-Based Classifier LLM analyzes $E_{human}$. It extracts the exact intent, context, and a molecular Persona Profile (Domain, Category, Sentiment). 
 3. **Vectorization:** The extracted Persona Profile and the $E_{human}$ text are embedded into a semantic vector and stored. This allows the system to query the Vector DB (via KNN) to find the exact historical DPBC thresholds (e.g., Tone: 6.5, Conciseness: 4.2) expected for this specific persona. We do not demand a "perfect 10"; we demand adherence to the persona's historical threshold.

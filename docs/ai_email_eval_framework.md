@@ -81,15 +81,17 @@ To achieve world-class precision, InboxEval abandons static tags and utilizes **
 ## 7. Step-by-Step Pipeline (From 0 to 1)
 
 ### Pipeline A: Golden Dataset Generation (Backend Prep)
-This is the internal process InboxEval uses to build the flawless `golden_dataset.jsonl`.
-1. **Raw Ingestion (`mass_ingestion.py`):** Harvests a real, historical human email.
-2. **Vectorization:** The email is embedded into a semantic vector and logged.
-3. **Genesis Generation:** The LLM generates 5 vastly different "Generation 0" prompts attempting to recreate the human email.
-4. **N-Way Tournament Selection:** All 5 prompts generate synthetic emails. The LLM Judge ranks them 1st through 5th based on their distance to the human original. Ranks 3, 4, and 5 are discarded.
-5. **The Closed Feedback Loop & Crossover:** The Judge provides explicit, written feedback on *why* the top 2 failed to be perfect. The Genetic Algorithm ingests this feedback and extracts the winning traits (KDA) from both to breed a new "Super Prompt" (Generation 1).
-6. **DPBC Loop & Elitism (Preventing Degradation):** To prevent generational degradation (where Gen 2 is worse than Gen 1), the engine uses **Elitism**: The all-time best prompt is always carried over untouched into the next generation's tournament. The Super Prompt generates 4 new mutations to battle the reigning Champion. 
-7. **Early Stopping (Plateau Detection):** The loop continues until it crosses the DPBC KNN threshold. However, if the Elo score plateaus for 2 consecutive generations (a flat, linear graph indicating wasted resources), the system triggers an **Early Stop**, taking the reigning Champion to prevent resource drain.
-8. **Commit:** The winning prompt and the target email are saved as a perfect pair to the Golden Dataset.
+This is the internal, closed-loop process InboxEval uses to build the flawless `golden_dataset.jsonl`.
+1. **Raw Ingestion (`mass_ingestion.py`):** Harvests a real, historical human email ($E_{human}$).
+2. **Reverse Engineering & Persona Extraction:** Before any prompts are written, an Evidence-Based Classifier LLM analyzes $E_{human}$. It extracts the exact intent, context, and a molecular Persona Profile (Domain, Category, Sentiment). 
+3. **Vectorization:** The extracted Persona Profile and the $E_{human}$ text are embedded into a semantic vector and stored. This allows the system to query the Vector DB (via KNN) to find the exact historical DPBC thresholds (e.g., Tone: 6.5, Conciseness: 4.2) expected for this specific persona. We do not demand a "perfect 10"; we demand adherence to the persona's historical threshold.
+4. **Base Prompt Generation ("The Lazy Human" Constraint):** The system generates a single base prompt ($P_0$) attempting to recreate $E_{human}$. *CRITICAL CONSTRAINT:* The LLM is strictly instructed to act as a "Lazy Human Prompt Writer." It must not use robotic system directives (e.g., "Set tone to aggressive"). It must write natural, messy human instructions (e.g., "write a pissed off email to support about my refund").
+5. **Genesis Mutation (Generation 0):** From $P_0$, the system generates 5 vastly different "Lazy Human" prompt mutations. 
+6. **Forward Generation & N-Way Tournament:** All 5 prompts are fed to an LLM to generate 5 synthetic emails ($E_{synth}$). An LLM Judge blindly compares each $E_{synth}$ against the original $E_{human}$ across all parameters. It ranks the 5 prompts based on whose $E_{synth}$ came closest to the DPBC thresholds. Ranks 3, 4, and 5 are discarded.
+7. **The Closed Feedback Loop & Crossover:** The Judge provides explicit, written feedback on *why* the top 2 synthetic emails failed to perfectly mirror the human email. The Genetic Algorithm ingests this feedback and extracts the winning traits (KDA) from both prompts to breed a new "Super Prompt" (Generation 1).
+8. **DPBC Loop & Elitism (Preventing Degradation):** To prevent generational degradation (where Gen 2 is worse than Gen 1), the engine uses **Elitism**: The all-time best prompt is always carried over untouched into the next generation's tournament. The Super Prompt generates 4 new mutations to battle the reigning Champion. 
+9. **Early Stopping (Plateau Detection):** The loop repeats until an $E_{synth}$ mathematically crosses the DPBC thresholds. However, if the Elo score plateaus for 2 consecutive generations (a flat, linear graph indicating wasted resources), the system triggers an **Early Stop**, taking the reigning Champion to prevent resource drain.
+10. **Commit:** The winning lazy human prompt and the target $E_{human}$ are saved as a perfect pair to the Golden Dataset.
 
 ### Pipeline B: The Eval Engine (User/Client Facing)
 This is how a corporate client uses InboxEval to grade their brand-new, unknown AI model.

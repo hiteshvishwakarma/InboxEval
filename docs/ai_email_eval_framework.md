@@ -43,12 +43,37 @@ The initial "Open-Loop" reverse-engineering of human emails into synthetic promp
     *   Use deterministic scripts to test for HTML/Spam/Length.
     *   Use a highly calibrated LLM (like GPT-4o or Claude 3.5 Sonnet) as the "Judge" to score Tone, Faithfulness, and Personalization based on strict grading rubrics.
 3.  **The Leaderboard:** A public-facing leaderboard ranking commercial models (GPT-4, Claude, Gemini, Llama) and popular AI Email tools based on their aggregate "Email Eval Score."
-4. **The Developer API/SDK:** Allow companies building AI email agents to pipe their outputs through your SDK in their CI/CD pipeline (e.g., `email_eval.test(agent_output, expected_schema)`).
+4. **The Developer Ecosystem (SaaS Integration):** To achieve world-class status, InboxEval will ship as a complete connectivity suite:
+    *   **REST API:** Fully documented endpoints for CI/CD integration.
+    *   **MCP Server (Model Context Protocol):** Allowing agents in IDEs (like Cursor or Claude) to directly evaluate emails locally against the framework.
+    *   **CLI Package:** A lightning-fast command-line tool (e.g., `inboxeval-cli`) for headless evaluations.
 
 ## 3. UI/UX Innovation: The Frontend Architecture
 To move beyond naive "1 to 10" grids and establish visual supremacy, the platform implements:
-* **The Multi-Select Radar Matrix:** Utilizing `recharts`, users can select multiple LLMs on the leaderboard simultaneously. The system dynamically generates an overlapping Spider Web (Radar Chart) to visually represent the exact error margins and structural deficits (e.g., Tone vs. Factual Accuracy) of multiple models.
-* **Shareable Evidence Permalinks:** Evaluation results are saved to a local database and accessible via dynamic Next.js routes (`/eval/[id]`). This allows developers to share cryptographic proof of their model's performance on Twitter or with stakeholders.
+
+## 5. UI/UX Architecture: 3D Spatial WebGL Prototype
+
+**Current State**: Live Prototype (`web/src/app/page.js`)
+**Technology**: React Three Fiber (R3F), Next.js, Framer Motion
+
+### Architectural Decision: 3D vs 2D
+To achieve the "Epitome of Innovation" standard, the UI has transitioned from a 2D Parallax interface to a fully functional 3D Spatial Environment (WebGL). 
+
+### Performance & Optimization Strategy (Crucial)
+WebGL environments can become heavy, causing high GPU load and slow initial page loads. To maintain high performance and speed:
+1. **Greybox/Low-Poly Models**: The prototype uses highly optimized, mathematically generated primitive shapes (`<boxGeometry>`) instead of loading massive `.glb` mesh files.
+2. **Dynamic Instancing**: If particle networks or large data clusters are added, we must use `THREE.InstancedMesh` to render thousands of objects in a single draw call.
+3. **Suspense & Lazy Loading**: The `<Canvas>` is isolated. All heavy 3D assets will be wrapped in React `<Suspense>` boundaries to ensure the initial HTML shell loads instantly.
+4. **Lighting Bakes**: Real-time shadows (`castShadow`) are currently active for the prototype but will be baked into textures for the final production build to save GPU compute cycles.
+
+### The "God of War" Cinematic Camera
+- We utilize a `CameraRig` component that intercepts the `useFrame` render loop.
+- It uses `THREE.MathUtils.lerp` to smoothly interpolate the camera's position and quaternion based on the user's `focusedObject` state (e.g., clicking the "Server Rack" physically moves the camera across the room).
+
+* **The "Hacker-Art" Design System:** The UI will abandon corporate SaaS cliches. It will feature a minimalist, high-contrast dark mode (pitch black `#0A0A0A` with stark white text). It uses humanist sans-serif for readability and strict monospaced fonts (Geist Mono/JetBrains) for data points.
+* **Spatial 3D Interactivity:** The interface must feel dynamic and alive. We will implement cursor-driven parallax animations, creating a 3D depth-of-field effect where elements move fluidly between foreground and background as the user interacts. 
+* **The Multi-Select Radar Matrix:** Utilizing `recharts`, users can select multiple LLMs on the leaderboard simultaneously. The system dynamically generates an overlapping glowing Spider Web (Radar Chart) against the dark void to visually represent the exact error margins.
+* **Shareable Evidence Permalinks:** Evaluation results are saved to a local database and accessible via dynamic Next.js routes (`/eval/[id]`). This allows developers to share cryptographic proof of their model's performance.
 
 ## 4. Algorithmic Innovation: Multi-Agent Debate
 We abandon the naive single-LLM judge approach. Evaluations are processed via a Multi-Agent Debate algorithm:

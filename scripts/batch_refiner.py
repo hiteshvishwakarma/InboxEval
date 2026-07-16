@@ -1,6 +1,8 @@
 import os
 import json
 import asyncio
+import sqlite3
+import re
 from groq import AsyncGroq
 from dotenv import load_dotenv
 
@@ -11,21 +13,61 @@ MODEL = "llama-3.3-70b-versatile"
 
 RAW_FILE = "../data/raw_dataset.jsonl"
 GOLDEN_FILE = "../data/golden_dataset.jsonl"
-CHECKPOINT_FILE = "../data/refiner_checkpoint.json"
+DB_FILE = "../data/inboxeval_cache.db"
 CONCURRENCY_LIMIT = 3
 
-def get_completed_ids():
-    if os.path.exists(CHECKPOINT_FILE):
-        with open(CHECKPOINT_FILE, "r") as f:
-            return set(json.load(f))
-    return set()
+# ---------------------------------------------------------
+# DPBC (Dynamic Persona-Based Calibration) RAM Cache
+# ---------------------------------------------------------
+MEMORY_CACHE = {
+    "completed_ids": set(),
+    "persona_thresholds": {}
+}
 
-def save_completed_id(email_id):
-    completed = get_completed_ids()
-    completed.add(email_id)
-    with open(CHECKPOINT_FILE, "w") as f:
-        json.dump(list(completed), f)
+def init_db():
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS completed (email_id TEXT PRIMARY KEY)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS persona_stats (
+                    persona TEXT PRIMARY KEY,
+                    total_score REAL,
+                    count INTEGER
+                 )''')
+    
+    # Load into memory cache (0ms latency lookup for the async loop)
+    c.execute("SELECT email_id FROM completed")
+    MEMORY_CACHE["completed_ids"] = set(row[0] for row in c.fetchall())
+    
+    c.execute("SELECT persona, total_score, count FROM persona_stats")
+    for row in c.fetchall():
+        persona, total, count = row
+        MEMORY_CACHE["persona_thresholds"][persona] = total / count if count > 0 else 8.0
+    conn.close()
 
+def save_completed_id(email_id, persona, final_score):
+    MEMORY_CACHE["completed_ids"].add(email_id)
+    
+    # Update running average in memory (exponential moving average for speed)
+    if persona not in MEMORY_CACHE["persona_thresholds"]:
+        MEMORY_CACHE["persona_thresholds"][persona] = final_score
+    else:
+        MEMORY_CACHE["persona_thresholds"][persona] = (MEMORY_CACHE["persona_thresholds"][persona] * 0.9) + (final_score * 0.1)
+
+    # Async flush to SQLite (background safety)
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute("INSERT OR IGNORE INTO completed (email_id) VALUES (?)", (email_id,))
+    c.execute('''INSERT INTO persona_stats (persona, total_score, count)
+                 VALUES (?, ?, 1)
+                 ON CONFLICT(persona) DO UPDATE SET
+                 total_score = total_score + excluded.total_score,
+                 count = count + 1''', (persona, final_score))
+    conn.commit()
+    conn.close()
+
+# ---------------------------------------------------------
+# Core AI Logic
+# ---------------------------------------------------------
 async def generate_synthetic_email(prompt):
     try:
         response = await client.chat.completions.create(
@@ -60,6 +102,12 @@ Output your analysis in two parts:
     except Exception:
         return "[SCORE]: 0\n[FEEDBACK]: Error"
 
+def extract_score(eval_text):
+    match = re.search(r'\[SCORE\]:\s*([\d\.]+)', eval_text)
+    if match:
+        return float(match.group(1))
+    return 0.0
+
 async def refine_prompt(old_prompt, feedback):
     ref_prompt = f"""You are an expert prompt engineer, but act like a normal human manager. 
 Old prompt: "{old_prompt}"
@@ -81,40 +129,65 @@ Return ONLY the new prompt text."""
 async def process_entry(entry, semaphore):
     async with semaphore:
         email_id = str(entry.get("id"))
-        print(f"Refining ID: {email_id}...")
-        
         human_email = entry.get("emails_to_grade", [{}])[0].get("email_text", "")
         if not human_email: return
         
-        v1_prompt = entry.get("prompt", "")
+        # Determine Persona & Target Threshold (RAM Lookup - 0ms)
+        persona = entry.get("taxonomy_category", "Generic")
+        target_threshold = MEMORY_CACHE["persona_thresholds"].get(persona, 8.0)
         
-        # 1. Generate V1
-        v1_email = await generate_synthetic_email(v1_prompt)
-        # 2. Semantic Debate
-        v1_eval = await semantic_debate_eval(human_email, v1_email)
-        feedback = v1_eval.split("[FEEDBACK]:")[-1].strip() if "[FEEDBACK]:" in v1_eval else ""
+        print(f"Refining ID: {email_id} | Persona: {persona} | Target Score: >= {target_threshold:.1f}")
         
-        # 3. Refine
-        v2_prompt = await refine_prompt(v1_prompt, feedback)
-        entry["prompt"] = v2_prompt # Update entry with the perfected prompt
+        iteration = 0
+        max_iterations = 3
+        best_prompt = entry.get("prompt", "")
+        best_score = 0
+        current_prompt = best_prompt
+
+        # The Closed-Loop PID Controller
+        while iteration < max_iterations:
+            synthetic_email = await generate_synthetic_email(current_prompt)
+            eval_result = await semantic_debate_eval(human_email, synthetic_email)
+            
+            score = extract_score(eval_result)
+            feedback = eval_result.split("[FEEDBACK]:")[-1].strip() if "[FEEDBACK]:" in eval_result else ""
+            
+            print(f"  [{email_id}] Iteration {iteration+1} | Score: {score}")
+            
+            if score >= target_threshold:
+                best_prompt = current_prompt
+                best_score = score
+                print(f"  [{email_id}] PASSED DPBC Threshold!")
+                break
+                
+            if score > best_score:
+                best_score = score
+                best_prompt = current_prompt
+                
+            # Feed delta back into input
+            current_prompt = await refine_prompt(current_prompt, feedback)
+            iteration += 1
+            
+        entry["prompt"] = best_prompt
+        entry["dpbc_score"] = best_score
+        entry["dpbc_threshold_used"] = target_threshold
         
         # O(1) Append to final Golden file
         with open(GOLDEN_FILE, "a") as f:
             f.write(json.dumps(entry) + "\n")
             
-        save_completed_id(email_id)
-        print(f" -> Successfully Refined {email_id}.")
+        save_completed_id(email_id, persona, best_score)
 
 async def main():
     if not os.path.exists(RAW_FILE):
         print("Raw dataset JSONL not found. Run mass_ingestion.py first.")
         return
         
-    completed_ids = get_completed_ids()
+    init_db() # Boot-up Caching
     semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
     tasks = []
     
-    print("Starting Semantic Refiner (Background Process)...")
+    print("Starting DPBC Semantic Refiner (Background Process)...")
     
     with open(RAW_FILE, "r") as f:
         for line in f:
@@ -122,7 +195,7 @@ async def main():
             entry = json.loads(line)
             email_id = str(entry.get("id"))
             
-            if email_id in completed_ids: continue
+            if email_id in MEMORY_CACHE["completed_ids"]: continue
             
             task = asyncio.create_task(process_entry(entry, semaphore))
             tasks.append(task)
@@ -134,7 +207,7 @@ async def main():
     if tasks:
         await asyncio.gather(*tasks)
         
-    print("All available raw emails have been semantically refined!")
+    print("All available raw emails have been semantically refined via DPBC!")
 
 if __name__ == "__main__":
     asyncio.run(main())

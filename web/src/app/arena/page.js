@@ -9,6 +9,7 @@ export default function Arena() {
   const [prompt, setPrompt] = useState('');
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [results, setResults] = useState(null);
+  const [renderTime, setRenderTime] = useState(null);
   
   const handleEvaluate = async (e) => {
     e.preventDefault();
@@ -38,6 +39,7 @@ export default function Arena() {
         modelA: { name: data.modelA, output: data.textA },
         modelB: { name: data.modelB, output: data.textB },
       });
+      setRenderTime(Date.now());
     } catch (error) {
       console.error(error);
       alert("Error generating responses. Is your GROQ_API_KEY set?");
@@ -46,8 +48,39 @@ export default function Arena() {
     }
   };
 
-  const handleVote = (winner) => {
-    alert(`Vote recorded for ${winner}. Updating ELO Matrix...`);
+  const handleVote = async (winnerCode) => {
+    if (!results || !renderTime) return;
+    
+    const timeToVoteMs = Date.now() - renderTime;
+    const approxTokens = Math.floor((results.modelA.output.length + results.modelB.output.length) / 4);
+
+    try {
+      const response = await fetch('/api/arena/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt,
+          modelA: results.modelA.name,
+          textA: results.modelA.output,
+          modelB: results.modelB.name,
+          textB: results.modelB.output,
+          winner: winnerCode,
+          timeToVoteMs,
+          approxTokens
+        })
+      });
+      
+      const data = await response.json();
+      if (data.isSpam) {
+        alert(data.feedback);
+      } else {
+        alert(`Vote logged to RLHF Dataset!\n\nNew Elo Standings:\nModel A (${results.modelA.name}): ${Math.round(data.math.newEloA)} (${data.math.deltaA > 0 ? '+'+Math.round(data.math.deltaA) : Math.round(data.math.deltaA)})\nModel B (${results.modelB.name}): ${Math.round(data.math.newEloB)} (${data.math.deltaB > 0 ? '+'+Math.round(data.math.deltaB) : Math.round(data.math.deltaB)})`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error saving RLHF preference data.");
+    }
+    
     setResults(null);
     setPrompt('');
   };
@@ -168,7 +201,7 @@ export default function Arena() {
                     {results.modelA.output}
                   </div>
                   <button 
-                    onClick={() => handleVote('Model A')}
+                    onClick={() => handleVote('A')}
                     className="w-full mt-4 bg-transparent border border-neutral-700 hover:bg-white hover:text-black py-3 font-bold uppercase tracking-wider transition-all"
                   >
                     👈 Model A is Better
@@ -185,7 +218,7 @@ export default function Arena() {
                     {results.modelB.output}
                   </div>
                   <button 
-                    onClick={() => handleVote('Model B')}
+                    onClick={() => handleVote('B')}
                     className="w-full mt-4 bg-transparent border border-neutral-700 hover:bg-white hover:text-black py-3 font-bold uppercase tracking-wider transition-all"
                   >
                     Model B is Better 👉

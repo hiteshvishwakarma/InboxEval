@@ -40,8 +40,11 @@ class GoldenDatasetOrchestrator:
         # ==========================================
         # PHASE 2: GENESIS
         # ==========================================
-        # Step 4 & 5: Base Prompt & Genesis Mutation
-        current_mutations: List[PromptMutation] = self._step_04_05_genesis_mutation(human_email, persona)
+        # Step 4: Dynamic Context-Aware Persona Synthesis
+        dynamic_personas: List[str] = self._step_04_synthesize_personas(human_email, persona)
+        
+        # Step 5: Genesis Mutation
+        current_mutations: List[PromptMutation] = self._step_05_genesis_mutation(human_email, persona, dynamic_personas)
         
         # Initialize Telemetry State
         state = GenerationState(human_email_id=human_email.id)
@@ -101,7 +104,10 @@ class GoldenDatasetOrchestrator:
     def _step_03_get_dpbc_thresholds(self, persona: PersonaProfile, email: HumanEmail) -> DPBCThresholds:
         pass
         
-    def _step_04_05_genesis_mutation(self, email: HumanEmail, persona: PersonaProfile) -> List[PromptMutation]:
+    def _step_04_synthesize_personas(self, email: HumanEmail, persona: PersonaProfile) -> List[str]:
+        pass
+        
+    def _step_05_genesis_mutation(self, email: HumanEmail, persona: PersonaProfile, dynamic_personas: List[str]) -> List[PromptMutation]:
         pass
         
     def _step_06_evaluate(self, mutations: List[PromptMutation], email: HumanEmail, dpbc: DPBCThresholds) -> List[EvaluatedEmail]:

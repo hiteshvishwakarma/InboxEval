@@ -32,7 +32,7 @@ This engine is a highly modular, 12-step evolutionary genetic algorithm. It take
 *   **File:** `engine_steps/step_03_vectorization.py`
 *   **Input:** `PersonaProfile`, `HumanEmail`, `vector_db_client`
 *   **Logic:** Embeds `[Typology] Text` into 384d vector. Queries local ChromaDB for 5 K-Nearest Neighbors. Averages historical scores.
-*   **Fallback:** If DB is empty, return global baseline (`Tone: 7.0`, `Conciseness: 5.0`, `Accuracy: 8.0`).
+*   **Fallback:** If DB is empty, execute a dynamic Zero-Shot LLM Evaluation to generate context-aware baseline thresholds.
 *   **Output:** `DPBCThresholds`
 
 ---
@@ -42,14 +42,14 @@ This engine is a highly modular, 12-step evolutionary genetic algorithm. It take
 #### Step 4: Dynamic Persona Synthesis
 *   **File:** `engine_steps/step_04_persona_synthesis.py`
 *   **Input:** `HumanEmail`, `PersonaProfile`, `llm_client`
-*   **Logic:** Prompts LLM to analyze the email context and generate 5 highly diverse, contextual 'Prompt Writer Personas'. 
-*   **Output:** `List[str]` (Array of 5 personas)
+*   **Logic:** Prompts LLM to analyze the email context and generate diverse, contextual 'Prompt Writer Personas'. 
+*   **Output:** `List[str]` (Array of up to 5 personas)
 
 #### Step 5: Genesis Mutation
 *   **File:** `engine_steps/step_05_genesis_mutation.py`
 *   **Input:** `HumanEmail`, `PersonaProfile`, `List[str]` (personas), `llm_client`
-*   **Logic:** Iterates over the 5 personas. Prompts LLM to write a base prompt *strictly constrained* by the assigned persona's behavioral style.
-*   **Output:** `List[PromptMutation]` (Array of 5 prompts, `generation_num=0`)
+*   **Logic:** Iterates over the personas. Prompts LLM to write a base prompt *strictly constrained* by the assigned persona's behavioral style. Skips on failure.
+*   **Output:** `List[PromptMutation]` (Array of up to 5 prompts, `generation_num=0`)
 
 ---
 
@@ -95,9 +95,9 @@ This engine is a highly modular, 12-step evolutionary genetic algorithm. It take
 *   **Output:** `List[PromptMutation]` (Size: 5. 1 Champion + 4 Challengers).
 
 #### Step 11: Early Stopping (Plateau Detection)
-*   **File:** Handled natively in `orchestrator.py` via `_check_convergence()`
+*   **File:** `engine_steps/step_11_early_stop.py`
 *   **Input:** `KDAMatrix`, `GenerationState`
-*   **Logic:** If `overall_delta` hits acceptable margin (~0.05), or if the `overall_delta` fails to improve for 2 consecutive generations, trigger early stop.
+*   **Logic:** If `overall_delta` hits acceptable margin (~0.05), or if the `overall_delta` fails to improve for 3 consecutive generations, trigger early stop.
 *   **Output:** `bool` (Converged state)
 
 ---

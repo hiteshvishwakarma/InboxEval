@@ -37,4 +37,4 @@ The resulting prompt text for each persona is packaged into the `PromptMutation`
 Return the 5 instantiated `PromptMutation` objects as an array.
 
 ## Edge Cases & Error Handling
-*   **Array Size Integrity:** The output array must contain exactly 5 `PromptMutation` objects. If an LLM call fails for a specific persona, the system must retry or substitute a generic placeholder prompt to guarantee the tournament array size remains exactly 5.
+*   **Variable Array Size Integrity:** If an LLM call fails (e.g. timeout) for a specific persona, the system must simply skip that persona and return a smaller array (e.g., 4 mutations). We do NOT inject a generic placeholder prompt, because doing so would introduce garbage DNA into the Evolutionary Algorithm that could degrade the final bred prompt. The tournament size `N` dynamically adapts to `len(mutations)`.

@@ -40,13 +40,9 @@ def synthesize_dynamic_personas(email: HumanEmail, persona: PersonaProfile, llm_
             "The Legal Threatener (Verbose)"
         ]
         
-    # Edge Case: Array Size Constraint (Must be exactly 5)
-    # Slice if too many
+    # Edge Case: Array Size Constraint (Max 5, but allow fewer)
+    # Slice if too many to prevent API waste
     if len(personas) > 5:
         personas = personas[:5]
-        
-    # Pad if too few
-    while len(personas) < 5:
-        personas.append("The Generic Assistant (Default)")
         
     return personas

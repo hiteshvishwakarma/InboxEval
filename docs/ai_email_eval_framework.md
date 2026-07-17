@@ -83,7 +83,7 @@ To achieve world-class precision, InboxEval abandons static tags and utilizes **
 ### Pipeline A: Golden Dataset Generation (Backend Prep)
 
 **Executive Summary:**
-Pipeline A is the internal, closed-loop engine responsible for generating the world-class `golden_dataset.jsonl`. It ingests historical human emails, extracts their persona via Vector Embeddings, and uses Evolutionary Prompt Optimization to reverse-engineer flawless synthetic prompts. The system mathematically prevents generational degradation via Elitism and optimizes for Delta Minimization against Dynamic Persona-Based Calibration (DPBC) thresholds.
+Pipeline A is the internal, closed-loop engine responsible for generating the world-class `golden_dataset.jsonl`. It ingests historical human emails, extracts their persona via Vector Embeddings, and uses Evolutionary Prompt Optimization to reverse-engineer flawless synthetic prompts. The system mathematically prevents generational degradation via Elitism and optimizes for Delta Minimization against Dynamic Persona-Based Calibration (DPBC) thresholds. Crucially, the engine employs a Dual-Scoring Judge utilizing Persona-Dynamic Constraints. This prevents the AI from defaulting to robotic structures, forcing the Genetic Algorithm to evolve optimal prompts that strictly adhere to the diverse behavioral constraints of their assigned human demographic (from lazy conversationalists to structured power users).
 
 **Architecture Blueprint:**
 * **Phase 1 (Preparation):** Raw Ingestion -> Persona Extraction -> DPBC Vectorization

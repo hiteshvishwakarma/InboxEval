@@ -108,6 +108,36 @@ This is the step-by-step internal process InboxEval uses to build the flawless d
 11. **Early Stopping (Plateau Detection):** The loop repeats until an $E_{synth}$ mathematically crosses the DPBC thresholds (Delta hits near 0). However, if the Delta fails to shrink for 2 consecutive generations (a flat, linear graph indicating wasted resources), the system triggers an **Early Stop**, taking the reigning Champion to prevent resource drain.
 12. **Commit:** The winning lazy human prompt and the target $E_{human}$ are saved as a perfect pair to the Golden Dataset.
 
+### 8. Codebase Architecture & Data Infrastructure
+
+To ensure enterprise-grade maintainability, Pipeline A strictly enforces an **AI-First Modular Architecture** and a **Dual-Database Infrastructure**.
+
+**The Dual-Database Infrastructure:**
+*   **Database A: The Vector DB (Semantic Engine):** Utilizes ChromaDB or SQLite-VSS (local). Used exclusively in Step 3 to store the semantic embeddings of human emails. This enables the calculation of DPBC thresholds via K-Nearest Neighbors (KNN).
+*   **Database B: The Relational DB (Telemetry & RLHF):** Utilizes PostgreSQL or a robust SQLite file. Used by the Orchestrator to log every single input, output, mutation, KDA Matrix, and feedback loop across all 12 steps. This creates a massive RLHF (Reinforcement Learning from Human Feedback) dataset for future open-source model training.
+
+**The Modular Folder Structure:**
+Instead of monolithic scripts, the engine operates as a decoupled Orchestrator managing 12 atomic node files:
+```text
+src/engine/
+└── golden_dataset_generator/
+    ├── orchestrator.py                 <-- Master logic loop
+    ├── schemas.py                      <-- Strict Pydantic Data Models
+    └── engine_steps/
+        ├── step_01_ingest.py           <-- Fetches the raw human email
+        ├── step_02_persona_extract.py  <-- Extracts Domain/Category/Intent
+        ├── step_03_vectorization.py    <-- Queries Vector DB for DPBC Thresholds
+        ├── step_04_persona_synthesis.py<-- Dynamically generates 5 Prompt Personas
+        ├── step_05_genesis_mutation.py <-- Spawns the 5 diverse prompts
+        ├── step_06_evaluator.py        <-- Forward generation & dual-scoring LLM judge
+        ├── step_07_kda_ranking.py      <-- Calculates Delta Minimization & ranks 1-5
+        ├── step_08_feedback_loop.py    <-- Generates explicit written feedback
+        ├── step_09_crossover.py        <-- Polygenic Breeding (Genetic Algorithm)
+        ├── step_10_elitism.py          <-- Crowns the Reigning Champion
+        ├── step_11_early_stop.py       <-- Detects mathematical plateaus
+        └── step_12_commit.py           <-- Saves to golden_dataset.jsonl
+```
+
 ### Pipeline B: The Eval Engine (User/Client Facing)
 This is how a corporate client uses InboxEval to grade their brand-new, unknown AI model.
 1. **Input Submission:** The client inputs their AI model API key into the InboxEval Engine.

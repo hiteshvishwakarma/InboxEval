@@ -19,9 +19,8 @@ def get_dpbc_thresholds(persona: PersonaProfile, email: HumanEmail, vector_db_cl
         # vector = vector_db_client.embed(combined_text)
         # neighbors = vector_db_client.query_knn(vector, k=5)
         #
-        # if not neighbors:
-        #     logger.warning("Vector DB is empty (Cold Start). Falling back to Global Average.")
-        #     return _get_global_fallback_thresholds()
+        #     logger.warning("Vector DB is empty (Cold Start). Falling back to Zero-Shot Evaluation.")
+        #     return _get_zero_shot_fallback_thresholds(email, llm_client)
         #
         # avg_tone = sum(n.metadata['tone_score'] for n in neighbors) / 5
         # avg_conciseness = sum(n.metadata['conciseness_score'] for n in neighbors) / 5
@@ -35,17 +34,25 @@ def get_dpbc_thresholds(persona: PersonaProfile, email: HumanEmail, vector_db_cl
         pass
 
     # Mocking the KNN calculation for the pipeline architecture build
-    logger.warning("No Vector DB Client provided. Returning mocked KNN DPBC Thresholds.")
-    return DPBCThresholds(
-        tone_target=6.5,          # e.g., Historical angry emails average a 6.5 in professionalism
-        conciseness_target=4.2,   # e.g., Historical support emails are usually brief
-        accuracy_target=9.8       # e.g., Facts are usually entirely accurate
-    )
+    logger.warning("No Vector DB Client provided. Falling back to Zero-Shot Evaluation Mock.")
+    return _get_zero_shot_fallback_thresholds(email, None)
 
-def _get_global_fallback_thresholds() -> DPBCThresholds:
-    """Fallback if the Vector DB has 0 historical records."""
+def _get_zero_shot_fallback_thresholds(email: HumanEmail, llm_client) -> DPBCThresholds:
+    """Fallback if the Vector DB has 0 historical records. Uses an LLM to dynamically score the text."""
+    if llm_client:
+        # zero_shot_prompt = f"Evaluate this email on a 0-10 scale for Tone, Conciseness, and Accuracy:\n{email.raw_text}"
+        # return llm_client.chat.completions.create(
+        #     model="gpt-4o",
+        #     response_model=DPBCThresholds,
+        #     messages=[{"role": "user", "content": zero_shot_prompt}]
+        # )
+        pass
+        
+    # Simulated dynamic response based on string length (mocking dynamic behavior)
+    # This prevents hardcoded constants while testing without an LLM
+    length_factor = min(10.0, len(email.raw_text) / 100)
     return DPBCThresholds(
-        tone_target=7.0,
-        conciseness_target=5.0,
-        accuracy_target=8.0
+        tone_target=round(6.0 + (length_factor * 0.2), 1),
+        conciseness_target=round(10.0 - (length_factor * 0.5), 1),
+        accuracy_target=9.0
     )

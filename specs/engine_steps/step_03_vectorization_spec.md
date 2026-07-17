@@ -27,5 +27,4 @@ The Dynamic Persona-Based Calibration (DPBC) step creates the mathematical targe
 
 ## Edge Cases & Error Handling
 *   **Cold Start (Empty DB):** If the Vector DB has fewer than 5 records (or 0 records), the KNN query will fail or skew. 
-    *   **Action:** Catch empty neighbor lists and fall back to the global baseline: 
-        `Tone: 7.0`, `Conciseness: 5.0`, `Accuracy: 8.0`.
+    *   **Action:** Catch empty neighbor lists and execute a "Zero-Shot LLM Evaluation". Pass the raw email to the LLM and dynamically ask it to score the Tone, Conciseness, and Accuracy on a 0-10 scale. This returns context-aware fallback thresholds without hardcoding static baselines.

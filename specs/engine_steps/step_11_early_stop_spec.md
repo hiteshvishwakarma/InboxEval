@@ -32,7 +32,7 @@ If the prompt has not perfectly converged, we must check if the Genetic Algorith
         *   Reset `state.plateau_counter = 0`.
 
 ### 4. Circuit Breaker Execution
-Define a max plateau limit (e.g., `MAX_PLATEAUS = 2`).
+Define a max plateau limit (e.g., `MAX_PLATEAUS = 3`).
 *   **Logic:** If `state.plateau_counter >= MAX_PLATEAUS`:
 *   **Action:**
     *   Set `state.is_converged = True`. (We mark it as 'converged' to cleanly break the loop, acknowledging this is the best possible prompt the engine can generate).

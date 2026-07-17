@@ -64,8 +64,8 @@ class GoldenDatasetOrchestrator:
             kda_matrix: KDAMatrix = self._step_07_kda_ranking(evaluations, state.current_generation)
             
             # Step 11: Early Stopping / Plateau Detection
-            # The orchestrator checks if the overall_delta hit ~0 or plateaued
-            if self._check_convergence(kda_matrix, state):
+            # The orchestrator checks if the overall_delta hit ~0 or plateaued for N generations
+            if self._step_11_check_convergence(kda_matrix, state):
                 logger.info("Convergence or Plateau reached. Breaking loop.")
                 break
                 
@@ -116,7 +116,7 @@ class GoldenDatasetOrchestrator:
     def _step_07_kda_ranking(self, evals: List[EvaluatedEmail], gen_num: int) -> KDAMatrix:
         pass
         
-    def _check_convergence(self, kda: KDAMatrix, state: GenerationState) -> bool:
+    def _step_11_check_convergence(self, kda: KDAMatrix, state: GenerationState) -> bool:
         pass
         
     def _step_08_feedback_loop(self, kda: KDAMatrix, email: HumanEmail, dpbc: DPBCThresholds) -> JudgeFeedback:

@@ -24,13 +24,29 @@ def synthesize_dynamic_personas(email: HumanEmail, persona: PersonaProfile, llm_
     """
     
     # In production, the LLM would return a list of 5 synthesized personas
+    personas: List[str] = []
+    
     if llm_client:
+        # personas = llm_client.chat(synthesis_prompt, response_model=List[str])
         pass
         
-    return [
-        "The Stressed IT Manager (Structured)",
-        "The Furious CEO (Minimalist)",
-        "The Overwhelmed Procurement Officer (Over-Explainer)",
-        "The Non-Native Operations Lead (Conversational)",
-        "The Legal Threatener (Verbose)"
-    ]
+    if not personas:
+        # Mocking the 5 synthesized personas if LLM is unavailable
+        personas = [
+            "The Stressed IT Manager (Structured)",
+            "The Furious CEO (Minimalist)",
+            "The Overwhelmed Procurement Officer (Over-Explainer)",
+            "The Non-Native Operations Lead (Conversational)",
+            "The Legal Threatener (Verbose)"
+        ]
+        
+    # Edge Case: Array Size Constraint (Must be exactly 5)
+    # Slice if too many
+    if len(personas) > 5:
+        personas = personas[:5]
+        
+    # Pad if too few
+    while len(personas) < 5:
+        personas.append("The Generic Assistant (Default)")
+        
+    return personas

@@ -102,10 +102,10 @@ This engine is a highly modular, 12-step evolutionary genetic algorithm. It take
 
 ---
 
-### PHASE 5: COMMIT
+### PHASE 5: SERIALIZATION / EXPORT
 
-#### Step 12: Golden Dataset Commit
-*   **File:** `engine_steps/step_12_commit.py`
+#### Step 12: Golden Record Export
+*   **File:** `engine_steps/step_12_golden_record_export.py`
 *   **Input:** `SuperPrompt`, `HumanEmail`
 *   **Logic:** Pairs the winning prompt with the target email. Appends as a perfect tuple to `data/golden_dataset.jsonl`.
 *   **Output:** `None` (Disk Write)

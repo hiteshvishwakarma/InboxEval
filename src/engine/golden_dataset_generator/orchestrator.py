@@ -85,9 +85,9 @@ class GoldenDatasetOrchestrator:
         # ==========================================
         # PHASE 5: COMMIT
         # ==========================================
-        # Step 12: Save to Golden Dataset
+        # Step 12: Golden Record Export
         if state.reigning_champion:
-            self._step_12_commit(state.reigning_champion, human_email)
+            self._step_12_golden_record_export(state.reigning_champion, human_email)
             return state.reigning_champion
         else:
             raise RuntimeError("Pipeline failed to generate a champion.")
@@ -128,5 +128,5 @@ class GoldenDatasetOrchestrator:
     def _step_10_elitism(self, champion: SuperPrompt, next_gen_num: int) -> List[PromptMutation]:
         pass
         
-    def _step_12_commit(self, champion: SuperPrompt, email: HumanEmail):
+    def _step_12_golden_record_export(self, champion: SuperPrompt, email: HumanEmail):
         pass

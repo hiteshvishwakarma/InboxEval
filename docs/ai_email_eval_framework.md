@@ -135,7 +135,7 @@ src/engine/
         ├── step_09_crossover.py        <-- Polygenic Breeding (Genetic Algorithm)
         ├── step_10_elitism.py          <-- Crowns the Reigning Champion
         ├── step_11_early_stop.py       <-- Detects mathematical plateaus
-        └── step_12_commit.py           <-- Saves to golden_dataset.jsonl
+        └── step_12_golden_record_export.py           <-- Saves to golden_dataset.jsonl
 ```
 
 ### Pipeline B: The Eval Engine (User/Client Facing)

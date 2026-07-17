@@ -93,40 +93,52 @@ class GoldenDatasetOrchestrator:
             raise RuntimeError("Pipeline failed to generate a champion.")
 
     # ---------------------------------------------------------
-    # STUBS: These will be replaced by imports from engine_steps/
+    # PIPELINE NODE EXECUTORS
     # ---------------------------------------------------------
     def _step_01_ingest(self, text: str) -> HumanEmail:
-        pass
+        from .engine_steps.step_01_ingest import ingest_raw_email
+        return ingest_raw_email(text)
         
     def _step_02_extract_persona(self, email: HumanEmail) -> PersonaProfile:
-        pass
+        from .engine_steps.step_02_persona_extract import extract_persona
+        return extract_persona(email, llm_client=None)
         
     def _step_03_get_dpbc_thresholds(self, persona: PersonaProfile, email: HumanEmail) -> DPBCThresholds:
-        pass
+        from .engine_steps.step_03_vectorization import get_dpbc_thresholds
+        return get_dpbc_thresholds(persona, email, vector_db_client=None, llm_client=None)
         
     def _step_04_synthesize_personas(self, email: HumanEmail, persona: PersonaProfile) -> List[str]:
-        pass
+        from .engine_steps.step_04_persona_synthesis import synthesize_dynamic_personas
+        return synthesize_dynamic_personas(email, persona, llm_client=None)
         
     def _step_05_genesis_mutation(self, email: HumanEmail, persona: PersonaProfile, dynamic_personas: List[str]) -> List[PromptMutation]:
-        pass
+        from .engine_steps.step_05_genesis_mutation import generate_genesis_mutations
+        return generate_genesis_mutations(email, persona, dynamic_personas, llm_client=None)
         
     def _step_06_evaluate(self, mutations: List[PromptMutation], email: HumanEmail, dpbc: DPBCThresholds) -> List[EvaluatedEmail]:
-        pass
+        from .engine_steps.step_06_evaluator import evaluate_mutations
+        return evaluate_mutations(mutations, email, dpbc, llm_client=None)
         
     def _step_07_kda_ranking(self, evals: List[EvaluatedEmail], gen_num: int) -> KDAMatrix:
-        pass
+        from .engine_steps.step_07_kda_ranking import calculate_kda_ranking
+        return calculate_kda_ranking(evals, gen_num)
         
     def _step_11_check_convergence(self, kda: KDAMatrix, state: GenerationState) -> bool:
-        pass
+        from .engine_steps.step_11_early_stop import check_convergence
+        return check_convergence(kda, state)
         
     def _step_08_feedback_loop(self, kda: KDAMatrix, email: HumanEmail, dpbc: DPBCThresholds) -> JudgeFeedback:
-        pass
+        from .engine_steps.step_08_feedback_loop import generate_feedback_loop
+        return generate_feedback_loop(kda, email, dpbc, llm_client=None)
         
     def _step_09_crossover(self, kda: KDAMatrix, feedback: JudgeFeedback) -> SuperPrompt:
-        pass
+        from .engine_steps.step_09_crossover import generate_super_prompt
+        return generate_super_prompt(kda, feedback, llm_client=None)
         
     def _step_10_elitism(self, champion: SuperPrompt, next_gen_num: int) -> List[PromptMutation]:
-        pass
+        from .engine_steps.step_10_elitism import execute_elitism_loop
+        return execute_elitism_loop(champion, next_gen_num, llm_client=None)
         
     def _step_12_golden_record_export(self, champion: SuperPrompt, email: HumanEmail):
-        pass
+        from .engine_steps.step_12_golden_record_export import export_golden_record
+        export_golden_record(champion, email)

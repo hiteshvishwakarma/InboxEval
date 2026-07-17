@@ -60,14 +60,7 @@ def execute_elitism_loop(champion: SuperPrompt, next_gen_num: int, llm_client=No
         )
         mutations.append(challenger_mutation)
         
-    # If LLM hallucinated and returned < 4, pad it to ensure tournament size is exactly 5
-    while len(mutations) < 5:
-        padding_mutation = PromptMutation(
-            id=f"mut_gen{next_gen_num}_PAD_{uuid.uuid4().hex[:4]}",
-            typology_persona="Padding Variant",
-            prompt_text=f"Padding variant for {champion.id}",
-            generation_num=next_gen_num
-        )
-        mutations.append(padding_mutation)
+    # We do not pad if the LLM hallucinated fewer than 4 challengers. 
+    # A smaller, high-quality gene pool is better than generic padding.
         
     return mutations

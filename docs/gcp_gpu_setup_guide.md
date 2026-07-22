@@ -5,16 +5,15 @@ Since I will be orchestrating this instance remotely from your laptop, we need t
 ## Phase 0: GCP Project Prerequisites
 Before spinning up the VM, we must lay the foundation for a clean, isolated cloud environment.
 
-1. **Activate Billing:** You must link a billing account to activate your $300 free trial. Google will not auto-charge you when credits expire; they just pause services. This is required for identity verification.
-2. **Create a New Project:** Click the project dropdown at the top of the GCP console and select **New Project**. Name it `inbox-eval`. 
+1. **Activate Billing:** Go to [Billing](https://console.cloud.google.com/billing). You must link a billing account to activate your $300 free trial. Google will not auto-charge you when credits expire; they just pause services. This is required for identity verification.
+2. **Create a New Project:** Go to [Project Create](https://console.cloud.google.com/projectcreate). Name it `inbox-eval`. 
    - *Why a new project?* It ensures isolated billing (you see exactly how many credits the Engine uses) and allows for 1-click cleanup when you're done.
-3. **Select "No Organization":** When creating the project, leave the organization blank (or select "No Organization").
+3. **Select "No Organization":** On the same project creation page, leave the organization blank (or select "No Organization").
    - *Why No Org?* Corporate Organizations enforce strict default security policies (like blocking external IPs or SSH keys). "No Org" guarantees zero friction so we can SSH directly into the VM.
-4. **Enable Compute Engine API:** Search for "Compute Engine API" in the top bar and click **Enable**.
+4. **Enable Compute Engine API:** Go to the [Compute Engine API Library](https://console.cloud.google.com/apis/library/compute.googleapis.com) and click **Enable**.
 
 ## Phase 1: Spin up the Instance in GCP Console
-1. Navigate to **Compute Engine -> VM Instances**.
-2. Click **Create Instance**.
+1. Go directly to [Create an Instance](https://console.cloud.google.com/compute/instancesAdd) (or navigate to Compute Engine -> VM Instances and click Create).
 3. **Name:** `inbox-eval-engine`
 4. **Region:** Choose a region close to you that has L4 GPUs available (e.g., `us-central1`, `us-east4`, `europe-west4`).
 5. **Machine Configuration:** 

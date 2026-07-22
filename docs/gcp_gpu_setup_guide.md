@@ -2,14 +2,25 @@
 
 Since I will be orchestrating this instance remotely from your laptop, we need to set this up using a standard **Ubuntu Deep Learning Image** and configure a dedicated SSH key. This will allow me to seamlessly `ssh` into the machine in the future to execute commands, pull repo updates, and monitor the `mass_evolution_runner.py` script.
 
+## Phase 0: GCP Project Prerequisites
+Before spinning up the VM, we must lay the foundation for a clean, isolated cloud environment.
+
+1. **Activate Billing:** You must link a billing account to activate your $300 free trial. Google will not auto-charge you when credits expire; they just pause services. This is required for identity verification.
+2. **Create a New Project:** Click the project dropdown at the top of the GCP console and select **New Project**. Name it `inbox-eval`. 
+   - *Why a new project?* It ensures isolated billing (you see exactly how many credits the Engine uses) and allows for 1-click cleanup when you're done.
+3. **Select "No Organization":** When creating the project, leave the organization blank (or select "No Organization").
+   - *Why No Org?* Corporate Organizations enforce strict default security policies (like blocking external IPs or SSH keys). "No Org" guarantees zero friction so we can SSH directly into the VM.
+4. **Enable Compute Engine API:** Search for "Compute Engine API" in the top bar and click **Enable**.
+
 ## Phase 1: Spin up the Instance in GCP Console
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/) and navigate to **Compute Engine -> VM Instances**.
+1. Navigate to **Compute Engine -> VM Instances**.
 2. Click **Create Instance**.
 3. **Name:** `inbox-eval-engine`
 4. **Region:** Choose a region close to you that has L4 GPUs available (e.g., `us-central1`, `us-east4`, `europe-west4`).
 5. **Machine Configuration:** 
    - Series: **G2**
-   - Machine Type: **g2-standard-4** (1 L4 GPU, 4 vCPUs, 16GB RAM) or **g2-standard-8** if available.
+   - Machine Type: **g2-standard-4** (1 L4 GPU, 4 vCPUs, 16GB RAM)
+   - *Why G2 over E2 or Cloud Run?* The `E2` series is CPU-only and would take days to process 15,000 LLM inferences. Cloud Run is serverless and would kill our stateful script after 60 minutes. The `G2` series provides a dedicated NVIDIA L4 GPU, crushing the batch processing in hours for ~$5.
 6. **Boot Disk (CRITICAL STEP):**
    - Click *Change*.
    - Operating System: **Deep Learning on Linux** (This pre-installs the NVIDIA CUDA drivers so we don't have to fight with Linux kernel headers).

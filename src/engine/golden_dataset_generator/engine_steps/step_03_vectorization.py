@@ -4,7 +4,7 @@ from ..schemas import HumanEmail, PersonaProfile, DPBCThresholds
 
 logger = logging.getLogger("Step03_Vectorization")
 
-def get_dpbc_thresholds(persona: PersonaProfile, email: HumanEmail, vector_db_client=None) -> DPBCThresholds:
+def get_dpbc_thresholds(persona: PersonaProfile, email: HumanEmail, vector_db_client=None, llm_client=None) -> DPBCThresholds:
     """
     Step 3: Vectorization & Dynamic Persona-Based Calibration (DPBC).
     Embeds the email into a 384-dimensional vector, queries the local ChromaDB 

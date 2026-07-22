@@ -21,15 +21,18 @@ class GoldenDatasetOrchestrator:
         # self.telemetry_db = RelationalDBClient(...)
         pass
 
-    def run_pipeline(self, raw_email_text: str) -> SuperPrompt:
+    def run_pipeline(self, raw_email_text: str, email_id: str = None) -> SuperPrompt:
         """Executes the full 12-step evolutionary pipeline."""
         logger.info("Starting Pipeline A for new raw email...")
 
         # ==========================================
         # PHASE 1: PREPARATION
         # ==========================================
+        
         # Step 1: Ingestion
-        human_email: HumanEmail = self._step_01_ingest(raw_email_text)
+        import uuid
+        actual_id = email_id if email_id else f"email_{uuid.uuid4().hex[:8]}"
+        human_email: HumanEmail = self._step_01_ingest(raw_email_text, actual_id)
         
         # Step 2: Persona Extraction
         persona: PersonaProfile = self._step_02_extract_persona(human_email)
@@ -95,9 +98,9 @@ class GoldenDatasetOrchestrator:
     # ---------------------------------------------------------
     # PIPELINE NODE EXECUTORS
     # ---------------------------------------------------------
-    def _step_01_ingest(self, text: str) -> HumanEmail:
+    def _step_01_ingest(self, text: str, email_id: str) -> HumanEmail:
         from .engine_steps.step_01_ingest import ingest_raw_email
-        return ingest_raw_email(text)
+        return ingest_raw_email(text, email_id)
         
     def _step_02_extract_persona(self, email: HumanEmail) -> PersonaProfile:
         from .engine_steps.step_02_persona_extract import extract_persona

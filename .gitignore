@@ -4,3 +4,6 @@ __pycache__/
 .env
 .DS_Store
 datasets/golden_dataset.json
+
+# ARG/Easter Egg Secrets
+docs/SECRET_ARG_PLAN.md

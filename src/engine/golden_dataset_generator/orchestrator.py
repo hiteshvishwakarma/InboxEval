@@ -21,7 +21,7 @@ class GoldenDatasetOrchestrator:
         # self.telemetry_db = RelationalDBClient(...)
         pass
 
-    def run_pipeline(self, raw_email_text: str, email_id: str = None) -> SuperPrompt:
+    def run_pipeline(self, raw_email_text: str, email_id: str = None, output_path: str = "data/golden_dataset.jsonl") -> SuperPrompt:
         """Executes the full 12-step evolutionary pipeline."""
         logger.info("Starting Pipeline A for new raw email...")
 
@@ -90,7 +90,7 @@ class GoldenDatasetOrchestrator:
         # ==========================================
         # Step 12: Golden Record Export
         if state.reigning_champion:
-            self._step_12_golden_record_export(state.reigning_champion, human_email)
+            self._step_12_golden_record_export(state.reigning_champion, human_email, output_path)
             return state.reigning_champion
         else:
             raise RuntimeError("Pipeline failed to generate a champion.")
@@ -142,6 +142,6 @@ class GoldenDatasetOrchestrator:
         from .engine_steps.step_10_elitism import execute_elitism_loop
         return execute_elitism_loop(champion, next_gen_num, llm_client=None)
         
-    def _step_12_golden_record_export(self, champion: SuperPrompt, email: HumanEmail):
+    def _step_12_golden_record_export(self, champion: SuperPrompt, email: HumanEmail, output_path: str):
         from .engine_steps.step_12_golden_record_export import export_golden_record
-        export_golden_record(champion, email)
+        export_golden_record(champion, email, output_path)

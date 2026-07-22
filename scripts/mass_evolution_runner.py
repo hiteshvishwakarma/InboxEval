@@ -59,8 +59,8 @@ def main():
         
         # Extract the human baseline text.
         human_text = ""
-        emails_to_grade = record.get("evaluations", [])
-        for e in emails_to_grade:
+        evaluations = record.get("evaluations", [])
+        for e in evaluations:
             if e.get("case_type") == "Human Baseline":
                 human_text = e.get("email_text")
                 break
@@ -70,7 +70,10 @@ def main():
             
         try:
             # The engine runs all 12 steps and auto-appends to the JSONL via Step 12.
-            champion = orchestrator.run_pipeline(human_text, email_id=record_id)
+            champion = orchestrator.run_pipeline(
+                raw_email_text=human_text, 
+                email_id=record_id
+            )
             
             # Brief pause to cool down local GPUs or prevent API rate limiting
             time.sleep(0.5)

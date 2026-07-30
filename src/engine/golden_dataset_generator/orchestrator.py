@@ -79,25 +79,28 @@ class GoldenDatasetOrchestrator:
                                         import time
                                         last_err = None
                                         
-                                        # We will try every key in the pool up to 2 times
-                                        max_attempts = len(self.parent_rotator.clients) * 2
+                                        # We will try up to 10 times for any error (429 or 400)
+                                        max_attempts = 10
                                         for attempt in range(max_attempts):
                                             client = self.parent_rotator.clients[self.parent_rotator.current_idx]
                                             try:
+                                                # Instructor internally handles retries, but we enforce it here too
+                                                if 'max_retries' not in kwargs:
+                                                    kwargs['max_retries'] = 3
                                                 return client.chat.completions.create(**kwargs)
                                             except Exception as e:
                                                 err_str = str(e).lower()
+                                                last_err = e
                                                 if "429" in err_str or "rate limit" in err_str or "connection" in err_str:
                                                     logger.warning(f"[Rotator] Key {self.parent_rotator.current_idx} hit Rate Limit or Connection Error. Swapping to next key...")
                                                     self.parent_rotator.current_idx = (self.parent_rotator.current_idx + 1) % len(self.parent_rotator.clients)
-                                                    last_err = e
                                                     time.sleep(2) # Small buffer between swaps
-                                                    continue
                                                 else:
-                                                    # If it's a validation error, don't rotate, just raise it.
-                                                    raise e
+                                                    # 400 Validation error (schema hallucination). Do not swap key, just retry.
+                                                    logger.warning(f"[Rotator] Validation/Parse Error (400) on attempt {attempt+1}. Retrying... Error: {e}")
+                                                    time.sleep(2)
                                         
-                                        logger.error("All Groq keys are exhausted or rate limited!")
+                                        logger.error("Max retries exceeded for LLM call! Failing step.")
                                         raise last_err
                                         
                             self.chat = ChatRotator(self)

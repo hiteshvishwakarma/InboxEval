@@ -1,5 +1,6 @@
 import logging
 from ..schemas import KDAMatrix, HumanEmail, DPBCThresholds, JudgeFeedback
+from ..config import config
 
 logger = logging.getLogger("Step08_FeedbackLoop")
 
@@ -39,15 +40,24 @@ def generate_feedback_loop(kda: KDAMatrix, human_email: HumanEmail, dpbc: DPBCTh
     """
     
     if llm_client:
-        # feedback_text = llm_client.chat(feedback_prompt)
-        pass
+        from pydantic import BaseModel
+        class FeedbackResult(BaseModel):
+            feedback_text: str
+            
+        result = llm_client.chat.completions.create(
+            model=config.DEFAULT_GENERATION_MODEL,
+            response_model=FeedbackResult,
+            messages=[{"role": "user", "content": feedback_prompt}]
+        )
+        feedback_text = result.feedback_text
         
-    # Mocking feedback for architecture build
-    feedback_text = (
-        "The generated email was far too polite and verbose. The original human email was "
-        "aggressive and brief. The prompt failed to enforce a strict character limit and "
-        "did not push the sentiment hard enough into the 'Angry' domain."
-    )
+    else:
+        # Mocking feedback for architecture build
+        feedback_text = (
+            "The generated email was far too polite and verbose. The original human email was "
+            "aggressive and brief. The prompt failed to enforce a strict character limit and "
+            "did not push the sentiment hard enough into the 'Angry' domain."
+        )
     
     # 3. Assembly
     return JudgeFeedback(

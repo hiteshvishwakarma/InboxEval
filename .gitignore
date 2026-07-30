@@ -7,3 +7,6 @@ datasets/golden_dataset.json
 
 # ARG/Easter Egg Secrets
 docs/SECRET_ARG_PLAN.md
+
+# PRAXIS local memory (may contain project details — commit only after review)
+.praxis/

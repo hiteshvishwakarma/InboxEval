@@ -1,9 +1,10 @@
 import logging
 from ..schemas import KDAMatrix, GenerationState
+from ..config import config
 
 logger = logging.getLogger("Step11_EarlyStopping")
 
-def check_convergence(kda: KDAMatrix, state: GenerationState, convergence_threshold: float = 0.05, max_plateaus: int = 3) -> bool:
+def check_convergence(kda: KDAMatrix, state: GenerationState, convergence_threshold: float = 0.05, max_plateaus: int = config.EARLY_STOP_PLATEAU_LIMIT) -> bool:
     """
     Step 11: Early Stopping & Plateau Detection.
     Circuit breaker for the evolutionary loop. Returns True if the algorithm 

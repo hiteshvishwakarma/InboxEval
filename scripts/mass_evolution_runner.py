@@ -44,7 +44,14 @@ def main():
     
     # 3. Filter out records that are already done
     pending_records = [r for r in raw_data if str(r.get("id")) not in processed_ids]
-    print(f"Remaining records to evolve: {len(pending_records)}")
+    
+    # TEST MODE INJECTION FOR GROQ
+    import random
+    if len(pending_records) > 10:
+        pending_records = random.sample(pending_records, 10)
+        
+    TEMP_OUTPUT = "data/temp_dataset.jsonl"
+    print(f"GROQ TEST MODE: Evolving {len(pending_records)} records into {TEMP_OUTPUT}")
     
     if not pending_records:
         print("All records have been processed! Exiting.")
@@ -72,7 +79,8 @@ def main():
             # The engine runs all 12 steps and auto-appends to the JSONL via Step 12.
             champion = orchestrator.run_pipeline(
                 raw_email_text=human_text, 
-                email_id=record_id
+                email_id=record_id,
+                output_path=TEMP_OUTPUT
             )
             
             # Brief pause to cool down local GPUs or prevent API rate limiting

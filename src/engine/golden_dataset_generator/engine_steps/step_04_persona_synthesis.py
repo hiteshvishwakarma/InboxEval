@@ -1,44 +1,62 @@
 import logging
 from typing import List
 from ..schemas import HumanEmail, PersonaProfile
+from ..config import config
 
 logger = logging.getLogger("Step04_PersonaSynthesis")
 
 def synthesize_dynamic_personas(email: HumanEmail, persona: PersonaProfile, llm_client=None) -> List[str]:
     """
-    Step 4: Dynamic Context-Aware Persona Synthesis.
-    Takes the email and its extracted Persona Profile to dynamically synthesize
-    5 highly diverse 'Prompt Writer Personas' based on the specific context.
+    Step 4: Dynamic Prompting Strategy Synthesis.
+    Takes the deeply extracted Persona from Step 2 and generates 5 diverse 
+    'Prompting Strategies' (e.g., Lazy, Control-Freak, Conversational) that THIS SPECIFIC PERSONA 
+    might use when typing into ChatGPT.
     """
-    logger.info(f"Synthesizing dynamic personas for email {email.id}...")
+    logger.info(f"Synthesizing prompting strategies for email {email.id}...")
     
     synthesis_prompt = f"""
-    Analyze the following human email and its extracted Persona Profile.
-    You must dynamically synthesize 5 highly diverse 'Prompt Writer Personas' who 
-    could plausibly have written a prompt to generate this email. 
-    Do NOT use a static list. Invent them based on the context.
+    Analyze the following extracted Persona Profile. 
+    You must dynamically synthesize 5 highly diverse 'Prompting Strategies' that THIS EXACT PERSONA 
+    would plausibly use when interacting with an AI to generate the email. 
+    (e.g., 'The Lazy Minimalist Approach', 'The Over-Explainer Approach', 'The Conversational Chat Approach').
+    Do NOT invent new people. Invent 5 ways this specific person might type a prompt.
     
     Email Intent: {persona.intent}
     Email Domain: {persona.domain}
+    Format: {persona.format}
+    Power Dynamic: {persona.power_dynamic}
+    Formality: {persona.formality_scale}
+    Sentiment: {persona.sentiment}
+    Behavioral Quirks: {', '.join(persona.behavioral_quirks)}
+    
     Raw Text: {email.raw_text}
     """
     
     # In production, the LLM would return a list of 5 synthesized personas
     personas: List[str] = []
     
+    from pydantic import BaseModel
+    class PersonasList(BaseModel):
+        personas: List[str]
+
     if llm_client:
-        # personas = llm_client.chat(synthesis_prompt, response_model=List[str])
-        pass
+        response_data = llm_client.chat.completions.create(
+            model=config.DEFAULT_GENERATION_MODEL,
+            response_model=PersonasList,
+            messages=[{"role": "user", "content": synthesis_prompt}]
+        )
+        personas = response_data.personas
         
-    if not personas:
-        # Mocking the 5 synthesized personas if LLM is unavailable
-        personas = [
-            "The Stressed IT Manager (Structured)",
-            "The Furious CEO (Minimalist)",
-            "The Overwhelmed Procurement Officer (Over-Explainer)",
-            "The Non-Native Operations Lead (Conversational)",
-            "The Legal Threatener (Verbose)"
-        ]
+    else:
+        if not personas:
+            # Mocking the 5 synthesized prompting strategies if LLM is unavailable
+            personas = [
+                "The Lazy Minimalist (One sentence command)",
+                "The Micro-Manager (Provides every tiny detail)",
+                "The Conversationalist (Talks to the AI like a human)",
+                "The Bullet-Point Thinker (Strictly structured)",
+                "The Rushed Executive (Typos and fragmented thoughts)"
+            ]
         
     # Edge Case: Array Size Constraint (Max 5, but allow fewer)
     # Slice if too many to prevent API waste

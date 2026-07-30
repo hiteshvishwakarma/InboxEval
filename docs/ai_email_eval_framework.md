@@ -81,62 +81,14 @@ To achieve world-class precision, InboxEval abandons static tags and utilizes **
 ## 7. Step-by-Step Pipeline (From 0 to 1)
 
 ### Pipeline A: Golden Dataset Generation (Backend Prep)
-
-**Executive Summary:**
-Pipeline A is the internal, closed-loop engine responsible for generating the world-class `golden_dataset.jsonl`. It ingests historical human emails, extracts their persona via Vector Embeddings, and uses Evolutionary Prompt Optimization to reverse-engineer flawless synthetic prompts. The system mathematically prevents generational degradation via Elitism and optimizes for Delta Minimization against Dynamic Persona-Based Calibration (DPBC) thresholds. Crucially, the engine employs a Dual-Scoring Judge utilizing Persona-Dynamic Constraints. This prevents the AI from defaulting to robotic structures, forcing the Genetic Algorithm to evolve optimal prompts that strictly adhere to the diverse behavioral constraints of their assigned human demographic. These demographics are not statically hardcoded; the system dynamically synthesizes 5 unique, context-aware human personas on the fly for every single email to ensure infinite variability.
-
-**Architecture Blueprint:**
-* **Phase 1 (Preparation):** Raw Ingestion -> Persona Extraction -> DPBC Vectorization
-* **Phase 2 (Genesis):** Lazy Base Prompt Generation -> Dynamic Context-Aware Persona Synthesis -> 5-Way Mutation
-* **Phase 3 (Evaluation):** Forward Generation -> Isolated Parameter Judging -> KDA Matrix & Delta Ranking
-* **Phase 4 (Evolution):** Closed Feedback Loop -> Polygenic Crossover (Super Prompt) -> Elitism / Early Stopping -> Dataset Commit
-
-**In-Depth Execution Steps:**
-This is the step-by-step internal process InboxEval uses to build the flawless dataset.
-1. **Raw Ingestion (`mass_ingestion.py`):** Harvests a real, historical human email ($E_{human}$).
-2. **Reverse Engineering & Persona Extraction:** Before any prompts are written, an Evidence-Based Classifier LLM analyzes $E_{human}$. It extracts the exact intent, context, and a molecular Persona Profile (Domain, Category, Sentiment). 
-3. **Vectorization:** The extracted Persona Profile and the $E_{human}$ text are embedded into a semantic vector and stored. This allows the system to query the Vector DB (via KNN) to find the exact historical DPBC thresholds (e.g., Tone: 6.5, Conciseness: 4.2) expected for this specific persona. We do not demand a "perfect 10"; we demand adherence to the persona's historical threshold. If the Vector DB is empty (Cold Start), a dynamic Zero-Shot LLM Evaluation is executed to generate context-aware baselines.
-4. **Base Prompt Generation (Persona-Augmented Benchmarking):** The system generates a base prompt ($P_0$) to recreate $E_{human}$. *CRITICAL RESEARCH CONSTRAINT:* We do NOT hardcode a single prompting style, nor do we use a static list of personas. Industry research proves models suffer from "Prompt Jitter." Therefore, we utilize a **Dynamic Prompt Typology Matrix**. The system passes the context of the ingested email to an LLM, which dynamically synthesizes up to 5 diverse, contextually relevant "Prompt Writer Personas" on the fly (e.g., generating "The Furious CEO" and "The Stressed IT Manager" specifically for a B2B Server Rack email).
-5. **Genesis Mutation (Prompt Diversity):** From $P_0$, the system generates up to 5 vastly different prompt mutations, each adopting one of the newly synthesized dynamic personas. This guarantees the Golden Dataset tests models against real-world human linguistic variability across an infinite, non-static spectrum of demographics.
-6. **Forward Generation & Isolated Evaluation:** All generated prompts are fed to an LLM to generate synthetic emails ($E_{synth}$). *CRITICAL CONSTRAINT (Dual-Scoring & Persona Deviation):* The LLM Judge executes a dual-evaluation in complete isolation. 
-   - **Score A (Output):** It measures the Delta Minimization of the generated email against the human original. 
-   - **Score B (The Prompt Itself):** It calculates a **Persona Deviation Penalty**. The Judge cross-references the prompt's syntax against its assigned Typology Matrix Persona. If a "Lazy Minimalist" prompt utilizes rigid JSON, or a "Tech Power User" prompt uses messy slang, the prompt receives a massive mathematical penalty. This forces the Genetic Algorithm to evolve optimal prompts that strictly adhere to the psychological and structural reality of diverse human demographics.
-7. **The KDA Matrix & N-Way Tournament Selection (Delta Minimization):** The system compiles the isolated evaluations. *CRITICAL MATHEMATICAL CORRECTION:* The Judge does NOT rank the prompts based on the highest absolute score (e.g., an 8.0 is not necessarily better than a 7.0). It ranks them 1st through 5th based on **Delta Minimization** (minimizing the absolute error between the generated score and the specific historical DPBC target). The prompt whose $E_{synth}$ has the smallest delta to the human baseline wins. Instead of discarding the bottom 3 outright, the system generates a KDA Matrix identifying if any lower-ranked prompt won a specific parameter by having the smallest delta (e.g., Prompt 5 lost overall, but had the closest "Tone").
-8. **The Closed Feedback Loop:** The Judge provides explicit, written feedback on *why* the generated emails failed to perfectly mirror the human email.
-9. **Polygenic Crossover (Multi-Parent Breeding):** The Genetic Algorithm ingests the feedback loop and the KDA Matrix. It takes the overall winner (Rank 1) as the base, but executes a **Multi-Parent (Polygenic) Crossover**. It mathematically extracts the absolute best traits from *any* of the 5 prompts (e.g., borrowing the tone instructions from Prompt 5) to synthesize the ultimate "Super Prompt" (Generation 1).
-10. **DPBC Loop & Elitism (Preventing Degradation):** To prevent generational degradation (where Gen 2 is worse than Gen 1), the engine uses **Elitism**: The all-time best prompt (the one with the lowest overall Delta) is always carried over untouched into the next generation's tournament. The Super Prompt generates 4 new mutations to battle the reigning Champion. 
-11. **Early Stopping (Plateau Detection):** The loop repeats until an $E_{synth}$ mathematically crosses the DPBC thresholds (Delta hits near 0). However, if the Delta fails to shrink for 2 consecutive generations (a flat, linear graph indicating wasted resources), the system triggers an **Early Stop**, taking the reigning Champion to prevent resource drain.
-12. **Commit:** The winning lazy human prompt and the target $E_{human}$ are saved as a perfect pair to the Golden Dataset.
-
-### 8. Codebase Architecture & Data Infrastructure
-
-To ensure enterprise-grade maintainability, Pipeline A strictly enforces an **AI-First Modular Architecture** and a **Dual-Database Infrastructure**.
-
-**The Dual-Database Infrastructure:**
-*   **Database A: The Vector DB (Semantic Engine):** Utilizes ChromaDB or SQLite-VSS (local). Used exclusively in Step 3 to store the semantic embeddings of human emails. This enables the calculation of DPBC thresholds via K-Nearest Neighbors (KNN).
-*   **Database B: The Relational DB (Telemetry & RLHF):** Utilizes PostgreSQL or a robust SQLite file. Used by the Orchestrator to log every single input, output, mutation, KDA Matrix, and feedback loop across all 12 steps. This creates a massive RLHF (Reinforcement Learning from Human Feedback) dataset for future open-source model training.
-
-**The Modular Folder Structure:**
-Instead of monolithic scripts, the engine operates as a decoupled Orchestrator managing 12 atomic node files:
-```text
-src/engine/
-└── golden_dataset_generator/
-    ├── orchestrator.py                 <-- Master logic loop
-    ├── schemas.py                      <-- Strict Pydantic Data Models
-    └── engine_steps/
-        ├── step_01_ingest.py           <-- Fetches the raw human email
-        ├── step_02_persona_extract.py  <-- Extracts Domain/Category/Intent
-        ├── step_03_vectorization.py    <-- Queries Vector DB for DPBC Thresholds
-        ├── step_04_persona_synthesis.py<-- Dynamically generates up to 5 Prompt Personas
-        ├── step_05_genesis_mutation.py <-- Spawns the diverse prompts
-        ├── step_06_evaluator.py        <-- Forward generation & dual-scoring LLM judge
-        ├── step_07_kda_ranking.py      <-- Calculates Delta Minimization & ranks 1-5
-        ├── step_08_feedback_loop.py    <-- Generates explicit written feedback
-        ├── step_09_crossover.py        <-- Polygenic Breeding (Genetic Algorithm)
-        ├── step_10_elitism.py          <-- Crowns the Reigning Champion
-        ├── step_11_early_stop.py       <-- Detects mathematical plateaus
-        └── step_12_golden_record_export.py           <-- Saves to golden_dataset.jsonl
-```
+This is the internal process InboxEval uses to build the flawless `golden_dataset.jsonl`.
+1. **Raw Ingestion (`mass_ingestion.py`):** Harvests a real, historical human email.
+2. **Vectorization:** The email is embedded into a semantic vector and logged.
+3. **Genesis Generation:** The LLM generates 5 vastly different "Generation 0" prompts attempting to recreate the human email.
+4. **N-Way Tournament Selection:** All 5 prompts generate synthetic emails. The LLM Judge ranks them 1st through 5th based on their distance to the human original. Ranks 3, 4, and 5 are discarded.
+5. **KDA-Adjusted Elo & Genetic Crossover:** The top 2 prompts are evaluated on parameter-specific KDA (Tone, Detail, Formatting). The Genetic Algorithm extracts the winning traits from both and breeds a new "Super Prompt" (Generation 1).
+6. **DPBC Loop:** The system fetches the dynamic target threshold from the Vector DB (using KNN). The Super Prompt generates 5 new mutations, and the loop repeats until a generated email mathematically crosses the DPBC threshold.
+7. **Commit:** The winning prompt and the target email are saved as a perfect pair to the Golden Dataset.
 
 ### Pipeline B: The Eval Engine (User/Client Facing)
 This is how a corporate client uses InboxEval to grade their brand-new, unknown AI model.
@@ -216,3 +168,68 @@ To fully immerse the user in the "Hacker Art" aesthetic, the 3D lobby will be ex
 *   **The Core Database (Visualized):** A glowing cylindrical structure representing the `golden_dataset.json`. It grounds the room and serves as a visual anchor for data exports.
 *   **Data Conduits & Cables:** Geometric lines spanning the ceiling and floor, physically connecting the Core Database, the Desk, and the Server Rack, reinforcing the puzzle mechanics (e.g., using Pliers to splice connections).
 *   **The Live Leaderboard Wall:** A massive floating HTML monitor within the 3D space that streams live ELO data from the backend, providing passive evaluation data before the user even enters the Arena.
+
+## 7. Architectural Decision: Dimensionality Reduction (3 vs 12 Parameters) & Local Deployment
+
+### The Exploration vs. Exploitation Tradeoff
+The original dataset evaluated human emails across 12 distinct parameters (e.g., `instruction_adherence`, `professionalism`, `spam_safety`, `conciseness`). However, running the live Evolutionary Engine across all 12 parameters simultaneously triggers the **Curse of Dimensionality**. Optimizing 12 dimensions causes the Genetic Algorithm to stagnate, and forces the LLM Judge to hallucinate due to extreme cognitive load on its attention mechanism.
+
+### The Phased Strategy
+*   **Phase 1 (MVP - API Driven):** The Engine is strictly locked to **3 Core Parameters** (Tone, Conciseness, Accuracy) plus a Persona Penalty. This guarantees mathematically stable convergence and lightning-fast prompt mutations while mitigating token exhaustion.
+*   **Phase 2 (Local GCP Deployment):** To eliminate API rate limits (e.g., Groq's 100k daily token cap), the Engine will be migrated to a GCP `g2-standard-4` instance equipped with 1x NVIDIA L4 GPU (24GB VRAM). 
+    *   **Inference Engine:** vLLM or Ollama.
+    *   **Local Model:** **Qwen-2.5-32B-Instruct (4-bit AWQ Quantized)**. This compresses a near-70B class reasoning brain into ~18GB of VRAM, leaving ample room for the context window while delivering elite instruction following capabilities natively on the machine without cost or rate limits.
+    *   Once local compute is established, the architecture can afford to experiment with gradually reintroducing parameters (e.g., bumping to a 5-parameter or 6-parameter evaluation schema) without financial or speed penalties.
+
+## 8. Architectural Update: The 4 Eval Categories and Persona-Driven Humanness
+
+### The 4 Use-Case Categories
+A world-class email evaluation benchmark cannot grade a "Zero-Shot Drafting" test using a "Thread Summarization" rubric. To solve this, the pipeline was updated so that **Step 2 (Persona Extraction)** dynamically categorizes every ingested email into one of four distinct use-cases:
+1. **Zero-Shot Drafting:** (Writing a net-new email from a prompt). Measures Tone calibration and hallucination resistance.
+2. **Data Extraction:** (Pulling structured data/lists from a rambling email). Measures Precision and formatting compliance.
+3. **Thread Summarization:** (Summarizing a chain of forwards/replies). Measures Memory and Synthesis.
+4. **Tone Translation:** (Rewriting a highly unprofessional email into corporate-speak). Measures Emotional Intelligence (EQ).
+
+The Engine routes this `task_category` deep into the FSM pipeline, forcing the Prompt Generators (Steps 5 & 9) to dynamically map their instructional verbs (e.g., forcing the AI to use "Summarize" instead of "Write an email" if the email is a thread).
+
+### Persona-Driven Humanness
+A fatal flaw in early evaluation design is forcing the synthetic prompt generation to be *too perfect* (mathematically rigid, perfectly detailed JSON/Bullet points). If a prompt is perfect, every LLM on earth (ChatGPT, Claude) will score an A+, destroying the discriminatory power of the benchmark.
+
+To fix this, the **Pydantic Schema Cages** in Steps 5 & 9 were updated to abandon hardcoded "messy placeholder" rules. Instead, the AI is instructed to **inherit the authentic, natural humanness of its dynamically assigned persona.** 
+* If an "Angry Support Agent" persona is assigned, the generated prompt will be naturally brief, frustrated, and missing context. 
+* This missing context forces the downstream LLM (being evaluated) to use its reasoning to handle ambiguity—which is the exact human imperfection an Evaluation Dataset must test.
+
+## 9. Architectural Update: Data Engineering & Multi-Dimensional Taxonomy
+
+### The Data Lake Preflight (Phase 0)
+Before the Evolutionary Engine (Step 1) is ever executed, a massive Data Engineering "Preflight" phase is required. The system cannot rely on hardcoded strings or real-time web scraping during the evaluation loop.
+1. **Data Harvesting:** Open-source email datasets (e.g., Enron, HuggingFace Customer Support, corporate leak archives) are downloaded to a local disk.
+2. **Batch Embedding:** A lightweight embedding model (`all-MiniLM-L6-v2`) processes all 10,000+ raw emails simultaneously, converting them into 384-dimensional vectors.
+3. **Vector Database Loading:** These vectors are stored in a local ChromaDB instance. 
+**Result:** When Step 3 (DPBC Threshold) fires, it instantly queries a fully-populated Vector DB of 10,000 historical emails to mathematically calculate the target threshold, eliminating the "Zero-Shot Mock" fallback.
+
+### The Hybrid "T-Shaped" FSM Scaling Architecture
+The V1 Orchestrator operated purely vertically (processing Email #1 from Step 1 through 12, then starting Email #2). A naive solution to scale this would be purely Horizontal Batch Processing, but that causes catastrophic state corruption because the Genetic Algorithm (Steps 4-12) is a highly recursive Markov Chain. To achieve enterprise-grade scale across 10,000+ emails, the architecture uses a **Hybrid "T-Shaped" FSM**:
+
+*   **The Horizontal Data Engineering Bar (Steps 0-3):** The first four steps process all emails globally in a single horizontal sweep. The entire dataset is chunked, embedded, and pushed into a globally accessible Vector Database. Then, batched LLM inference extracts the `PersonaProfile` for every email simultaneously. This mathematically guarantees a populated global namespace for Step 3 to execute accurately.
+*   **The Vertical Genetic Pillars (Steps 4-12):** Once the Data Lake is populated, a headless pool of async worker coroutines pops emails off a queue. Each worker drives a single email through the vertical Step 4-10 loop in an isolated memory stack (Stateless Lexical Scoping). 
+*   **Hardware VRAM Segregation (PagedAttention):** As concurrent workers simultaneously hammer the local LLM, the `vLLM` inference backend uses PagedAttention to physically segregate the Key-Value caches for each worker's prompt into distinct GPU VRAM blocks. This physically prevents context-window cross-contamination.
+*   **Concurrency-Safe Exports (Step 12):** Workers bypass file-locking conflicts by exporting finalized Golden Records to a telemetry database (PostgreSQL/SQLite) using asynchronous connection pools (`asyncpg` / `aiosqlite`).
+
+### The "Dark Matter" Vector Data Lake & Infinite Scaling
+The Horizontal ingestion phase is not limited to emails that will eventually receive synthetic prompts. Because generating 384-dimensional vector embeddings (via models like `all-MiniLM-L6-v2`) is computationally inexpensive compared to LLM generation, the Data Engineering pipeline is designed to ingest and embed **tens of millions** of raw human emails across diverse global datasets (Enron, Corporate Leaks, Dark Web archives, HuggingFace repositories).
+*   **Latent Space Anomaly Detection:** The millions of unprompted emails act as "Dark Matter" in the vector database. They provide immense gravitational density to the 384D semantic map. If an AI generates a synthetic email during evaluation and its vector lands in a barren, empty region of this latent space, the math instantly proves the AI has hallucinated an unnatural tone or format that humans do not organically use.
+*   **Farthest Point Sampling:** Instead of running the Vertical Genetic Algorithm on all 50 million emails, the engine uses geometric sampling across the vector space to select the 10,000 most mathematically diverse emails (representing the extreme edges of human communication) to pass into the heavy LLM Vertical Pillars.
+
+### The Multi-Dimensional Taxonomy Matrix
+The original framework conflated "NLP Tasks" with "Email Domains". A world-class benchmark (similar to MMLU or HELM) requires a multi-dimensional matrix. `PersonaProfile` classification is now split across three independent axes:
+1. **The NLP Task (Intent):** What the AI is being asked to do (Drafting, Extraction, Summarization, Translation).
+2. **The Domain (Topic):** The industry or context (e.g., SaaS Patch Notes, Gaming & Entertainment, High Finance, E-Commerce Refunds).
+3. **The Format (Structure):** The physical layout of the text (e.g., Newsletter Blast, Threaded Reply Chain, System Alert, Cold Pitch).
+
+#### The Hybrid Approach (Deterministic vs. Evolutionary)
+To balance engine stability with benchmark scalability, the taxonomy utilizes a **Hybrid Architecture**:
+* **`nlp_task` (Deterministic):** This is mathematically enforced as a strict `Literal` Enum in the Pydantic schema. It must be exactly one of the 4 hardcoded tasks because it drives the downstream programmatic control flow (mapping verbs in Steps 5 & 9).
+* **`domain` & `format` (Evolutionary):** These are open-ended strings. The LLM is given total freedom to dynamically extract and invent highly specific domains (e.g., "Astrophysics", "B2B Plumbing") and formats (e.g., "Jira Ticket", "Slack Dump"). This allows the Golden Dataset to organically expand to an infinite scope without being constrained by hardcoded lists.
+
+By decoupling these axes, a single email is now classified with surgical precision (e.g., `[Drafting] + [Gaming Domain] + [Newsletter Format]`), vastly improving the genetic mutation accuracy in Steps 5 and 9.

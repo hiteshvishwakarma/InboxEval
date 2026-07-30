@@ -2,24 +2,14 @@
 
 Since I will be orchestrating this instance remotely from your laptop, we need to set this up using a standard **Ubuntu Deep Learning Image** and configure a dedicated SSH key. This will allow me to seamlessly `ssh` into the machine in the future to execute commands, pull repo updates, and monitor the `mass_evolution_runner.py` script.
 
-## Phase 0: GCP Project Prerequisites
-Before spinning up the VM, we must lay the foundation for a clean, isolated cloud environment.
-
-1. **Activate Billing:** Go to [Billing](https://console.cloud.google.com/billing). You must link a billing account to activate your $300 free trial. Google will not auto-charge you when credits expire; they just pause services. This is required for identity verification.
-2. **Create a New Project:** Go to [Project Create](https://console.cloud.google.com/projectcreate). Name it `inbox-eval`. 
-   - *Why a new project?* It ensures isolated billing (you see exactly how many credits the Engine uses) and allows for 1-click cleanup when you're done.
-3. **Select "No Organization":** On the same project creation page, leave the organization blank (or select "No Organization").
-   - *Why No Org?* Corporate Organizations enforce strict default security policies (like blocking external IPs or SSH keys). "No Org" guarantees zero friction so we can SSH directly into the VM.
-4. **Enable Compute Engine API:** Go to the [Compute Engine API Library](https://console.cloud.google.com/apis/library/compute.googleapis.com) and click **Enable**.
-
 ## Phase 1: Spin up the Instance in GCP Console
-1. Go directly to [Create an Instance](https://console.cloud.google.com/compute/instancesAdd) (or navigate to Compute Engine -> VM Instances and click Create).
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/) and navigate to **Compute Engine -> VM Instances**.
+2. Click **Create Instance**.
 3. **Name:** `inbox-eval-engine`
 4. **Region:** Choose a region close to you that has L4 GPUs available (e.g., `us-central1`, `us-east4`, `europe-west4`).
 5. **Machine Configuration:** 
    - Series: **G2**
-   - Machine Type: **g2-standard-4** (1 L4 GPU, 4 vCPUs, 16GB RAM)
-   - *Why G2 over E2 or Cloud Run?* The `E2` series is CPU-only and would take days to process 15,000 LLM inferences. Cloud Run is serverless and would kill our stateful script after 60 minutes. The `G2` series provides a dedicated NVIDIA L4 GPU, crushing the batch processing in hours for ~$5.
+   - Machine Type: **g2-standard-4** (1 L4 GPU, 4 vCPUs, 16GB RAM) or **g2-standard-8** if available.
 6. **Boot Disk (CRITICAL STEP):**
    - Click *Change*.
    - Operating System: **Deep Learning on Linux** (This pre-installs the NVIDIA CUDA drivers so we don't have to fight with Linux kernel headers).
@@ -76,11 +66,26 @@ ssh inbox-engine
 
 ---
 
-## Phase 4: Install Ollama & Clone Repo (On the VM)
+## Phase 4: Install Ollama & Pull Qwen-2.5-32B
 Once you confirm the SSH connection works, I will execute the following commands over SSH to prep the engine:
 
 1. **Install Ollama:** `curl -fsSL https://ollama.com/install.sh | sh`
-2. **Pull the Model:** `ollama run llama3.1`
+2. **Pull the Model:** `ollama run qwen2.5:32b` *(This automatically applies 4-bit quantization to fit the 32B model into the 24GB L4 VRAM).*
 3. **Clone our Repo:** `git clone https://github.com/hiteshvishwakarma/InboxEval.git`
 
-At that point, the infrastructure is completely built, and I can trigger `mass_evolution_runner.py` inside a `tmux` session!
+At that point, the infrastructure is completely built. We will update `config.py` to point to `localhost:11434/v1` (Ollama's OpenAI-compatible endpoint) and I can trigger `mass_evolution_runner.py` inside a `tmux` session!
+
+---
+
+## Phase 5: Concurrency & Memory Safety (vLLM & PostgreSQL)
+To support the 20+ parallel Vertical FSM workers required by the InboxEval pipeline without risking memory cross-contamination or API rate limits, the infrastructure requires two specific components instead of a basic Ollama setup:
+
+### A. vLLM with PagedAttention
+The Qwen-2.5-32B model MUST be served using the `vLLM` inference engine.
+*   **PagedAttention Required:** `vLLM` dynamically manages the GPU's VRAM in blocks. When 20 isolated FSM workers send API requests to the model simultaneously, PagedAttention mathematically isolates the Key-Value (KV) cache of each worker's prompt into separate VRAM blocks. 
+*   **Why?** This hardware-level separation guarantees zero cross-contamination (i.e., Email A's Genetic Algorithm mutations will never accidentally inherit text or context from Email B's processing loop).
+
+### B. Async Telemetry Database (asyncpg / aiosqlite)
+When the 20 workers concurrently complete Step 12 (Golden Record Export), they cannot write to a single `golden_dataset.jsonl` flat file, as this will trigger severe file-locking conflicts and data corruption.
+*   **Implementation:** The server must host a PostgreSQL or SQLite instance. The Python orchestrator will use an asynchronous database driver (like `asyncpg` or `aiosqlite`) equipped with a connection pool.
+*   **Why?** This ensures all 20 async workers can execute `INSERT` statements simultaneously without blocking the event loop or causing race conditions.

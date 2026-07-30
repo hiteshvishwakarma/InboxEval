@@ -3,6 +3,7 @@ import logging
 from typing import List
 
 from ..schemas import SuperPrompt, PromptMutation
+from ..config import config
 
 logger = logging.getLogger("Step10_Elitism")
 
@@ -36,19 +37,27 @@ def execute_elitism_loop(champion: SuperPrompt, next_gen_num: int, llm_client=No
     but explore different phrasing, brevity, or tone emphasis to try and improve performance. 
     Return exactly 4 distinct prompts.
     """
-    
+    from pydantic import BaseModel
+    class ChallengersList(BaseModel):
+        prompts: List[str]
+
     if llm_client:
         # In production, Instructor would force the LLM to return exactly a List[str] of size 4
-        # generated_texts = llm_client.chat(challenger_prompt, response_model=List[str])
-        pass
+        response_data = llm_client.chat.completions.create(
+            model=config.DEFAULT_GENERATION_MODEL,
+            response_model=ChallengersList,
+            messages=[{"role": "user", "content": challenger_prompt}]
+        )
+        generated_texts = response_data.prompts
         
-    # Mocking the 4 challenger texts
-    generated_texts = [
-        f"Challenger 1 Variant of {champion.id}",
-        f"Challenger 2 Variant of {champion.id}",
-        f"Challenger 3 Variant of {champion.id}",
-        f"Challenger 4 Variant of {champion.id}"
-    ]
+    else:
+        # Mocking the 4 challenger texts
+        generated_texts = [
+            f"Challenger 1 Variant of {champion.id}",
+            f"Challenger 2 Variant of {champion.id}",
+            f"Challenger 3 Variant of {champion.id}",
+            f"Challenger 4 Variant of {champion.id}"
+        ]
     
     # 3. Assembly and Edge Case Safety
     for idx, text in enumerate(generated_texts[:4]): # Safely slice to ensure max 4 challengers

@@ -31,7 +31,12 @@ def extract_persona(email: HumanEmail, llm_client=None) -> PersonaProfile:
     
     [ATOMIC BEHAVIORAL MATRIX & EVIDENCE]
     6. Power Dynamic: Who is writing to whom? (e.g., 'Subordinate to Boss', 'Vendor to Client')
-    7. Formality Scale: Rate it strictly (e.g., 'Hyper-Casual', 'Semi-Professional')
+    7. Formality Scale: Classify into EXACTLY ONE of the following strict ratings:
+       - 'Hyper-Casual': Uses slang, no capitalization, ignores punctuation, extremely informal.
+       - 'Casual': Friendly, relaxed, uses contractions, like talking to a close coworker.
+       - 'Semi-Professional': Standard workplace communication, polite but not stiff.
+       - 'Professional': Formal business tone, complete sentences, respectful distance.
+       - 'Hyper-Formal': Legal documents, strict corporate speak, overly rigid.
     8. Behavioral Quirks: List 1-3 specific psychological or stylistic traits (e.g., 'Passive-aggressive', 'Uses corporate buzzwords', 'Types in a rush').
     9. Evidence Quotes: For EVERY behavioral quirk you list, you MUST extract the exact verbatim substring from the email that proves it.
     

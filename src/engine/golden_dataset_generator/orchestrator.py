@@ -79,29 +79,24 @@ class GoldenDatasetOrchestrator:
                                         import time
                                         last_err = None
                                         
-                                        # We will try up to 10 times for any error (429 or 400)
-                                        max_attempts = 10
+                                        # We will try every key in the pool up to 2 times
+                                        max_attempts = len(self.parent_rotator.clients) * 2
                                         for attempt in range(max_attempts):
                                             client = self.parent_rotator.clients[self.parent_rotator.current_idx]
                                             try:
-                                                # Instructor internally handles retries, but we enforce it here too
-                                                if 'max_retries' not in kwargs:
-                                                    kwargs['max_retries'] = 3
                                                 return client.chat.completions.create(**kwargs)
                                             except Exception as e:
                                                 err_str = str(e).lower()
-                                                last_err = e
                                                 if "429" in err_str or "rate limit" in err_str or "connection" in err_str:
                                                     logger.warning(f"[Rotator] Key {self.parent_rotator.current_idx} hit Rate Limit or Connection Error. Swapping to next key...")
                                                     self.parent_rotator.current_idx = (self.parent_rotator.current_idx + 1) % len(self.parent_rotator.clients)
                                                     time.sleep(2) # Small buffer between swaps
                                                 else:
-                                                    # 400 Validation error (schema hallucination). Do not swap key, just retry.
-                                                    logger.warning(f"[Rotator] Validation/Parse Error (400) on attempt {attempt+1}. Retrying... Error: {e}")
-                                                    time.sleep(2)
+                                                    # Validation error. Let the universal wrapper handle it.
+                                                    raise e
                                         
-                                        logger.error("Max retries exceeded for LLM call! Failing step.")
-                                        raise last_err
+                                        logger.error("All Groq keys are exhausted or rate limited!")
+                                        raise Exception("Rate limits exhausted")
                                         
                             self.chat = ChatRotator(self)
                             
@@ -111,6 +106,35 @@ class GoldenDatasetOrchestrator:
                     logger.warning("GROQ_API_KEY not found in environment. Running without LLM client.")
             except ImportError as e:
                 logger.warning(f"Could not import required libraries for Groq client ({e}). Running without LLM client.")
+        
+        # Apply Universal Tenacity Retry Wrapper
+        if self.llm_client:
+            import tenacity
+            
+            class UniversalRetryWrapper:
+                def __init__(self, raw_client):
+                    self.raw_client = raw_client
+                    self.chat = self.ChatWrapper(raw_client.chat)
+                    
+                class ChatWrapper:
+                    def __init__(self, chat):
+                        self.completions = self.CompletionsWrapper(chat.completions)
+                        
+                    class CompletionsWrapper:
+                        def __init__(self, completions):
+                            self.completions = completions
+                            
+                        @tenacity.retry(
+                            stop=tenacity.stop_after_attempt(10),
+                            wait=tenacity.wait_exponential(multiplier=1, min=2, max=10),
+                            retry=tenacity.retry_if_exception_type(Exception),
+                            before_sleep=lambda retry_state: logger.warning(f"[Universal Retry] LLM Error: {retry_state.outcome.exception()}. Retrying in {retry_state.next_action.sleep}s...")
+                        )
+                        def create(self, **kwargs):
+                            return self.completions.create(**kwargs)
+            
+            self.llm_client = UniversalRetryWrapper(self.llm_client)
+            logger.info("Universal Tenacity Retry Wrapper applied to LLM client.")
                 
     def run_pipeline(self, raw_email_text: str, email_id: str = None, output_path: str = "data/golden_dataset.jsonl") -> SuperPrompt:
         """Executes the full 12-step evolutionary pipeline."""

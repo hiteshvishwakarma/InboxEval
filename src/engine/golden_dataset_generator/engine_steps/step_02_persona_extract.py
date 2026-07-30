@@ -21,7 +21,11 @@ def extract_persona(email: HumanEmail, llm_client=None) -> PersonaProfile:
     2. Sentiment: What is the emotional state? (e.g., 'Angry', 'Polite', 'Urgent')
     
     [THE 3-AXIS TAXONOMY]
-    3. NLP Task: Classify into ONE: 'Zero-Shot Drafting', 'Data Extraction', 'Thread Summarization', or 'Tone Translation'.
+    3. NLP Task: Classify into EXACTLY ONE of the following:
+       - 'Zero-Shot Drafting': The human is writing a net-new email from scratch (e.g., sending an update, making a request, resigning). MOST EMAILS FALL HERE.
+       - 'Data Extraction': The email contains a sprawling mess of data, and the goal is to pull out structured facts or lists.
+       - 'Thread Summarization': The email is a long chain of replies/forwards that needs to be condensed.
+       - 'Tone Translation': The email takes an existing highly unprofessional draft and rewrites it into corporate-speak (or vice versa).
     4. Domain: What industry or topic is this? (e.g., 'Gaming', 'SaaS Patch Notes', 'E-Commerce Refunds', 'High Finance')
     5. Format: What is the physical structure? (e.g., 'Newsletter Blast', 'Reply Chain', 'Cold Pitch', 'System Alert')
     

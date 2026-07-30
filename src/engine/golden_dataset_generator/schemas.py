@@ -15,13 +15,13 @@ class PersonaProfile(BaseModel):
     sentiment: str = Field(..., description="Emotional state (e.g., 'Angry', 'Urgent')")
     
     # The 3-Axis Multi-Dimensional Taxonomy
-    nlp_task: Literal['Zero-Shot Drafting', 'Data Extraction', 'Thread Summarization', 'Tone Translation'] = Field(..., description="Must be one of: 'Zero-Shot Drafting', 'Data Extraction', 'Thread Summarization', 'Tone Translation'")
+    nlp_task: Literal['Zero-Shot Drafting', 'Data Extraction', 'Thread Summarization', 'Tone Translation'] = Field(..., description="Must be exactly one of: 'Zero-Shot Drafting' (writing a net-new email from scratch, MOST COMMON), 'Data Extraction' (pulling structured facts/lists from a sprawling email), 'Thread Summarization' (condensing a long reply chain), or 'Tone Translation' (rewriting an existing draft into a different tone).")
     domain: str = Field(..., description="Industry or topic (e.g., 'Gaming', 'SaaS Patch Notes', 'E-Commerce Refunds', 'High Finance')")
     format: str = Field(..., description="Physical layout (e.g., 'Newsletter Blast', 'Reply Chain', 'Cold Pitch', 'System Alert')")
     
     # Atomic Behavioral Matrix (Anti-Hallucination)
     power_dynamic: str = Field(..., description="The relationship dynamic (e.g., 'Subordinate to Boss', 'Vendor to Client', 'Peer to Peer'). Should be dynamically extracted.")
-    formality_scale: Literal['Hyper-Casual', 'Casual', 'Semi-Professional', 'Professional', 'Hyper-Formal'] = Field(..., description="Strict rating.")
+    formality_scale: Literal['Hyper-Casual', 'Casual', 'Semi-Professional', 'Professional', 'Hyper-Formal'] = Field(..., description="Strict rating. 'Hyper-Casual' (slang, no punctuation), 'Casual' (friendly, relaxed), 'Semi-Professional' (standard workplace), 'Professional' (formal business), 'Hyper-Formal' (legal or strict corporate).")
     behavioral_quirks: List[str] = Field(..., description="List of specific traits (e.g., 'Passive-aggressive', 'Uses corporate buzzwords', 'Bad grammar')")
     evidence_quotes: List[str] = Field(..., description="Exact substring quotes extracted directly from the raw email that prove the behavioral quirks exist. MUST be verbatim.")
     

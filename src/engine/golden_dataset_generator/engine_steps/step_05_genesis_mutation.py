@@ -41,6 +41,7 @@ def generate_genesis_mutations(email: HumanEmail, persona: PersonaProfile, dynam
         - Quirks: {', '.join(persona.behavioral_quirks)}
         
         ANTI-META LEAK CONSTRAINT: You must NEVER refer to "the original email", "the reference text", or "the provided text" in your prompt. The person typing this prompt is generating the thought from scratch. Do not break the fourth wall.
+        FACTUAL INJECTION CONSTRAINT: You must explicitly list all core entities, objects, and specific claims (e.g., deleted documents, specific dates) that must be included in the generated email so the AI knows exactly what facts to use without referring to a source text.
         Write the details naturally. Do not over-engineer it; let your assigned prompting strategy dictate how much or how little detail is provided.
         """
         

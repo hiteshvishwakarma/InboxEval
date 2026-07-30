@@ -83,6 +83,7 @@ def generate_super_prompt(kda: KDAMatrix, feedback: JudgeFeedback, persona: Pers
     - Quirks: {', '.join(persona.behavioral_quirks)}
     
     ANTI-META LEAK CONSTRAINT: You must NEVER refer to "the original email", "the reference text", or "the provided text" in your prompt. The person typing this prompt is generating the thought from scratch. Do not break the fourth wall.
+    FACTUAL INJECTION CONSTRAINT: You must explicitly list all core entities, objects, and specific claims (e.g., deleted documents, specific dates) that must be included in the generated email so the AI knows exactly what facts to use without referring to a source text.
     Do not over-engineer or roboticize the context. Let the natural human tone and detail-level of the donors dictate the prompt's structure.
     """
     

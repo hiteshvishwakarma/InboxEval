@@ -1,91 +1,123 @@
-# GCP GPU Instance Setup Guide (InboxEval Engine)
+# GCP GPU & vLLM Orchestration Guide (InboxEval 13-Step Engine)
 
-Since I will be orchestrating this instance remotely from your laptop, we need to set this up using a standard **Ubuntu Deep Learning Image** and configure a dedicated SSH key. This will allow me to seamlessly `ssh` into the machine in the future to execute commands, pull repo updates, and monitor the `mass_evolution_runner.py` script.
+## Executive Summary
+This document provides the definitive, single-source-of-truth blueprint for hosting **`Qwen/Qwen2.5-32B-Instruct-AWQ`** on a Google Cloud Platform (GCP) G2 instance to power the InboxEval 13-Step Golden Dataset Evolutionary Engine. 
 
-## Phase 1: Spin up the Instance in GCP Console
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/) and navigate to **Compute Engine -> VM Instances**.
-2. Click **Create Instance**.
-3. **Name:** `inbox-eval-engine`
-4. **Region:** Choose a region close to you that has L4 GPUs available (e.g., `us-central1`, `us-east4`, `europe-west4`).
-5. **Machine Configuration:** 
-   - Series: **G2**
-   - Machine Type: **g2-standard-4** (1 L4 GPU, 4 vCPUs, 16GB RAM) or **g2-standard-8** if available.
-6. **Boot Disk (CRITICAL STEP):**
-   - Click *Change*.
-   - Operating System: **Deep Learning on Linux** (This pre-installs the NVIDIA CUDA drivers so we don't have to fight with Linux kernel headers).
-   - Version: **Deep Learning VM with CUDA 12.0 M113** (or latest Ubuntu 22.04 equivalent).
-   - Boot disk type: **SSD Persistent Disk**
-   - Size: **100 GB** (Ollama models are large).
-   - *Note:* If asked to "Install NVIDIA GPU driver on first boot", make sure it is checked.
-7. **Firewall:** Allow HTTP/HTTPS traffic.
-8. Click **Create**. It will take about 2-3 minutes to spin up.
+By leveraging an **NVIDIA L4 GPU (24GB VRAM)** with **vLLM PagedAttention**, the infrastructure supports 15–20 concurrent async FSM coroutines without Key-Value (KV) cache memory cross-contamination. Antigravity acts as the automated remote orchestrator over SSH.
 
 ---
 
-## Phase 2: Setup SSH Keys (So I can connect from your laptop)
-While the instance is booting, we need to generate an SSH key on your Mac so I can remotely control the VM without being blocked by passwords.
+## 1. Architecture Blueprint
 
-Run this command in your Mac terminal (you can copy/paste it yourself, or ask me to run it):
-```bash
-ssh-keygen -t ed25519 -f ~/.ssh/gcp_inbox_eval -N "" -C "hitesh@inboxeval"
-```
-*(This generates a keypair specifically for this project without a passphrase so I can automate it).*
+```mermaid
+flowchart TD
+    subgraph Local_Mac["Local Laptop (Antigravity Orchestrator)"]
+        A["mass_evolution_runner.py"] -->|"15-20 Async FSM Workers"| B["llm_client_factory.py"]
+        B -->|"OpenAI Protocol / Instructor Pydantic Schemas"| C["vLLM Client"]
+    end
 
-Next, copy the public key to your clipboard:
-```bash
-cat ~/.ssh/gcp_inbox_eval.pub | pbcopy
-```
+    subgraph GCP_G2_VM["GCP G2 Instance (g2-standard-12)"]
+        C -->|"HTTP Port 8000 / SSH Tunnel"| D["vLLM Server (vllm serve)"]
+        D -->|"PagedAttention KV Cache Isolation"| E["NVIDIA L4 GPU (24GB VRAM)"]
+        E -->|"AWQ 4-Bit Weights (~19.5GB)"| F["Qwen/Qwen2.5-32B-Instruct-AWQ"]
+    end
 
-**Add it to GCP:**
-1. In the GCP Console, click on your running `inbox-eval-engine` instance.
-2. Click **Edit** at the top.
-3. Scroll down to **Security and Access** -> **SSH Keys**.
-4. Click **Add Item** and paste the public key from your clipboard.
-5. Click **Save** at the bottom.
-
----
-
-## Phase 3: Add SSH Config & Connect
-To make it effortless for me to orchestrate the VM, let's add an alias to your SSH config. Get the **External IP** of your VM from the GCP console, then run this on your Mac (replace `YOUR_EXTERNAL_IP` with the actual IP):
-
-```bash
-cat << 'EOF' >> ~/.ssh/config
-
-Host inbox-engine
-    HostName YOUR_EXTERNAL_IP
-    IdentityFile ~/.ssh/gcp_inbox_eval
-    User hitesh
-    StrictHostKeyChecking no
-EOF
-```
-
-Now, I (or you) can connect to the machine anytime by simply typing:
-```bash
-ssh inbox-engine
+    subgraph Database_Storage["Telemetry & Dataset Storage"]
+        A -->|"Async Write / aiosqlite"| G[("pipeline.db (Golden Records)")]
+    end
 ```
 
 ---
 
-## Phase 4: Install Ollama & Pull Qwen-2.5-32B
-Once you confirm the SSH connection works, I will execute the following commands over SSH to prep the engine:
+## 2. In-Depth Execution Steps
 
-1. **Install Ollama:** `curl -fsSL https://ollama.com/install.sh | sh`
-2. **Pull the Model:** `ollama run qwen2.5:32b` *(This automatically applies 4-bit quantization to fit the 32B model into the 24GB L4 VRAM).*
-3. **Clone our Repo:** `git clone https://github.com/hiteshvishwakarma/InboxEval.git`
+### Phase 1: VM Instance Configuration (GCP Console)
+The instance is provisioned with high CPU RAM headroom to ensure PyTorch model loading and CPU vectorization (Step 02 `sentence-transformers`) run without host memory pressure.
 
-At that point, the infrastructure is completely built. We will update `config.py` to point to `localhost:11434/v1` (Ollama's OpenAI-compatible endpoint) and I can trigger `mass_evolution_runner.py` inside a `tmux` session!
+* **Instance Name:** `inbox-eval-engine`
+* **Region / Zone:** `us-central1` (or any zone with available L4 quota)
+* **Machine Series:** **G2**
+* **Machine Type:** **`g2-standard-12`** (12 vCPUs, 48 GB System RAM, 1x NVIDIA L4 GPU 24GB VRAM)
+* **Boot Disk:**
+  * **Operating System:** Deep Learning on Linux
+  * **Version:** `Deep Learning VM with CUDA + Pytorch M132` (Ubuntu 22.04, CUDA 12.9)
+  * **Disk Type & Size:** SSD Persistent Disk — **120 GB**
+  * **GPU Driver:** Check *"Install NVIDIA GPU driver automatically on first boot"*
+* **Firewall:** Allow HTTP & HTTPS traffic.
 
 ---
 
-## Phase 5: Concurrency & Memory Safety (vLLM & PostgreSQL)
-To support the 20+ parallel Vertical FSM workers required by the InboxEval pipeline without risking memory cross-contamination or API rate limits, the infrastructure requires two specific components instead of a basic Ollama setup:
+### Phase 2: Automated SSH Key Pairing & Config
+To enable seamless remote execution by Antigravity from the local Mac:
 
-### A. vLLM with PagedAttention
-The Qwen-2.5-32B model MUST be served using the `vLLM` inference engine.
-*   **PagedAttention Required:** `vLLM` dynamically manages the GPU's VRAM in blocks. When 20 isolated FSM workers send API requests to the model simultaneously, PagedAttention mathematically isolates the Key-Value (KV) cache of each worker's prompt into separate VRAM blocks. 
-*   **Why?** This hardware-level separation guarantees zero cross-contamination (i.e., Email A's Genetic Algorithm mutations will never accidentally inherit text or context from Email B's processing loop).
+1. **Generate Project Keypair on Mac:**
+   ```bash
+   ssh-keygen -t ed25519 -f ~/.ssh/gcp_inbox_eval -N "" -C "hitesh@inboxeval"
+   ```
+2. **Add Public Key to GCP Console:**
+   Copy `~/.ssh/gcp_inbox_eval.pub` into **VM Instance -> Edit -> SSH Keys**.
+3. **Configure SSH Alias (`~/.ssh/config`):**
+   ```sshconfig
+   Host inbox-engine
+       HostName <YOUR_VM_EXTERNAL_IP>
+       IdentityFile ~/.ssh/gcp_inbox_eval
+       User hitesh
+       StrictHostKeyChecking no
+   ```
 
-### B. Async Telemetry Database (asyncpg / aiosqlite)
-When the 20 workers concurrently complete Step 12 (Golden Record Export), they cannot write to a single `golden_dataset.jsonl` flat file, as this will trigger severe file-locking conflicts and data corruption.
-*   **Implementation:** The server must host a PostgreSQL or SQLite instance. The Python orchestrator will use an asynchronous database driver (like `asyncpg` or `aiosqlite`) equipped with a connection pool.
-*   **Why?** This ensures all 20 async workers can execute `INSERT` statements simultaneously without blocking the event loop or causing race conditions.
+---
+
+### Phase 3: vLLM Server Deployment & Launch
+Once SSH access is established, Antigravity executes the following commands on the remote VM:
+
+1. **Verify GPU Status:**
+   ```bash
+   nvidia-smi
+   ```
+2. **Create Python Virtual Environment & Install vLLM:**
+   ```bash
+   python3 -m venv vllm-env
+   source vllm-env/bin/activate
+   pip install --upgrade pip
+   pip install vllm instructor openai
+   ```
+3. **Start the vLLM OpenAI-Compatible API Server:**
+   ```bash
+   vllm serve Qwen/Qwen2.5-32B-Instruct-AWQ \
+       --host 0.0.0.0 \
+       --port 8000 \
+       --quantization awq \
+       --max-model-len 8192 \
+       --gpu-memory-utilization 0.90 \
+       --enable-auto-tool-choice \
+       --tool-call-parser pythonic
+   ```
+   * **`--quantization awq`:** Compresses weights to ~19.5 GB VRAM.
+   * **`--gpu-memory-utilization 0.90`:** Reserves 90% of 24GB VRAM (~21.6 GB) for weights + PagedAttention KV cache.
+   * **`--enable-auto-tool-choice --tool-call-parser pythonic`:** Enables `instructor` native Pydantic schema structured outputs across Steps 01–12.
+
+---
+
+### Phase 4: InboxEval Engine Client Integration
+Update `src/engine/golden_dataset_generator/config.py` and `utils/llm_client_factory.py` (or `.env` environment variables):
+
+```env
+OPENAI_BASE_URL=http://<YOUR_VM_EXTERNAL_IP>:8000/v1
+OPENAI_API_KEY=vllm-dummy-key
+GENERATION_MODEL=Qwen/Qwen2.5-32B-Instruct-AWQ
+CLASSIFICATION_MODEL=Qwen/Qwen2.5-32B-Instruct-AWQ
+```
+
+---
+
+### Phase 5: Mass Evolution & Golden Dataset Export
+Run the 13-step evolutionary loop inside a `tmux` session to ensure uninterrupted execution:
+
+```bash
+# Launch mass evolution runner across 20 concurrent coroutines
+python3 -m scripts.mass_evolution_runner
+```
+* **Step 01–03:** Ingestion, Backtranslation, Sentence-Transformers vectorization.
+* **Step 04–06:** DPBC threshold calculation, adversarial persona synthesis, genesis mutations.
+* **Step 07–11:** Reward hack evaluation, KDA matrix ranking, critique, crossover, elitism.
+* **Step 12:** Convergence check & async export into `pipeline.db`.

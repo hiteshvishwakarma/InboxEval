@@ -2,8 +2,8 @@ import os
 
 class EngineConfig:
     # Model Configurations
-    DEFAULT_GENERATION_MODEL = os.getenv("GENERATION_MODEL", "llama-3.3-70b-versatile")
-    FAST_CLASSIFICATION_MODEL = os.getenv("CLASSIFICATION_MODEL", "llama-3.1-8b-instant")
+    DEFAULT_GENERATION_MODEL = os.getenv("GENERATION_MODEL", "Qwen/Qwen2.5-32B-Instruct-AWQ")
+    FAST_CLASSIFICATION_MODEL = os.getenv("CLASSIFICATION_MODEL", "Qwen/Qwen2.5-32B-Instruct-AWQ")
     
     # Genetic Algorithm Parameters
     NUM_CHALLENGERS_PER_GENERATION = int(os.getenv("NUM_CHALLENGERS_PER_GENERATION", "4"))

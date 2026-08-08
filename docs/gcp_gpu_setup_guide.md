@@ -121,3 +121,55 @@ python3 -m scripts.mass_evolution_runner
 * **Step 04–06:** DPBC threshold calculation, adversarial persona synthesis, genesis mutations.
 * **Step 07–11:** Reward hack evaluation, KDA matrix ranking, critique, crossover, elitism.
 * **Step 12:** Convergence check & async export into `pipeline.db`.
+
+---
+
+### Phase 6: Autonomous Overnight GCP VM Execution & Cloud Persistence Architecture
+
+To guarantee uninterrupted 24/7 execution when your local machine goes offline:
+
+1. **VM Data Autonomy**:
+   * All 497,500 raw emails, 44,774 backtranslated records (`data/pipeline.db`), and 768-dim vector embeddings (`data/chroma_db`) are synced directly to `~/InboxEval/data/` on the GCP VM.
+2. **24/7 `tmux` Process Isolation**:
+   * `vLLM` server runs in `tmux` session `vllm`.
+   * `mass_evolution_runner.py` (20 parallel coroutines) runs in `tmux` session `evolution`.
+   * Closing local laptop lids or SSH disconnections will **not** interrupt execution.
+3. **Forever-Free Cloud Database & Checkpointing**:
+   * Automatic periodic syncs export completed Golden Records to free cloud storage / Turso serverless SQLite database (`libsql://`), ensuring the Golden Dataset lives forever for free even after deleting the GCP VM.
+   * Enables remote inspection from any laptop via DBeaver, TablePlus, or Python.
+
+---
+
+### Phase 7: FP8 KV-Cache & Chunked Prefill High-Throughput Optimization
+
+To maximize token generation throughput and double simultaneous request concurrency on a single NVIDIA L4 GPU (24GB VRAM):
+
+#### 1. Architectural Upgrade
+* **FP8 KV-Cache (`--kv-cache-dtype fp8`)**: Quantizes Key-Value attention matrices in GPU VRAM from 16-bit FP16 to 8-bit FP8 (`fp8_e4m3`). This reduces KV-cache memory overhead by 50%, expanding available KV-cache capacity from ~9,500 tokens to ~19,000 tokens.
+* **Impact**: Increases active simultaneous GPU execution slots from 14 requests to ~28–30 requests per forward pass without output quality degradation.
+* **Chunked Prefill (`--enable-chunked-prefill`)**: Chunks large prompt prefill computations to allow prompt evaluation and token decoding to execute concurrently in the same GPU forward pass, eliminating prompt evaluation latency stalls.
+* **Prefix Caching (`--enable-prefix-caching`)**: Hashes and reuses static system prompt headers across persona mutations, reducing redundant prompt token computation.
+
+#### 2. Optimized vLLM Launch Command
+```bash
+vllm serve Qwen/Qwen2.5-32B-Instruct-AWQ \
+    --host 0.0.0.0 \
+    --port 8000 \
+    --quantization awq \
+    --max-model-len 4096 \
+    --gpu-memory-utilization 0.95 \
+    --kv-cache-dtype fp8 \
+    --enable-chunked-prefill \
+    --enable-prefix-caching \
+    --enforce-eager \
+    --enable-auto-tool-choice \
+    --tool-call-parser pythonic
+```
+
+#### 3. Verification Protocol
+Monitor live telemetry via `http://localhost:8000/metrics`:
+* **`vllm:num_requests_running`**: Verifies active GPU batch capacity expands from 14 to ~28-30.
+* **`vllm:kv_cache_usage_perc`**: Verifies memory utilization remains stable below 95%.
+* **`golden_dataset` Output Rate**: Tracks super prompt generation throughput (target: ~180-220 emails/hour).
+
+

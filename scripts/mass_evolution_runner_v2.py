@@ -69,27 +69,27 @@ async def process_email_v2(orchestrator_v2, row, semaphore, db):
             await db.commit()
 
 async def main():
-    print("🚀 Initializing Engine v2 Mass Evolution Runner (4-Phase Optimized Pipeline)")
+    print("🚀 Initializing Engine v2 Mass Evolution Runner (Stratified Diversity Batch Sampling)")
     orchestrator_v2 = GoldenDatasetOrchestratorV2()
     
-    async with aiosqlite.connect(DB_PATH) as db:
-        async with db.execute("SELECT id, clean_text, raw_text, prompt, context, target_persona FROM raw_emails WHERE status='backtranslated' AND id NOT IN (SELECT raw_email_id FROM golden_dataset)") as cursor:
-            pending_rows = await cursor.fetchall()
-            
-        if not pending_rows:
-            print("All records processed or none available in 'backtranslated' state.")
-            return
-            
-        cleaned_pending_rows = []
-        for row in pending_rows:
-            r_id, c_text, r_text, p_text, ctx, persona = row
-            text_to_use = c_text if (c_text and len(c_text.strip('- \n\t')) >= 10) else r_text
-            if text_to_use:
-                text_to_use = text_to_use[:8000]
-            cleaned_pending_rows.append((r_id, text_to_use, p_text, ctx, persona))
+    from src.engine_v2.golden_dataset_generator_v2.diversity_sampler import fetch_stratified_diversity_batch
+    
+    pending_rows = fetch_stratified_diversity_batch(DB_PATH, batch_size=1000)
+    if not pending_rows:
+        print("All records processed or none available in 'backtranslated' state.")
+        return
+        
+    cleaned_pending_rows = []
+    for row in pending_rows:
+        r_id, c_text, r_text, p_text, ctx, persona = row
+        text_to_use = c_text if (c_text and len(c_text.strip('- \n\t')) >= 10) else r_text
+        if text_to_use:
+            text_to_use = text_to_use[:8000]
+        cleaned_pending_rows.append((r_id, text_to_use, p_text, ctx, persona))
 
-        print(f"Engine v2 evolving {len(cleaned_pending_rows)} emails concurrently with 60 workers...")
-        semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
+    print(f"Engine v2 evolving {len(cleaned_pending_rows)} emails concurrently with 60 workers (Stratified 20/20/20/20/20 Diversity Batch)...")
+    semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
+    async with aiosqlite.connect(DB_PATH) as db:
         
         tasks = []
         for row in cleaned_pending_rows:

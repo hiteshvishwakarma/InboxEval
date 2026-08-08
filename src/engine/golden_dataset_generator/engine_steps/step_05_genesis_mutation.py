@@ -1,22 +1,28 @@
 import uuid
 import logging
+import asyncio
 from typing import List
+from pydantic import BaseModel, Field
 from ..schemas import HumanEmail, PersonaProfile, PromptMutation
 from ..config import config
 
 logger = logging.getLogger("Step05_GenesisMutation")
 
-def generate_genesis_mutations(email: HumanEmail, persona: PersonaProfile, dynamic_personas: List[str], llm_client=None) -> List[PromptMutation]:
+class SingleGenesisPrompt(BaseModel):
+    p_strategy: str = Field(..., description="The prompting strategy used.")
+    action_command: str = Field(..., description="Action verb starting with Write/Draft/Generate/etc.")
+    context_details: str = Field(..., description="Authentic context and details for the email.")
+
+class BatchGenesisResponse(BaseModel):
+    mutations: List[SingleGenesisPrompt] = Field(..., description="List of 5 generated base prompt mutations.")
+
+async def generate_genesis_mutations(email: HumanEmail, persona: PersonaProfile, dynamic_personas: List[str], llm_client=None) -> List[PromptMutation]:
     """
-    Step 5: Genesis Mutation.
-    Takes the 5 dynamically synthesized personas from Step 4 and uses an LLM
-    to generate 5 distinct Base Prompts (Generation 0) strictly adhering to those personas.
+    Step 5: Genesis Mutation (Engine v2 Single-Call Batch Consolidation).
+    Generates 5 distinct Base Prompts in 1 single LLM API call with Static-First prompt structure.
     """
-    logger.info(f"Generating Genesis Mutations based on {len(dynamic_personas)} personas for email {email.id}...")
+    logger.info(f"Generating 5 Genesis Mutations in 1 Batched LLM call for email {email.id}...")
     
-    mutations: List[PromptMutation] = []
-    
-    # Map task category to valid verbs for Pydantic instruction
     category_verbs = {
         "Zero-Shot Drafting": "'Write', 'Draft', or 'Generate'",
         "Data Extraction": "'Extract', 'List', or 'Find'",
@@ -25,55 +31,52 @@ def generate_genesis_mutations(email: HumanEmail, persona: PersonaProfile, dynam
     }
     required_verbs = category_verbs.get(persona.nlp_task, "'Write', 'Draft', or 'Generate'")
 
-    for index, p_strategy in enumerate(dynamic_personas):
-        mutation_prompt = f"""
-        You are implementing the following Prompting Strategy: '{p_strategy}'. 
-        Write the prompt you would type into an AI to generate the following email:
-        {email.raw_text}
-        
-        CRITICAL CONSTRAINT: You must output a strict instructional command.
-        Your 'action_command' MUST begin with EXACTLY ONE of the following verbs: {required_verbs}. Do not use any other verbs. (This is a {persona.nlp_task} task in the {persona.domain} domain, structured as a {persona.format}).
-        Your 'context_details' MUST reflect the authentic humanness of your strategy '{p_strategy}', inheriting these atomic traits of the human:
-        - Intent: {persona.intent}
-        - Sentiment: {persona.sentiment}
-        - Power Dynamic: {persona.power_dynamic}
-        - Formality: {persona.formality_scale}
-        - Quirks: {', '.join(persona.behavioral_quirks)}
-        
-        ANTI-META LEAK CONSTRAINT: You must NEVER refer to "the original email", "the reference text", or "the provided text" in your prompt. The person typing this prompt is generating the thought from scratch. Do not break the fourth wall.
-        FACTUAL INJECTION CONSTRAINT: You must explicitly list all core entities, objects, and specific claims (e.g., deleted documents, specific dates) that must be included in the generated email so the AI knows exactly what facts to use without referring to a source text.
-        Write the details naturally. Do not over-engineer it; let your assigned prompting strategy dictate how much or how little detail is provided.
-        """
-        
-        generated_prompt_text = ""
-        try:
-            if llm_client:
-                from pydantic import BaseModel, Field
-                class GenesisResult(BaseModel):
-                    action_command: str = Field(..., description="The instructional command, MUST start with verbs like 'Write an email', 'Draft a response', etc.")
-                    context_details: str = Field(..., description="The actual context, details, and persona constraints for the email.")
-                    
-                result = llm_client.chat.completions.create(
-                    model=config.DEFAULT_GENERATION_MODEL,
-                    response_model=GenesisResult,
-                    messages=[{"role": "user", "content": mutation_prompt}]
-                )
-                generated_prompt_text = f"{result.action_command} {result.context_details}"
+    # Static-First Prompt Layout: Instructions at index 0 for 100% vLLM Radix Cache Hits
+    static_first_prompt = f"""
+SYSTEM INSTRUCTIONS & CONSTRAINTS (STATIC PREFIX):
+You are a master prompt engineer. Generate 5 distinct Base Prompts for the given 5 strategies.
+CRITICAL CONSTRAINT: Each prompt's 'action_command' MUST begin with EXACTLY ONE of: {required_verbs}.
+ANTI-META LEAK: Never refer to 'the original email' or 'reference text'.
+FACTUAL INJECTION: Explicitly list all core entities, dates, and claims.
+
+PERSONA METRICS:
+- Intent: {persona.intent} | Sentiment: {persona.sentiment}
+- Power Dynamic: {persona.power_dynamic} | Formality: {persona.formality_scale}
+- Quirks: {', '.join(persona.behavioral_quirks)}
+
+--- DYNAMIC INPUT DATA ---
+Strategies to implement: {dynamic_personas}
+Target Email Text: {email.raw_text}
+"""
+
+    mutations: List[PromptMutation] = []
+    
+    try:
+        if llm_client:
+            res = llm_client.chat.completions.create(
+                model=config.DEFAULT_GENERATION_MODEL,
+                response_model=BatchGenesisResponse,
+                messages=[{"role": "user", "content": static_first_prompt}]
+            )
+            response_data = await res if asyncio.iscoroutine(res) else res
             
-            else:
-                if not generated_prompt_text:
-                    # Mocking the LLM generation for the prompt text
-                    generated_prompt_text = f"Mocked prompt text generated using strategy {p_strategy} to achieve intent: {persona.intent}"
-        except Exception as e:
-            logger.error(f"LLM failed to generate prompt for strategy '{p_strategy}': {e}. Skipping to avoid polluting gene pool.")
-            continue
-            
-        mutation = PromptMutation(
-            id=f"mut_gen0_{index}_{uuid.uuid4().hex[:4]}",
-            typology_persona=p_strategy,
-            prompt_text=generated_prompt_text,
-            generation_num=0
-        )
-        mutations.append(mutation)
+            for idx, item in enumerate(response_data.mutations[:5]):
+                mutations.append(PromptMutation(
+                    id=f"mut_gen0_{idx}_{uuid.uuid4().hex[:4]}",
+                    typology_persona=item.p_strategy,
+                    prompt_text=f"{item.action_command} {item.context_details}",
+                    generation_num=0
+                ))
+        else:
+            for idx, p_strat in enumerate(dynamic_personas[:5]):
+                mutations.append(PromptMutation(
+                    id=f"mut_gen0_{idx}_{uuid.uuid4().hex[:4]}",
+                    typology_persona=p_strat,
+                    prompt_text=f"Write an email using strategy {p_strat} to achieve intent: {persona.intent}",
+                    generation_num=0
+                ))
+    except Exception as e:
+        logger.error(f"LLM failed in Batched Genesis Generation for email {email.id}: {e}")
         
     return mutations
+

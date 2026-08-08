@@ -367,3 +367,23 @@ graph TD
 
 
 
+
+## Phase 4: Engine v3 (T-Shaped Decoupled Architecture)
+
+To solve the "Meta-Leak" context window corruption and maximize GPU throughput, Engine v3 implements a fully decoupled T-Shaped pipeline:
+
+1. **Horizontal Ingestion (Phase 1):** 
+   - Responsible strictly for semantic extraction and baseline calculation.
+   - Operates independently on raw emails to generate the `11-Axis Persona` (vLLM API) and the `DPBC Thresholds` (Local CPU Embedding Math) simultaneously.
+   - Pushes pre-calculated, pristine JSON constraints into the SQLite database.
+
+2. **Vertical Evolution (Engine v3):** 
+   - Stripped of all ingestion and extraction overhead. 
+   - Dedicated entirely to the Genetic Algorithm FSM (Mutations, Evolutions, Judgements, Crossovers).
+   - Starts directly at **Step 05 (Persona Synthesis)** by ingesting the pre-calculated DPBC and Persona JSON targets from the database, eliminating context pollution.
+
+### The DiversitySampler Feedback Loop
+Engine v3 achieves **Zero-Overhead Stratified Diversity Sampling** using a specialized Database Feedback Loop:
+- Bypasses static `ORDER BY RANDOM()` queues.
+- Dynamically queries the `golden_dataset` table to analyze current distribution skews (e.g., MICRO vs LONG emails).
+- Quantitatively targets and fetches raw emails from Phase 1 that belong to the most mathematically underrepresented category, balancing the dataset at the DB level with < 5ms latency.

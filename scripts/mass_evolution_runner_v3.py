@@ -78,30 +78,31 @@ async def main():
     sampler = DiversitySampler(DB_PATH)
     
     BATCH_SIZE = 100
-    pending_rows = []
     
-    print(f"Sampling {BATCH_SIZE} raw emails using the Smart Diversity Sampler...")
-    for _ in range(BATCH_SIZE):
-        row = sampler.get_next_best_email()
-        if row:
-            pending_rows.append(row)
-        else:
-            break
-            
-    if not pending_rows:
-        print("All records processed or none available in 'backtranslated' state.")
-        return
-
-    print(f"Engine v3 evolving {len(pending_rows)} emails concurrently with {CONCURRENCY_LIMIT} workers...")
-    semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
     async with aiosqlite.connect(DB_PATH) as db:
-        
-        tasks = []
-        for row in pending_rows:
-            tasks.append(asyncio.create_task(process_email_v3(orchestrator_v3, row, semaphore, db)))
+        while True:
+            pending_rows = []
+            print(f"Sampling {BATCH_SIZE} raw emails using the Smart Diversity Sampler...")
+            for _ in range(BATCH_SIZE):
+                row = sampler.get_next_best_email()
+                if row:
+                    pending_rows.append(row)
+                else:
+                    break
+                    
+            if not pending_rows:
+                print("All records processed or none available in 'backtranslated' state.")
+                break
+
+            print(f"Engine v3 evolving {len(pending_rows)} emails concurrently with {CONCURRENCY_LIMIT} workers...")
+            semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
             
-        await tqdm.gather(*tasks, desc="Engine v3 Mass Evolution", unit="email")
-        
+            tasks = []
+            for row in pending_rows:
+                tasks.append(asyncio.create_task(process_email_v3(orchestrator_v3, row, semaphore, db)))
+                
+            await tqdm.gather(*tasks, desc="Engine v3 Mass Evolution Batch", unit="email")
+            
     print("\n🎯 Engine v3 Mass Evolution Complete!")
 
 if __name__ == "__main__":

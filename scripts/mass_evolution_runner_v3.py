@@ -21,7 +21,7 @@ except ImportError:
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("MassEvolutionRunnerV3")
 
-CONCURRENCY_LIMIT = 20
+CONCURRENCY_LIMIT = 60
 
 async def process_email_v3(orchestrator_v3, row, semaphore, db):
     email_id = row['id']

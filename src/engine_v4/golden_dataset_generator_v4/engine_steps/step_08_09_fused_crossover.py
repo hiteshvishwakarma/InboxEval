@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from src.engine.golden_dataset_generator.schemas import KDAMatrix, SuperPrompt, EvaluatedEmail, HumanEmail, JudgeFeedback
 from src.engine.golden_dataset_generator.config import config
 from ..schemas import PersonaProfileV4, FusedCritiqueAndCrossoverResponse
+from ..gpu_occupancy import llm_slot
 
 logger = logging.getLogger("EngineV4_OptionA_FusedCrossover")
 
@@ -61,15 +62,16 @@ Current Winner Error Delta: {base_winner.overall_delta:.2f}
     final_prompt_text = base_winner.prompt_text
 
     if llm_client:
-        res = llm_client.chat.completions.create(
-            model=config.DEFAULT_GENERATION_MODEL,
-            response_model=FusedCritiqueAndCrossoverResponse,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ]
-        )
-        response = await res if asyncio.iscoroutine(res) else res
+        async with llm_slot():
+            res = llm_client.chat.completions.create(
+                model=config.DEFAULT_GENERATION_MODEL,
+                response_model=FusedCritiqueAndCrossoverResponse,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ]
+            )
+            response = await res if asyncio.iscoroutine(res) else res
         feedback_text = response.judge_critique
         final_prompt_text = f"{response.action_command} {response.context_details}"
     else:

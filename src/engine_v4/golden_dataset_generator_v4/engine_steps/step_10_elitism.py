@@ -7,24 +7,26 @@ from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_excep
 from src.engine.golden_dataset_generator.schemas import SuperPrompt, PromptMutation
 from src.engine.golden_dataset_generator.config import config
 from ..schemas import PersonaProfileV4, MutatedPromptResponse
+from ..gpu_occupancy import llm_slot
 
 logger = logging.getLogger("EngineV4_Step10_Elitism")
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), retry=retry_if_exception_type(Exception), reraise=True)
 async def _mutate_single_challenger(champion_text: str, i: int, next_gen_num: int, llm_client) -> PromptMutation:
     try:
-        response = await llm_client.chat.completions.create(
-            model=config.DEFAULT_GENERATION_MODEL,
-            response_model=MutatedPromptResponse,
-            messages=[
-                {
-                    "role": "system", 
-                    "content": "You are a master genetic mutation algorithm. You will receive a 'Champion Prompt'. Your task is to apply a slight semantic perturbation to its structure, vocabulary, or constraints while strictly maintaining its core objective. Return ONLY the new mutated text."
-                },
-                {"role": "user", "content": f"Champion Prompt:\n\n{champion_text}"}
-            ],
-            temperature=0.8
-        )
+        async with llm_slot():
+            response = await llm_client.chat.completions.create(
+                model=config.DEFAULT_GENERATION_MODEL,
+                response_model=MutatedPromptResponse,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a master genetic mutation algorithm. You will receive a 'Champion Prompt'. Your task is to apply a slight semantic perturbation to its structure, vocabulary, or constraints while strictly maintaining its core objective. Return ONLY the new mutated text."
+                    },
+                    {"role": "user", "content": f"Champion Prompt:\n\n{champion_text}"}
+                ],
+                temperature=0.8
+            )
         mutated_string = response.mutated_text
     except ValidationError as ve:
         logger.error(f"Validation error in mutation {i}: {ve}")

@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from src.engine.golden_dataset_generator.schemas import HumanEmail, DPBCThresholds, PromptMutation, EvaluatedEmail
 from src.engine.golden_dataset_generator.config import config
 from ..schemas import SingleCandidateScore
+from ..gpu_occupancy import llm_slot
 
 logger = logging.getLogger("EngineV4_Step06_StaticEvaluator")
 
@@ -44,16 +45,17 @@ Candidate [ID: {m.id}]:
 Prompt: {m.prompt_text}
 """
         if llm_client:
-            res = llm_client.chat.completions.create(
-                model=config.DEFAULT_GENERATION_MODEL,
-                response_model=SingleCandidateScore,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ]
-            )
-            score = await res if asyncio.iscoroutine(res) else res
-            
+            async with llm_slot():
+                res = llm_client.chat.completions.create(
+                    model=config.DEFAULT_GENERATION_MODEL,
+                    response_model=SingleCandidateScore,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ]
+                )
+                score = await res if asyncio.iscoroutine(res) else res
+
             tone_delta = abs(dpbc.tone_target - score.tone_score)
             conc_delta = abs(dpbc.conciseness_target - score.conciseness_score)
             acc_delta = abs(dpbc.accuracy_target - score.accuracy_score)

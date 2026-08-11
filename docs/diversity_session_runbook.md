@@ -13,16 +13,18 @@ Operator checklist for one ~60-email non-micro harvest on the Mac, then delta-sy
 
 ---
 
-## Normal path (one command)
+## Continuous Phase 1 (Mac)
 
-Prefer this over running steps by hand.
+One session is finite (~60 emails). For automatic claim → enrich → sync forever until the pool is empty:
 
-1. **New batch + harvest only** — `./scripts/run_diversity_session.sh`
-2. **New batch + dry-run sync** — `./scripts/run_diversity_session.sh --dry-sync`
-3. **New batch + real sync** — `./scripts/run_diversity_session.sh --sync`
-4. **Reuse an existing batch** — set `BATCH_ID`, then `./scripts/run_diversity_session.sh --reuse` (add `--sync` / `--dry-sync` when ready)
+1. Keep **Engine V4** running on GCP (tmux) — golden generation is separate.
+2. On Mac, leave Ollama secondary up, then:
 
-That script, in order: claim (unless `--reuse`) → Step 01 ∥ Step 02b → Step 02a → optional GCP sync.
+`./scripts/run_diversity_daemon.sh`
+
+Optional: `SLEEP_SEC=30 ./scripts/run_diversity_daemon.sh` between rounds. Ctrl+C stops cleanly. Failed rounds retry after sleep; empty pool exits.
+
+---
 
 ---
 

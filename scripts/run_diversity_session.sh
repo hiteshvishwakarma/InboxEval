@@ -7,7 +7,9 @@
 #   ./scripts/run_diversity_session.sh --sync
 #   ./scripts/run_diversity_session.sh --dry-sync
 #   BATCH_ID=0275e0fe51b8 ./scripts/run_diversity_session.sh --reuse
+#   ./scripts/run_diversity_daemon.sh          # continuous: session --sync in a loop
 #
+# Exit 10 = pending non-micro pool empty (used by the daemon).
 # Full ordered checklist: docs/diversity_session_runbook.md
 
 set -euo pipefail
@@ -60,10 +62,19 @@ else
   echo "==> Claim stratified batch (30/20/8/2)"
   CLAIM_OUT="$(python3 scripts/claim_diversity_batch.py)"
   echo "$CLAIM_OUT"
+  if echo "$CLAIM_OUT" | grep -q "No pending emails claimed"; then
+    echo "Pool empty — nothing to harvest."
+    exit 10
+  fi
   BATCH_ID="$(echo "$CLAIM_OUT" | awk -F= '/^BATCH_ID=/{print $2; exit}')"
+  CLAIMED="$(echo "$CLAIM_OUT" | awk -F= '/^CLAIMED=/{print $2; exit}')"
   if [[ -z "${BATCH_ID}" ]]; then
     echo "ERROR: could not parse BATCH_ID from claim output"
     exit 1
+  fi
+  if [[ -z "${CLAIMED}" || "${CLAIMED}" -eq 0 ]]; then
+    echo "Pool empty — nothing to harvest."
+    exit 10
   fi
   export BATCH_ID
 fi

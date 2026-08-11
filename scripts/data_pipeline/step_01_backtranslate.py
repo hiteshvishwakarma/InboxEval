@@ -100,12 +100,13 @@ async def process_email(row, semaphore, db, write_lock: asyncio.Lock) -> None:
                 prompt_val = str(back_data.get("prompt", ""))
                 context_val = str(back_data.get("context", ""))
                 # Column ownership: never write target_persona (Step 02a owns it).
+                # Allow retry from pending OR previously failed transport errors.
                 cursor = await db.execute(
                     """
                     UPDATE raw_emails
-                    SET prompt = ?, context = ?, status = 'backtranslated'
+                    SET prompt = ?, context = ?, status = 'backtranslated', error_log = NULL
                     WHERE id = ?
-                      AND status IN ('pending', 'backtranslated')
+                      AND status IN ('pending', 'backtranslated', 'failed')
                       AND (prompt IS NULL OR prompt = '')
                     """,
                     (prompt_val, context_val, email_id),
@@ -116,12 +117,14 @@ async def process_email(row, semaphore, db, write_lock: asyncio.Lock) -> None:
                 else:
                     print(f"⚠️ No row updated for ID: {email_id} (already had prompt or bad status)")
             else:
+                # Transport/API/parse failure: do NOT burn the row as permanent failed.
+                # Leave status unchanged so the same batch_id can be re-run.
                 await db.execute(
-                    "UPDATE raw_emails SET status='failed', "
-                    "error_log='JSON Hallucination (Not a dict)' WHERE id=?",
-                    (email_id,),
+                    "UPDATE raw_emails SET error_log=? WHERE id=? AND (prompt IS NULL OR prompt='')",
+                    ("Step01 transient failure (OmniRoute/HTTP/JSON) — retry same batch", email_id),
                 )
                 await db.commit()
+                print(f"⏳ Transient failure for ID: {email_id} — left retryable (not marked failed)")
 
 
 async def main(batch_id: str | None, categories: list, batch_per_category: list) -> None:
@@ -154,6 +157,7 @@ async def main(batch_id: str | None, categories: list, batch_per_category: list)
                 JOIN diversity_batch b ON b.raw_email_id = r.id
                 WHERE b.batch_id = ?
                   AND (r.prompt IS NULL OR r.prompt = '')
+                  AND r.status IN ('pending', 'backtranslated', 'failed')
                 ORDER BY r.id
                 """,
                 (batch_id,),
@@ -179,6 +183,7 @@ async def main(batch_id: str | None, categories: list, batch_per_category: list)
                 JOIN diversity_batch b ON b.raw_email_id = r.id
                 WHERE b.batch_id = ?
                   AND (r.prompt IS NULL OR r.prompt = '')
+                  AND r.status IN ('pending', 'backtranslated', 'failed')
                 ORDER BY r.id
                 """,
                 (batch_id,),

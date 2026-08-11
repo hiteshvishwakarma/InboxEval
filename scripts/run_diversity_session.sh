@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
 # run_diversity_session.sh — one stratified ~60-email harvest session (Mac).
-# Run this in YOUR terminal (not via the Cursor agent) so long LLM work
-# does not burn agent tokens.
-#
-# Prerequisites:
-#   - OmniRoute listening on :20128 (Step 01)
-#   - Ollama on secondary laptop reachable (Step 02a)
-#   - data/pipeline.db present
-#   - For --sync: SSH alias inbox-engine works
+# Run in YOUR terminal (not Cursor agent) to avoid burning agent tokens.
 #
 # Usage:
 #   ./scripts/run_diversity_session.sh
 #   ./scripts/run_diversity_session.sh --sync
 #   ./scripts/run_diversity_session.sh --dry-sync
+#   BATCH_ID=0275e0fe51b8 ./scripts/run_diversity_session.sh --reuse
+#
+# Full ordered checklist: docs/diversity_session_runbook.md
 
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -20,12 +16,14 @@ cd "$ROOT"
 
 SYNC=0
 DRY_SYNC=0
+REUSE=0
 for arg in "$@"; do
   case "$arg" in
     --sync) SYNC=1 ;;
     --dry-sync) DRY_SYNC=1 ;;
+    --reuse) REUSE=1 ;;
     -h|--help)
-      sed -n '1,20p' "$0"
+      sed -n '1,25p' "$0"
       exit 0
       ;;
   esac
@@ -36,22 +34,54 @@ if [[ -f "venv/bin/activate" ]]; then
   source venv/bin/activate
 fi
 
-echo "==> Claim stratified batch (30/20/8/2)"
-CLAIM_OUT="$(python3 scripts/claim_diversity_batch.py)"
-echo "$CLAIM_OUT"
-BATCH_ID="$(echo "$CLAIM_OUT" | awk -F= '/^BATCH_ID=/{print $2; exit}')"
-if [[ -z "${BATCH_ID}" ]]; then
-  echo "ERROR: could not parse BATCH_ID from claim output"
-  exit 1
+echo "==> Preflight"
+python3 -c "import chromadb, sentence_transformers" 2>/dev/null \
+  || { echo "ERROR: pip install chromadb sentence-transformers"; exit 1; }
+curl -sf "http://localhost:20128/v1/models" >/dev/null \
+  || { echo "ERROR: OmniRoute not reachable on :20128"; exit 1; }
+echo "Preflight OK (chromadb + OmniRoute). Model=${OMNIROUTE_MODEL:-step_01_combo}"
+
+if [[ "$REUSE" -eq 1 ]]; then
+  if [[ -z "${BATCH_ID:-}" ]]; then
+    echo "ERROR: --reuse requires BATCH_ID env var"
+    exit 1
+  fi
+  echo "==> Reusing BATCH_ID=$BATCH_ID (no new claim)"
+else
+  echo "==> Claim stratified batch (30/20/8/2)"
+  CLAIM_OUT="$(python3 scripts/claim_diversity_batch.py)"
+  echo "$CLAIM_OUT"
+  BATCH_ID="$(echo "$CLAIM_OUT" | awk -F= '/^BATCH_ID=/{print $2; exit}')"
+  if [[ -z "${BATCH_ID}" ]]; then
+    echo "ERROR: could not parse BATCH_ID from claim output"
+    exit 1
+  fi
+  export BATCH_ID
 fi
-export BATCH_ID
 echo "Using BATCH_ID=$BATCH_ID"
+
+cleanup_bg() {
+  if [[ -n "${PID01:-}" ]] && kill -0 "$PID01" 2>/dev/null; then
+    echo "Stopping background Step 01 (pid=$PID01)"
+    kill "$PID01" 2>/dev/null || true
+    wait "$PID01" 2>/dev/null || true
+  fi
+}
+trap cleanup_bg EXIT
 
 echo "==> Step 01 (OmniRoute) + Step 02b (Chroma) in parallel"
 python3 scripts/data_pipeline/step_01_backtranslate.py --batch-id "$BATCH_ID" &
 PID01=$!
+set +e
 python3 scripts/data_pipeline/batch_vectorize.py --batch-id "$BATCH_ID"
-wait "$PID01"
+VEC_RC=$?
+set -e
+wait "$PID01" || true
+PID01=""
+if [[ "$VEC_RC" -ne 0 ]]; then
+  echo "ERROR: Step 02b failed (rc=$VEC_RC). Fix deps then re-run with --reuse BATCH_ID=$BATCH_ID"
+  exit "$VEC_RC"
+fi
 echo "Step 01 + 02b done."
 
 echo "==> Step 02a (persona + DPBC; waits on Chroma lock if needed)"
@@ -68,4 +98,5 @@ else
   echo "==> Skipping GCP sync (pass --sync or --dry-sync when ready)"
 fi
 
+trap - EXIT
 echo "Session complete. BATCH_ID=$BATCH_ID"

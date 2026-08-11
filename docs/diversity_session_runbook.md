@@ -80,4 +80,6 @@ Safe while the GCP Engine VM is running. Never full-file rsync `pipeline.db`.
 ## Dashboard
 
 `./scripts/run_ops_dashboard.sh` → open `http://127.0.0.1:8765`  
-Stages: `claim → step_01 → step_02b → step_02a → sync` (Mac DB + GCP SSH + hardware).
+Shows batch stages, Mac/GCP fleet + golden-by-size skew, Mac CPU/RAM, GCP **NVIDIA L4** metrics, secondary **GTX 1080** (Ollama host).
+
+For live util/temp/power on the secondary GPU, enable SSH and set `SECONDARY_LAPTOP_SSH=user@192.168.0.8` (optional `SECONDARY_GPU_VRAM_MB=8192`). Without SSH, VRAM occupancy comes from Ollama `/api/ps` only.

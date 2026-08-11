@@ -151,6 +151,30 @@
       font-size: 0.78rem;
     }
     .err { color: var(--muted); font-size: 0.8rem; }
+    .note {
+      margin-top: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--warn);
+      line-height: 1.35;
+    }
+    .sublabel {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin: -0.35rem 0 0.65rem;
+      font-weight: 500;
+    }
+    .skew {
+      margin-top: 0.75rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--track);
+    }
+    .skew .title {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 0.45rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
   </style>
 </head>
 <body>
@@ -166,6 +190,7 @@
     <h2>Current batch</h2>
     <div class="batch-id" id="batch-id">—</div>
     <div class="stages" id="stages"></div>
+    <div class="note" id="batch-note" hidden></div>
   </section>
 
   <section>
@@ -202,11 +227,31 @@
     }
 
     function bar(pct, hotAt = 80, critAt = 92) {
-      const p = Math.max(0, Math.min(100, pct || 0));
+      if (pct == null || Number.isNaN(pct)) {
+        return `<div class="bar"><span style="width:0%"></span></div>`;
+      }
+      const p = Math.max(0, Math.min(100, pct));
       let cls = "bar";
       if (p >= critAt) cls += " crit";
       else if (p >= hotAt) cls += " hot";
       return `<div class="${cls}"><span style="width:${p}%"></span></div>`;
+    }
+
+    function fmt(v, suffix = "") {
+      return v == null || Number.isNaN(v) ? "—" : `${v}${suffix}`;
+    }
+
+    function renderSkew(skew) {
+      if (!skew || !Object.keys(skew).length) return "";
+      const total = Object.values(skew).reduce((a, b) => a + b, 0) || 1;
+      const order = ["micro", "short", "medium", "long", "massive", "unknown"];
+      const keys = [...order.filter((k) => skew[k] != null), ...Object.keys(skew).filter((k) => !order.includes(k))];
+      const rows = keys.map((k) => {
+        const n = skew[k];
+        const pct = (100 * n) / total;
+        return `<div class="hw-row"><div class="top"><span>${k}</span><span>${n} (${pct.toFixed(1)}%)</span></div>${bar(pct, 50, 80)}</div>`;
+      }).join("");
+      return `<div class="skew"><div class="title">Golden by size</div>${rows}</div>`;
     }
 
     function renderStages(batch) {
@@ -228,9 +273,18 @@
           <div class="of">/ ${claimed}</div>
         </div>`;
       }).join("");
+      const worker = batch.worker && batch.worker.enriching ? " · worker live" : "";
       document.getElementById("batch-id").textContent = batch.batch_id
-        ? `BATCH ${batch.batch_id} · stage ${current || "—"}`
+        ? `BATCH ${batch.batch_id} · stage ${current || "—"}${worker}`
         : "No diversity_batch yet";
+      const note = document.getElementById("batch-note");
+      if (batch.note) {
+        note.hidden = false;
+        note.textContent = batch.note;
+      } else {
+        note.hidden = true;
+        note.textContent = "";
+      }
     }
 
     function renderFleet(id, title, data) {
@@ -266,7 +320,8 @@
             <div class="k">Status mix</div>
             <div class="v small">${statusStr || "—"}</div>
           </div>
-        </div>`;
+        </div>
+        ${renderSkew(data.golden_by_size)}`;
     }
 
     function renderHwMac(data) {
@@ -275,43 +330,36 @@
         el.innerHTML = `<h3>Mac ${badge(false, "", "n/a")}</h3><div class="err">${(data && data.error) || ""}</div>`;
         return;
       }
-      el.innerHTML = `<h3>Mac ${badge(true, "live", "")}</h3>
+      el.innerHTML = `<h3>${data.label || "Mac"} ${badge(true, "live", "")}</h3>
         <div class="hw-row"><div class="top"><span>CPU</span><span>${data.cpu_pct}%</span></div>${bar(data.cpu_pct)}</div>
         <div class="hw-row"><div class="top"><span>RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>
         ${data.temp_c != null ? `<div class="hw-row"><div class="top"><span>Temp</span><span>${data.temp_c}°C</span></div>${bar(data.temp_c, 70, 90)}</div>` : ""}`;
     }
 
-    function renderHwGcp(data) {
-      const el = document.getElementById("hw-gcp");
+    function renderGpuCard(elId, fallbackTitle, data) {
+      const el = document.getElementById(elId);
       if (!data || !data.ok) {
-        el.innerHTML = `<h3>GCP GPU ${badge(false, "", "offline")}</h3><div class="err">${(data && data.error) || ""}</div>`;
+        el.innerHTML = `<h3>${fallbackTitle} ${badge(false, "", "offline")}</h3><div class="err">${(data && data.error) || ""}</div>`;
         return;
       }
+      const title = data.label || fallbackTitle;
       const vramPct = data.gpu_vram_total_mb
-        ? (100 * data.gpu_vram_used_mb) / data.gpu_vram_total_mb
-        : 0;
-      el.innerHTML = `<h3>GCP GPU ${badge(true, "live", "")}</h3>
-        <div class="hw-row"><div class="top"><span>GPU util</span><span>${data.gpu_util_pct}%</span></div>${bar(data.gpu_util_pct)}</div>
-        <div class="hw-row"><div class="top"><span>VRAM</span><span>${Math.round(data.gpu_vram_used_mb)} / ${Math.round(data.gpu_vram_total_mb)} MB</span></div>${bar(vramPct)}</div>
-        <div class="hw-row"><div class="top"><span>Temp</span><span>${data.gpu_temp_c}°C</span></div>${bar(data.gpu_temp_c, 70, 85)}</div>
-        ${data.gpu_power_w != null ? `<div class="hw-row"><div class="top"><span>Power</span><span>${data.gpu_power_w} W</span></div></div>` : ""}
-        ${data.ram_pct != null ? `<div class="hw-row"><div class="top"><span>Host RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>` : ""}`;
-    }
-
-    function renderOllama(data) {
-      const el = document.getElementById("hw-ollama");
-      if (!data || !data.ok) {
-        el.innerHTML = `<h3>Ollama ${badge(false, "", "unreachable")}</h3><div class="err">${(data && data.error) || ""}</div>`;
-        return;
-      }
+        ? (100 * (data.gpu_vram_used_mb || 0)) / data.gpu_vram_total_mb
+        : null;
       const models = data.models || [];
-      const list = models.length
-        ? models.map((m) => {
-            const gb = m.size_vram != null ? (m.size_vram / 1e9).toFixed(2) + " GB VRAM" : "";
-            return `<div class="metric"><div class="k">${m.name || "?"}</div><div class="v small">${gb || "loaded"}</div></div>`;
-          }).join("")
-        : `<div class="err">No model loaded (idle)</div>`;
-      el.innerHTML = `<h3>Ollama ${badge(true, "live", "")}</h3>${list}`;
+      const modelLine = models.length
+        ? `<div class="hw-row"><div class="top"><span>Ollama</span><span>${models.map((m) => m.name).join(", ")}</span></div></div>`
+        : "";
+      const note = data.note ? `<div class="err" style="margin-top:0.5rem">${data.note}</div>` : "";
+      el.innerHTML = `<h3>${title} ${badge(true, "live", "")}</h3>
+        <div class="sublabel">${data.gpu_name || ""}</div>
+        <div class="hw-row"><div class="top"><span>GPU util</span><span>${fmt(data.gpu_util_pct, "%")}</span></div>${bar(data.gpu_util_pct)}</div>
+        <div class="hw-row"><div class="top"><span>VRAM</span><span>${fmt(data.gpu_vram_used_mb != null ? Math.round(data.gpu_vram_used_mb) : null)} / ${fmt(data.gpu_vram_total_mb != null ? Math.round(data.gpu_vram_total_mb) : null)} MB</span></div>${bar(vramPct)}</div>
+        <div class="hw-row"><div class="top"><span>Temp</span><span>${fmt(data.gpu_temp_c, "°C")}</span></div>${bar(data.gpu_temp_c, 70, 85)}</div>
+        <div class="hw-row"><div class="top"><span>Power</span><span>${fmt(data.gpu_power_w, " W")}</span></div></div>
+        ${data.ram_pct != null ? `<div class="hw-row"><div class="top"><span>Host RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>` : ""}
+        ${modelLine}
+        ${note}`;
     }
 
     async function tick() {
@@ -323,8 +371,8 @@
         renderFleet("mac-card", "Mac pipeline", snap.mac);
         renderFleet("gcp-card", "GCP Engine", snap.gcp);
         renderHwMac(snap.hardware && snap.hardware.mac);
-        renderHwGcp(snap.hardware && snap.hardware.gcp);
-        renderOllama(snap.hardware && snap.hardware.ollama);
+        renderGpuCard("hw-gcp", "GCP GPU", snap.hardware && snap.hardware.gcp);
+        renderGpuCard("hw-ollama", "Secondary GPU", snap.hardware && snap.hardware.ollama);
       } catch (e) {
         document.getElementById("ts").textContent = "Fetch error: " + e;
       }

@@ -1,5 +1,11 @@
 # Solo developer roadmap (architecture notes)
 
+## 2026-08-12 — Engine V4 sampler must not fall back to micro
+
+**Why diversification stalled:** Phase-1 Mac harvest correctly enriched non-micro rows, but `DiversitySampler.get_next_batch` only *preferred* the scarcest size, then filled the rest of each 100-wide batch with `size_category != target` — which included the huge `backtranslated` **micro** pool. Result: most Engine V4 goldens stayed micro; the skew radar barely moved.
+
+**Fix:** V4 sampler eligible set is `short|medium|long|massive` only (`exclude_micro=True`). Deficit fill walks other non-micro categories by golden scarcity. Never claims micro in diversification mode. Redeploy sampler + restart `mass_evolution_runner_v4*` on GCP. Optional: unlock stranded `locked_v4` micros back to `backtranslated` if workers died mid-batch.
+
 ## 2026-08-11 — Parallel diversity harvest + delta GCP sync
 
 **Decision:** Same claimed batch of ~60 non-micro emails for Step 01 (DynamicGroqRotator / `GROQ_API_KEY*`) and Steps 02a/02b (Ollama / Chroma), then delta-UPDATE to GCP while Engine V4 keeps running.

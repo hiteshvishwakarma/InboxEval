@@ -1,171 +1,72 @@
-# Diversity session — ordered run commands
+# Diversity session runbook
 
-Use this as the operator checklist (and later wire the same order into the observability dashboard). Prefer running from your **own terminal**, not the Cursor agent.
-
-**Current recoverable batch from first attempt:** `BATCH_ID=0275e0fe51b8` (60 claimed; Step 01 temporarily burned them to `failed` — reset before retry).
+Operator checklist for one ~60-email non-micro harvest on the Mac, then delta-sync to GCP while Engine V4 keeps running.
 
 ---
 
-## 0) One-time / preflight
+## Prerequisites (once)
 
-```bash
-cd /Users/hiteshvishwakarma/Development/InboxEval
-source venv/bin/activate
-
-# Chroma + embeddings for Step 02b (required in venv)
-pip install chromadb sentence-transformers
-
-# Python 3.9 + instructor 1.x needs this for `str | Path` annotations
-pip install eval_type_backport
-
-# Step 01 uses DynamicGroqRotator (GROQ_API_KEY* in .env) — OmniRoute not required
-python3 - <<'PY'
-from dotenv import load_dotenv
-from pathlib import Path
-load_dotenv(Path.cwd() / ".env")
-from src.engine.golden_dataset_generator.utils.dynamic_groq_rotator import load_groq_api_keys
-print(f"Groq keys loaded: {len(load_groq_api_keys())}")
-PY
-
-# Ollama for Step 02a (secondary laptop)
-# export OLLAMA_SECONDARY_LAPTOP_BASE_URL=http://192.168.0.8:11434/v1
-# export OLLAMA_SECONDARY_LAPTOP_MODEL=qwen2.5-coder:3b
-```
-
-Quick smoke test Groq rotator:
-
-```bash
-python3 - <<'PY'
-import asyncio
-from dotenv import load_dotenv
-load_dotenv()
-from src.engine.golden_dataset_generator.utils.dynamic_groq_rotator import get_default_rotator
-
-async def main():
-    r = get_default_rotator()
-    data = await r.achat_completion(
-        [{"role": "user", "content": "Reply with exactly: ok"}],
-        max_tokens=16,
-        temperature=0,
-    )
-    print(data.get("_rotator_model"), data["choices"][0]["message"]["content"][:80])
-
-asyncio.run(main())
-PY
-```
+- venv active; `chromadb`, `sentence-transformers`, `eval_type_backport` installed
+- `.env` has `GROQ_API_KEY*` (Step 01)
+- Secondary laptop Ollama up (`OLLAMA_SECONDARY_LAPTOP_*` if non-default)
+- GCP SSH / sync env ready only if you will sync
 
 ---
 
-## 1) Claim batch (skip if reusing `0275e0fe51b8`)
+## Normal path (one command)
 
-```bash
-python3 scripts/claim_diversity_batch.py
-# copy BATCH_ID=...
-export BATCH_ID=paste_here
-```
+Prefer this over running steps by hand.
 
-### Reset a burned batch back to pending (do this for `0275e0fe51b8`)
+1. **New batch + harvest only** — `./scripts/run_diversity_session.sh`
+2. **New batch + dry-run sync** — `./scripts/run_diversity_session.sh --dry-sync`
+3. **New batch + real sync** — `./scripts/run_diversity_session.sh --sync`
+4. **Reuse an existing batch** — set `BATCH_ID`, then `./scripts/run_diversity_session.sh --reuse` (add `--sync` / `--dry-sync` when ready)
 
-```bash
-export BATCH_ID=0275e0fe51b8
-python3 - <<'PY'
-import os, sqlite3
-from src.engine.golden_dataset_generator.db.pipeline_db import DB_PATH
-bid = os.environ["BATCH_ID"]
-conn = sqlite3.connect(os.path.abspath(DB_PATH), timeout=30)
-n = conn.execute("""
-  UPDATE raw_emails SET status='pending', error_log=NULL
-  WHERE id IN (SELECT raw_email_id FROM diversity_batch WHERE batch_id=?)
-    AND (prompt IS NULL OR prompt='')
-""", (bid,)).rowcount
-conn.commit()
-print(f"Reset {n} rows to pending for BATCH_ID={bid}")
-conn.close()
-PY
-```
+That script, in order: claim (unless `--reuse`) → Step 01 ∥ Step 02b → Step 02a → optional GCP sync.
 
 ---
 
-## 2) Step 01 — backtranslate (DynamicGroqRotator)
+## What each stage does
 
-```bash
-python3 scripts/data_pipeline/step_01_backtranslate.py --batch-id "$BATCH_ID"
-```
-
----
-
-## 3) Step 02b — vectorize (Chroma) — can run in parallel with Step 01
-
-```bash
-python3 scripts/data_pipeline/batch_vectorize.py --batch-id "$BATCH_ID"
-```
-
-Parallel form:
-
-```bash
-python3 scripts/data_pipeline/step_01_backtranslate.py --batch-id "$BATCH_ID" &
-PID01=$!
-python3 scripts/data_pipeline/batch_vectorize.py --batch-id "$BATCH_ID"
-wait $PID01
-```
+| Stage | Role |
+|--------|------|
+| Claim | Stratified 30 short / 20 medium / 8 long / 2 massive → one `BATCH_ID` |
+| Step 01 | Backtranslate via DynamicGroqRotator; writes `prompt` / `context` / `status` only |
+| Step 02b | Chroma upsert for batch IDs (SQLite read-only) |
+| Step 02a | Persona + DPBC in one UPDATE; waits on Chroma lock |
+| Sync | Enrichment columns → GCP `raw_emails` where still `pending`; then Chroma |
 
 ---
 
-## 4) Step 02a — persona + DPBC (Ollama) — after 02b preferred
+## If something already finished mid-session
 
-```bash
-python3 scripts/mass_horizontal_enrichment.py --batch-id "$BATCH_ID"
-```
+- Step 01+02b done, 02a failed → re-run only Step 02a with the same `BATCH_ID`
+- All Mac enrichment done → dry-run sync, then real sync (`--verify`)
+- Do **not** claim a new batch for the same emails; use `--reuse`
 
----
-
-## 5) Sync to GCP (only when prompt+persona+dpbc ready)
-
-```bash
-python3 scripts/sync_delta_to_gcp.py --dry-run --batch-id "$BATCH_ID"
-python3 scripts/sync_delta_to_gcp.py --verify --batch-id "$BATCH_ID"
-```
+Current recoverable batch (first attempt): `0275e0fe51b8`.
 
 ---
 
-## All-in-one (after preflight)
+## GCP sync vs Engine (no write collision)
 
-```bash
-# Reuse existing batch after reset:
-export BATCH_ID=0275e0fe51b8
-BATCH_ID=$BATCH_ID ./scripts/run_diversity_session.sh --reuse
+- Sync uses `BEGIN IMMEDIATE` + `busy_timeout` so SQLite serializes with the Engine
+- Updates only enrichment columns, and only rows still `status='pending'` (Engine-claimed rows are skipped)
+- Never touches `golden_dataset`; count is checked before/after
+- SQL first, then Chroma under flock
 
-# Or claim new:
-./scripts/run_diversity_session.sh          # harvest only
-./scripts/run_diversity_session.sh --dry-sync
-./scripts/run_diversity_session.sh --sync
-```
+Safe while the GCP Engine VM is running. Never full-file rsync `pipeline.db`.
 
 ---
 
-## What went wrong on the first run (reference)
+## Notes from first run
 
-1. **Claim OK** — 60 IDs under `0275e0fe51b8`.
-2. **Step 02b crashed** — `ModuleNotFoundError: chromadb` in venv. Script `set -e` aborted the shell path, but Step 01 was already backgrounded.
-3. **Step 01 OmniRoute** — `step_01_combo` returned **404** / **503** (combo listed but backends unhealthy). Old code marked all 60 as `status=failed`.
-4. **Fix** — Step 01 now uses **DynamicGroqRotator** (`GROQ_API_KEY*`); transient failures leave rows retryable. Reset batch once if still burned (command above).
+- OmniRoute is **not** used for Step 01 anymore (Groq rotator)
+- Ollama Step 02a needs instructor `Mode.JSON` (already in script)
+- Ctrl+C stops the Mac script; Ollama may keep the model in VRAM until keep-alive expires — unload on the secondary laptop if needed
 
 ---
 
-## Dashboard hook (later)
+## Later: dashboard
 
-Poll Mac `data/pipeline.db` for:
-
-```sql
--- per batch progress
-SELECT b.batch_id, r.status,
-  SUM(prompt IS NOT NULL AND prompt != '') AS has_prompt,
-  SUM(target_persona IS NOT NULL) AS has_persona,
-  SUM(dpbc_targets IS NOT NULL) AS has_dpbc,
-  COUNT(*) AS n
-FROM diversity_batch b
-JOIN raw_emails r ON r.id = b.raw_email_id
-GROUP BY b.batch_id, r.status;
-```
-
-Ordered stages for UI: `claim → step_01 → step_02b → step_02a → sync`.
+UI stages in order: `claim → step_01 → step_02b → step_02a → sync` (poll Mac `pipeline.db` per `BATCH_ID`).

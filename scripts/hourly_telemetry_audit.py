@@ -56,12 +56,18 @@ def run_hourly_audit():
 
     verbatim_leakage_pct = (verbatim_cheating_count / len(recent_prompts) * 100) if recent_prompts else 0.0
 
+    c.execute("SELECT count(*) FROM raw_emails WHERE dpbc_targets IS NOT NULL")
+    phase1_completed = c.fetchone()[0]
+
     conn.close()
 
     print("\n" + "="*80)
     print("📈 HOURLY GOLDEN DATASET TELEMETRY & QUALITY AUDIT REPORT")
     print(f"Timestamp: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("="*80)
+    print("🚀 PHASE 1: HORIZONTAL ENRICHMENT (GCP VM)")
+    print(f"• Total Phase 1 Enriched             : {phase1_completed} / {sum(raw_status.values())}")
+    print("\n🧬 PHASE 2: GOLDEN DATASET GENERATION")
     print(f"• Total Golden Dataset Super Prompts : {total_golden} records")
     print(f"• Hourly Conversions (Last 60 mins)  : +{hourly_conversions} new super prompts / hr")
     print(f"• Raw Emails Completed               : {raw_status.get('completed', 0)} / {sum(raw_status.values())}")

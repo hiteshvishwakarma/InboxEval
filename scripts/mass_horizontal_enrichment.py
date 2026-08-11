@@ -103,6 +103,7 @@ Raw Email Text: {clean_text}
                     model=model,
                     response_model=PersonaProfileV3,
                     messages=[{"role": "user", "content": prompt}],
+                    max_retries=2,
                 )
                 break
             except Exception as e:
@@ -168,10 +169,17 @@ async def run_enrichment(
         from openai import AsyncOpenAI
         import instructor
 
+        # Ollama OpenAI-compat returns content JSON, not tool_calls.
+        # Mode.TOOLS → "'NoneType' object is not iterable" / No tool calls.
         llm_client = instructor.from_openai(
-            AsyncOpenAI(api_key="mock-key", base_url=base_url)
+            AsyncOpenAI(api_key="mock-key", base_url=base_url),
+            mode=instructor.Mode.JSON,
         )
-        logger.info("LLM client pointing at %s using model=%s", base_url, model)
+        logger.info(
+            "LLM client pointing at %s using model=%s (instructor Mode.JSON)",
+            base_url,
+            model,
+        )
     else:
         logger.info("Running in Mock Mode (No LLM API calls).")
         llm_client = None

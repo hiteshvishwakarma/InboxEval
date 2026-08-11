@@ -166,6 +166,39 @@ def run_on_gcp(sql: str) -> bool:
         return False
 
 
+def fetch_applied_ids_on_gcp(ids: list) -> list[int]:
+    """Return IDs that now look enriched on GCP (status backtranslated + dpbc set)."""
+    if not ids:
+        return []
+    id_list = ",".join(str(i) for i in ids)
+    gcp_python = (
+        "import sqlite3\n"
+        f"conn = sqlite3.connect('{GCP_DB_PATH}', timeout=30)\n"
+        "c = conn.cursor()\n"
+        f"c.execute('SELECT id FROM raw_emails WHERE id IN ({id_list}) "
+        f"AND status = \\\"backtranslated\\\" AND dpbc_targets IS NOT NULL')\n"
+        "print(','.join(str(r[0]) for r in c.fetchall()))\n"
+        "conn.close()\n"
+    )
+    try:
+        result = subprocess.run(
+            ["ssh", GCP_SSH_ALIAS, f"python3 -c '{gcp_python}'"],
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        if result.returncode != 0:
+            logger.error("Failed to verify applied IDs: %s", result.stderr)
+            return []
+        line = result.stdout.strip().splitlines()[-1] if result.stdout.strip() else ""
+        if not line:
+            return []
+        return [int(x) for x in line.split(",") if x.strip().isdigit()]
+    except (subprocess.TimeoutExpired, ValueError) as e:
+        logger.error("applied-id verify error: %s", e)
+        return []
+
+
 def mark_synced(conn: sqlite3.Connection, ids: list) -> None:
     now = datetime.now(timezone.utc).isoformat()
     conn.executemany(
@@ -305,12 +338,29 @@ def main() -> None:
 
     if success:
         ids = [r["id"] for r in rows]
-        mark_synced(conn, ids)
-        logger.info(
-            "SQL sync SUCCESS: %s rows written to GCP. Watermark updated.", len(rows)
-        )
-        if args.verify:
-            verify_on_gcp(ids, golden_before)
+        applied = fetch_applied_ids_on_gcp(ids)
+        skipped = sorted(set(ids) - set(applied))
+        if applied:
+            mark_synced(conn, applied)
+            logger.info(
+                "SQL sync SUCCESS: %s/%s IDs confirmed enriched on GCP. Watermark updated.",
+                len(applied),
+                len(ids),
+            )
+        else:
+            logger.warning(
+                "SQL ran but 0 IDs confirmed as backtranslated+dpbc on GCP. "
+                "Not watermarking — safe to retry."
+            )
+        if skipped:
+            logger.warning(
+                "Skipped watermark for %s IDs (not pending on GCP or not applied): %s%s",
+                len(skipped),
+                skipped[:10],
+                "..." if len(skipped) > 10 else "",
+            )
+        if args.verify and applied:
+            verify_on_gcp(applied, golden_before)
         elif golden_before is not None:
             golden_after = gcp_golden_count()
             if golden_after is not None and golden_after != golden_before:

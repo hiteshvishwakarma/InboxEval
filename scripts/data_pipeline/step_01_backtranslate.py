@@ -88,36 +88,40 @@ Return ONLY a valid JSON object with exactly these keys (no extra text, no markd
         return None
 
 
-async def process_email(row, semaphore, db) -> None:
+async def process_email(row, semaphore, db, write_lock: asyncio.Lock) -> None:
     email_id = row[0]
     clean_text = row[1]
 
     async with semaphore:
         back_data = await backtranslate_email(clean_text)
 
-        if isinstance(back_data, dict):
-            prompt_val = str(back_data.get("prompt", ""))
-            context_val = str(back_data.get("context", ""))
-            # Column ownership: never write target_persona (Step 02a owns it).
-            await db.execute(
-                """
-                UPDATE raw_emails
-                SET prompt = ?, context = ?, status = 'backtranslated'
-                WHERE id = ?
-                  AND status IN ('pending', 'backtranslated')
-                  AND (prompt IS NULL OR prompt = '')
-                """,
-                (prompt_val, context_val, email_id),
-            )
-            await db.commit()
-            print(f"✅ Successfully backtranslated ID: {email_id}")
-        else:
-            await db.execute(
-                "UPDATE raw_emails SET status='failed', "
-                "error_log='JSON Hallucination (Not a dict)' WHERE id=?",
-                (email_id,),
-            )
-            await db.commit()
+        async with write_lock:
+            if isinstance(back_data, dict):
+                prompt_val = str(back_data.get("prompt", ""))
+                context_val = str(back_data.get("context", ""))
+                # Column ownership: never write target_persona (Step 02a owns it).
+                cursor = await db.execute(
+                    """
+                    UPDATE raw_emails
+                    SET prompt = ?, context = ?, status = 'backtranslated'
+                    WHERE id = ?
+                      AND status IN ('pending', 'backtranslated')
+                      AND (prompt IS NULL OR prompt = '')
+                    """,
+                    (prompt_val, context_val, email_id),
+                )
+                await db.commit()
+                if cursor.rowcount and cursor.rowcount > 0:
+                    print(f"✅ Successfully backtranslated ID: {email_id}")
+                else:
+                    print(f"⚠️ No row updated for ID: {email_id} (already had prompt or bad status)")
+            else:
+                await db.execute(
+                    "UPDATE raw_emails SET status='failed', "
+                    "error_log='JSON Hallucination (Not a dict)' WHERE id=?",
+                    (email_id,),
+                )
+                await db.commit()
 
 
 async def main(batch_id: str | None, categories: list, batch_per_category: list) -> None:
@@ -126,7 +130,8 @@ async def main(batch_id: str | None, categories: list, batch_per_category: list)
         f"(model={OMNIROUTE_MODEL})"
     )
 
-    async with aiosqlite.connect(DB_PATH, timeout=30) as db:
+    db_path = os.path.abspath(DB_PATH)
+    async with aiosqlite.connect(db_path, timeout=30) as db:
         await db.execute("PRAGMA journal_mode=WAL")
         await db.execute("PRAGMA busy_timeout=30000")
 
@@ -159,7 +164,7 @@ async def main(batch_id: str | None, categories: list, batch_per_category: list)
             # Claim new stratified batch using sync sqlite (same file, short transaction)
             import sqlite3
 
-            sync_conn = sqlite3.connect(DB_PATH, timeout=30)
+            sync_conn = sqlite3.connect(db_path, timeout=30)
             sync_conn.execute("PRAGMA busy_timeout=30000")
             ensure_diversity_batch_table(sync_conn)
             batch_id, claimed = claim_stratified_batch(
@@ -187,8 +192,10 @@ async def main(batch_id: str | None, categories: list, batch_per_category: list)
 
         print(f"Fetched {len(pending_rows)} emails. Concurrency={CONCURRENCY_LIMIT}...")
         semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
+        write_lock = asyncio.Lock()
         tasks = [
-            asyncio.create_task(process_email(row, semaphore, db)) for row in pending_rows
+            asyncio.create_task(process_email(row, semaphore, db, write_lock))
+            for row in pending_rows
         ]
         for i in range(0, len(tasks), 1000):
             await asyncio.gather(*tasks[i : i + 1000])

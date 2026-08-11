@@ -67,6 +67,9 @@ async def mock_extract_persona(raw_text: str) -> PersonaProfileV3:
         prompting_strategies=[
             "The Executive (To the point)",
             "The Analyst (Detail oriented)",
+            "The Lazy Minimalist",
+            "The Micro-Manager",
+            "The Storyteller",
         ],
         typology_classification="Corporate_Peer_DataExtraction",
     )
@@ -74,7 +77,7 @@ async def mock_extract_persona(raw_text: str) -> PersonaProfileV3:
 
 async def extract_persona_for_email(row, llm_client, test_mock, semaphore, model: str):
     async with semaphore:
-        email_id = row["id"]
+        email_id = int(row["id"])
         clean_text = row["clean_text"]
 
         if test_mock:
@@ -180,17 +183,22 @@ async def run_enrichment(
         holder="mass_horizontal_enrichment",
     ):
         total_processed = 0
+        # Skip IDs that failed persona extraction this session to avoid infinite retry loops.
+        skipped_ids: set[int] = set()
         while True:
             conn = sqlite3.connect(DB_PATH, timeout=30)
             conn.execute("PRAGMA journal_mode=WAL")
             conn.execute("PRAGMA busy_timeout=30000")
             conn.row_factory = sqlite3.Row
             rows = fetch_incomplete_rows(conn, batch_id, chunk_size)
+            rows = [r for r in rows if int(r["id"]) not in skipped_ids]
 
             if not rows:
                 logger.info(
-                    "No more incomplete emails. Total enriched this session: %s",
+                    "No more incomplete emails. Total enriched this session: %s "
+                    "(skipped failures: %s)",
                     total_processed,
+                    len(skipped_ids),
                 )
                 conn.close()
                 break
@@ -209,11 +217,17 @@ async def run_enrichment(
             ]
             results = await asyncio.gather(*tasks)
 
+            progressed = 0
             for row in rows:
-                email_id = row["id"]
+                email_id = int(row["id"])
                 raw_text = row["raw_text"]
                 persona = next((p for eid, p in results if eid == email_id), None)
                 if not persona:
+                    skipped_ids.add(email_id)
+                    logger.warning(
+                        "Skipping email %s this session (persona extraction failed).",
+                        email_id,
+                    )
                     continue
 
                 human_email_obj = HumanEmail(id=str(email_id), raw_text=raw_text)
@@ -230,16 +244,23 @@ async def run_enrichment(
                 )
                 conn.commit()
                 total_processed += 1
+                progressed += 1
                 logger.info("Email %s enriched (persona+dpbc).", email_id)
 
             conn.close()
 
-            # Batch-scoped mode: one pass over incomplete claimed IDs is enough per lock hold;
-            # loop continues until none left (resume-safe).
-            if batch_id and len(rows) < chunk_size:
-                # Fetch again next iteration; if empty, break above.
-                pass
-
+            # batch_id mode: stop when a full pass made no progress (all remaining failed).
+            if batch_id and progressed == 0:
+                logger.warning(
+                    "Batch %s: no progress on remaining incomplete rows; exiting. "
+                    "Re-run later to retry skipped IDs.",
+                    batch_id,
+                )
+                break
+            # Non-batch continuous mode: if nothing progressed, avoid spin.
+            if not batch_id and progressed == 0:
+                logger.warning("No progress in chunk; exiting to avoid spin.")
+                break
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Step 02a: persona + DPBC enrichment")

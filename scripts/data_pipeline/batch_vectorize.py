@@ -25,7 +25,6 @@ sys.path.insert(0, _ROOT)
 sys.path.insert(0, _PIPELINE)
 
 from chroma_lock import chroma_write_lock
-from diversity_batch import ensure_diversity_batch_table, get_batch_ids
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("BatchVectorize")
@@ -39,19 +38,24 @@ def fetch_rows(conn: sqlite3.Connection, batch_id: str | None) -> list:
     """
     Read-only fetch. Prefer claimed batch IDs; no status='backtranslated' required
     so Step 02b can run in parallel with Step 01.
+
+    Does not CREATE/ALTER tables (no SQLite writes).
     """
     if batch_id:
-        ensure_diversity_batch_table(conn)
-        ids = get_batch_ids(conn, batch_id)
-        if not ids:
-            logger.warning("No IDs in diversity_batch for batch_id=%s", batch_id)
-            return []
-        placeholders = ",".join("?" * len(ids))
         cursor = conn.execute(
-            f"SELECT id, clean_text, target_persona FROM raw_emails WHERE id IN ({placeholders})",
-            ids,
+            """
+            SELECT r.id, r.clean_text, r.target_persona
+            FROM raw_emails r
+            JOIN diversity_batch b ON b.raw_email_id = r.id
+            WHERE b.batch_id = ?
+            ORDER BY r.id
+            """,
+            (batch_id,),
         )
-        return cursor.fetchall()
+        rows = cursor.fetchall()
+        if not rows:
+            logger.warning("No IDs in diversity_batch for batch_id=%s", batch_id)
+        return rows
 
     cursor = conn.execute(
         "SELECT id, clean_text, target_persona FROM raw_emails WHERE status='backtranslated'"

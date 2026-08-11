@@ -82,8 +82,9 @@ def main() -> None:
         logger.error("Database file not found at %s", DB_PATH)
         sys.exit(1)
 
-    # SQLite read-only snapshot — close before Chroma work.
-    conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True, timeout=30)
+    # SQLite read snapshot — close before Chroma work. (No UPDATE/INSERT.)
+    conn = sqlite3.connect(DB_PATH, timeout=30)
+    conn.execute("PRAGMA busy_timeout=30000")
     try:
         rows = fetch_rows(conn, args.batch_id)
     finally:

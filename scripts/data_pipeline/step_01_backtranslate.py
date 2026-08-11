@@ -1,5 +1,6 @@
 """
-Step 01: Stratified / batch-scoped backtranslation via OmniRoute.
+Step 01: Stratified / batch-scoped backtranslation via DynamicGroqRotator
+(llm_client_factory / GROQ_API_KEY* round-robin — not OmniRoute).
 
 Writes ONLY: prompt, context, status='backtranslated'
 Never writes target_persona (owned by Step 02a).
@@ -21,6 +22,10 @@ sys.path.insert(0, _ROOT)
 sys.path.insert(0, _PIPELINE)
 
 from src.engine.golden_dataset_generator.db.pipeline_db import DB_PATH
+from src.engine.golden_dataset_generator.utils.dynamic_groq_rotator import (
+    CRITICAL_LLM_FAILURE,
+    get_default_rotator,
+)
 from diversity_batch import (
     DEFAULT_BATCH_PER_CATEGORY,
     DEFAULT_CATEGORIES,
@@ -38,16 +43,11 @@ except ImportError:
 
 load_dotenv(dotenv_path=os.path.join(_ROOT, ".env"))
 
-CONCURRENCY_LIMIT = 5
-OMNIROUTE_BASE_URL = os.getenv("OMNIROUTE_BASE_URL", "http://localhost:20128/v1")
-OMNIROUTE_API_KEY = os.getenv("OMNIROUTE_API_KEY", "omniroute")
-OMNIROUTE_MODEL = os.getenv("OMNIROUTE_MODEL", "step_01_combo")
+CONCURRENCY_LIMIT = int(os.getenv("GROQ_CONCURRENCY", "5"))
 
 
 async def backtranslate_email(email_text: str) -> dict | None:
-    """Call OmniRoute OpenAI-compatible chat completions; return JSON dict or None."""
-    import httpx
-
+    """Call Groq via DynamicGroqRotator; return JSON dict or None."""
     prompt = f"""You are an expert at reverse-engineering AI prompts.
 Read the following real-world corporate email:
 ---
@@ -60,31 +60,30 @@ Return ONLY a valid JSON object with exactly these keys (no extra text, no markd
     "context": "<Any background facts or context needed to write it>",
     "target_persona": "<The persona of the sender>"
 }}"""
-    payload = {
-        "model": OMNIROUTE_MODEL,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.3,
-        "stream": False,
-        "response_format": {"type": "json_object"},
-    }
-    headers = {"Authorization": f"Bearer {OMNIROUTE_API_KEY}"}
+    messages = [{"role": "user", "content": prompt}]
     try:
-        async with httpx.AsyncClient(timeout=180.0) as http:
-            resp = await http.post(
-                f"{OMNIROUTE_BASE_URL.rstrip('/')}/chat/completions",
-                json=payload,
-                headers=headers,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            content = data["choices"][0]["message"]["content"].strip()
-            if content.startswith("```"):
-                content = content.split("```")[1]
-                if content.startswith("json"):
-                    content = content[4:]
-            return json.loads(content)
+        rotator = get_default_rotator()
+        data = await rotator.achat_completion(
+            messages,
+            temperature=0.3,
+            response_format={"type": "json_object"},
+            max_tokens=800,
+            timeout=90.0,
+        )
+        content = data["choices"][0]["message"]["content"].strip()
+        if content.startswith("```"):
+            content = content.split("```")[1]
+            if content.startswith("json"):
+                content = content[4:]
+        parsed = json.loads(content)
+        model_used = data.get("_rotator_model", "?")
+        print(f"   (model={model_used})")
+        return parsed
+    except CRITICAL_LLM_FAILURE as e:
+        print(f"[!] GroqRotator exhausted: {e}")
+        return None
     except Exception as e:
-        print(f"[!] OmniRoute Error: {str(e)}")
+        print(f"[!] GroqRotator Error: {str(e)}")
         return None
 
 
@@ -121,17 +120,26 @@ async def process_email(row, semaphore, db, write_lock: asyncio.Lock) -> None:
                 # Leave status unchanged so the same batch_id can be re-run.
                 await db.execute(
                     "UPDATE raw_emails SET error_log=? WHERE id=? AND (prompt IS NULL OR prompt='')",
-                    ("Step01 transient failure (OmniRoute/HTTP/JSON) — retry same batch", email_id),
+                    ("Step01 transient failure (Groq/HTTP/JSON) — retry same batch", email_id),
                 )
                 await db.commit()
                 print(f"⏳ Transient failure for ID: {email_id} — left retryable (not marked failed)")
 
 
 async def main(batch_id: str | None, categories: list, batch_per_category: list) -> None:
-    print(
-        f"🚀 Step 01: Backtranslation via OmniRoute @ {OMNIROUTE_BASE_URL} "
-        f"(model={OMNIROUTE_MODEL})"
+    from src.engine.golden_dataset_generator.utils.dynamic_groq_rotator import (
+        load_groq_api_keys,
+        STEP_01_MODELS,
     )
+
+    keys = load_groq_api_keys()
+    print(
+        f"🚀 Step 01: Backtranslation via DynamicGroqRotator "
+        f"({len(keys)} Groq keys × {len(STEP_01_MODELS)} models)"
+    )
+    if not keys:
+        print("ERROR: No GROQ_API_KEY / GROQ_API_KEY_* in environment (.env)")
+        raise SystemExit(1)
 
     db_path = os.path.abspath(DB_PATH)
     async with aiosqlite.connect(db_path, timeout=30) as db:
@@ -210,7 +218,7 @@ async def main(batch_id: str | None, categories: list, batch_per_category: list)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Step 01: Stratified Backtranslation via OmniRoute"
+        description="Step 01: Stratified Backtranslation via DynamicGroqRotator"
     )
     parser.add_argument(
         "--batch-id",

@@ -37,9 +37,18 @@ fi
 echo "==> Preflight"
 python3 -c "import chromadb, sentence_transformers" 2>/dev/null \
   || { echo "ERROR: pip install chromadb sentence-transformers"; exit 1; }
-curl -sf "http://localhost:20128/v1/models" >/dev/null \
-  || { echo "ERROR: OmniRoute not reachable on :20128"; exit 1; }
-echo "Preflight OK (chromadb + OmniRoute). Model=${OMNIROUTE_MODEL:-step_01_combo}"
+python3 - <<'PY'
+import sys
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(Path.cwd() / ".env")
+from src.engine.golden_dataset_generator.utils.dynamic_groq_rotator import load_groq_api_keys
+keys = load_groq_api_keys()
+if not keys:
+    print("ERROR: No GROQ_API_KEY / GROQ_API_KEY_* in .env", file=sys.stderr)
+    sys.exit(1)
+print(f"Preflight OK (chromadb + {len(keys)} Groq keys for DynamicGroqRotator)")
+PY
 
 if [[ "$REUSE" -eq 1 ]]; then
   if [[ -z "${BATCH_ID:-}" ]]; then
@@ -69,7 +78,7 @@ cleanup_bg() {
 }
 trap cleanup_bg EXIT
 
-echo "==> Step 01 (OmniRoute) + Step 02b (Chroma) in parallel"
+echo "==> Step 01 (DynamicGroqRotator) + Step 02b (Chroma) in parallel"
 python3 scripts/data_pipeline/step_01_backtranslate.py --batch-id "$BATCH_ID" &
 PID01=$!
 set +e

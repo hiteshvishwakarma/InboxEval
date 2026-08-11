@@ -15,30 +15,39 @@ source venv/bin/activate
 # Chroma + embeddings for Step 02b (required in venv)
 pip install chromadb sentence-transformers
 
-# OmniRoute must be up
-curl -s http://localhost:20128/v1/models | head -c 200; echo
-
-# Pick a working model id (step_01_combo is listed but returned 404/503 in our run).
-# Examples that exist on this OmniRoute instance:
-#   export OMNIROUTE_MODEL=auto/best-free
-#   export OMNIROUTE_MODEL=groq/llama-3.3-70b-versatile
-#   export OMNIROUTE_MODEL=step_01_combo   # only if combo backends are healthy
-export OMNIROUTE_BASE_URL=http://localhost:20128/v1
-export OMNIROUTE_API_KEY=omniroute
-export OMNIROUTE_MODEL=auto/best-free
+# Step 01 uses DynamicGroqRotator (GROQ_API_KEY* in .env) — OmniRoute not required
+python3 - <<'PY'
+from dotenv import load_dotenv
+load_dotenv()
+from src.engine.golden_dataset_generator.utils.dynamic_groq_rotator import load_groq_api_keys
+print(f"Groq keys loaded: {len(load_groq_api_keys())}")
+PY
 
 # Ollama for Step 02a (secondary laptop)
 # export OLLAMA_SECONDARY_LAPTOP_BASE_URL=http://192.168.0.8:11434/v1
 # export OLLAMA_SECONDARY_LAPTOP_MODEL=qwen2.5-coder:3b
 ```
 
-Quick smoke test OmniRoute:
+Quick smoke test Groq rotator:
 
 ```bash
-curl -s http://localhost:20128/v1/chat/completions \
-  -H "Authorization: Bearer omniroute" \
-  -H "Content-Type: application/json" \
-  -d "{\"model\":\"$OMNIROUTE_MODEL\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hi in 3 words\"}],\"max_tokens\":20}"
+python3 - <<'PY'
+import asyncio
+from dotenv import load_dotenv
+load_dotenv()
+from src.engine.golden_dataset_generator.utils.dynamic_groq_rotator import get_default_rotator
+
+async def main():
+    r = get_default_rotator()
+    data = await r.achat_completion(
+        [{"role": "user", "content": "Reply with exactly: ok"}],
+        max_tokens=16,
+        temperature=0,
+    )
+    print(data.get("_rotator_model"), data["choices"][0]["message"]["content"][:80])
+
+asyncio.run(main())
+PY
 ```
 
 ---
@@ -73,7 +82,7 @@ PY
 
 ---
 
-## 2) Step 01 — backtranslate (OmniRoute)
+## 2) Step 01 — backtranslate (DynamicGroqRotator)
 
 ```bash
 python3 scripts/data_pipeline/step_01_backtranslate.py --batch-id "$BATCH_ID"
@@ -120,14 +129,13 @@ python3 scripts/sync_delta_to_gcp.py --verify --batch-id "$BATCH_ID"
 ```bash
 # Reuse existing batch after reset:
 export BATCH_ID=0275e0fe51b8
-# Or claim new: omit BATCH_ID and use ./scripts/run_diversity_session.sh
+BATCH_ID=$BATCH_ID ./scripts/run_diversity_session.sh --reuse
 
+# Or claim new:
 ./scripts/run_diversity_session.sh          # harvest only
 ./scripts/run_diversity_session.sh --dry-sync
 ./scripts/run_diversity_session.sh --sync
 ```
-
-Note: `run_diversity_session.sh` always **claims a new** batch. To retry `0275e0fe51b8`, run steps 2–5 manually with `BATCH_ID` set (do not claim again).
 
 ---
 
@@ -136,7 +144,7 @@ Note: `run_diversity_session.sh` always **claims a new** batch. To retry `0275e0
 1. **Claim OK** — 60 IDs under `0275e0fe51b8`.
 2. **Step 02b crashed** — `ModuleNotFoundError: chromadb` in venv. Script `set -e` aborted the shell path, but Step 01 was already backgrounded.
 3. **Step 01 OmniRoute** — `step_01_combo` returned **404** / **503** (combo listed but backends unhealthy). Old code marked all 60 as `status=failed`.
-4. **Fix applied in code** — transient OmniRoute failures no longer set `failed`; rows stay retryable. Still **reset** this batch once (command above).
+4. **Fix** — Step 01 now uses **DynamicGroqRotator** (`GROQ_API_KEY*`); transient failures leave rows retryable. Reset batch once if still burned (command above).
 
 ---
 

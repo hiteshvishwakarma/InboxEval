@@ -313,6 +313,7 @@ def collect_mac_pipeline(db_path: str = LOCAL_DB) -> Dict[str, Any]:
             if cat not in ("micro", "short", "medium", "long", "massive"):
                 size_rows.append({"size": cat, "emails": n, "golden": skew.get(cat, 0)})
 
+        sessions = _diversity_session_stats(conn)
         conn.close()
         out.update(
             {
@@ -333,15 +334,22 @@ def collect_mac_pipeline(db_path: str = LOCAL_DB) -> Dict[str, Any]:
                 "synced": synced,
                 "sync_backlog": sync_backlog,
                 "batch": batch,
+                "sessions": sessions,
                 "hero": {
                     "title": "Golden Data Generator",
+                    "engine": "Engine V4 · vLLM Qwen2.5-32B-AWQ (GCP L4)",
                     "total_emails": total,
                     "golden": golden,
+                    "golden_source": "Mac pipeline.db (local mirror)",
                     "backtranslated": backtranslated,
                     "persona_extracted": persona_n,
                     "dpbc_extracted": dpbc_n,
                     "vectorized": vectorized,
                     "size_breakdown": size_rows,
+                    "batches_claimed": sessions.get("claimed"),
+                    "batches_enriched": sessions.get("enriched"),
+                    "batches_synced": sessions.get("synced"),
+                    "emails_in_sessions": sessions.get("emails_claimed"),
                 },
             }
         )
@@ -349,6 +357,64 @@ def collect_mac_pipeline(db_path: str = LOCAL_DB) -> Dict[str, Any]:
     except Exception as e:
         out["error"] = str(e)
         return out
+
+
+def _diversity_session_stats(conn: sqlite3.Connection) -> Dict[str, Any]:
+    """How many ~60-email diversity sessions claimed / enriched / synced."""
+    empty = {
+        "claimed": 0,
+        "enriched": 0,
+        "synced": 0,
+        "emails_claimed": 0,
+        "emails_per_batch": 60,
+    }
+    try:
+        claimed = int(
+            conn.execute("SELECT COUNT(DISTINCT batch_id) FROM diversity_batch").fetchone()[0]
+        )
+        emails_claimed = int(
+            conn.execute("SELECT COUNT(*) FROM diversity_batch").fetchone()[0]
+        )
+        enriched = int(
+            conn.execute(
+                """
+                SELECT COUNT(*) FROM (
+                  SELECT b.batch_id
+                  FROM diversity_batch b
+                  JOIN raw_emails r ON r.id = b.raw_email_id
+                  GROUP BY b.batch_id
+                  HAVING COUNT(*) = SUM(
+                    CASE WHEN r.dpbc_targets IS NOT NULL THEN 1 ELSE 0 END
+                  )
+                )
+                """
+            ).fetchone()[0]
+        )
+        synced = int(
+            conn.execute(
+                """
+                SELECT COUNT(*) FROM (
+                  SELECT b.batch_id
+                  FROM diversity_batch b
+                  JOIN raw_emails r ON r.id = b.raw_email_id
+                  LEFT JOIN sync_log s ON s.raw_email_id = r.id
+                  GROUP BY b.batch_id
+                  HAVING COUNT(*) = SUM(
+                    CASE WHEN s.raw_email_id IS NOT NULL THEN 1 ELSE 0 END
+                  )
+                )
+                """
+            ).fetchone()[0]
+        )
+        return {
+            "claimed": claimed,
+            "enriched": enriched,
+            "synced": synced,
+            "emails_claimed": emails_claimed,
+            "emails_per_batch": 60,
+        }
+    except sqlite3.OperationalError:
+        return empty
 
 
 def _chroma_vector_count() -> Optional[int]:
@@ -669,6 +735,43 @@ def collect_secondary_hardware() -> Dict[str, Any]:
         out["ollama_ok"] = False
         out["ollama_error"] = str(e)[:160]
 
+    # Full GPU metrics via optional SSH or HTTP exporter
+    metrics_url = os.getenv("SECONDARY_GPU_METRICS_URL", "").strip()
+    if not metrics_url:
+        host = urlparse(OLLAMA_BASE).hostname
+        if host:
+            metrics_url = f"http://{host}:9191/gpu.json"
+
+    if metrics_url:
+        try:
+            with urlopen(metrics_url, timeout=2.0) as resp:
+                parsed = json.loads(resp.read().decode("utf-8"))
+            # Expected keys from secondary_gpu_metrics_server.py
+            if parsed.get("gpu_name") or parsed.get("gpu_util_pct") is not None:
+                for k in (
+                    "gpu_name",
+                    "gpu_util_pct",
+                    "gpu_vram_used_mb",
+                    "gpu_vram_total_mb",
+                    "gpu_temp_c",
+                    "gpu_power_w",
+                    "ram_used_gb",
+                    "ram_total_gb",
+                    "ram_pct",
+                ):
+                    if k in parsed and parsed[k] is not None:
+                        out[k] = parsed[k]
+                name = out.get("gpu_name") or SECONDARY_GPU_NAME
+                vram_gb = round(float(out.get("gpu_vram_total_mb") or SECONDARY_GPU_VRAM_MB) / 1024, 1)
+                out["label"] = f"{name} · {vram_gb} GB"
+                out["gpu_name"] = name
+                out["metrics_source"] = "http-exporter"
+                out["ok"] = True
+                out["note"] = None
+                return out
+        except Exception as e:
+            out["http_error"] = str(e)[:160]
+
     ssh_host = SECONDARY_SSH
     if not ssh_host:
         host = urlparse(OLLAMA_BASE).hostname
@@ -697,22 +800,23 @@ def collect_secondary_hardware() -> Dict[str, Any]:
     vram_gb = round(SECONDARY_GPU_VRAM_MB / 1024, 1)
     out["label"] = f"{SECONDARY_GPU_NAME} · {vram_gb} GB"
     out["metrics_source"] = "config+ollama"
-    # Explicitly omit inventing zeros — UI must show n/a
-    out.pop("gpu_util_pct", None)
-    out.pop("gpu_temp_c", None)
-    out.pop("gpu_power_w", None)
     out["gpu_util_pct"] = None
     out["gpu_temp_c"] = None
     out["gpu_power_w"] = None
     if out.get("ollama_ok"):
         out["ok"] = True
         out["note"] = (
-            "util/temp/power unavailable — enable SSH "
-            "(SECONDARY_LAPTOP_SSH=user@host). "
-            "VRAM used is from Ollama; total 4GB is configured for GTX 1050."
+            "util/temp/power n/a. Prefer HTTP exporter on secondary: "
+            "`python3 scripts/secondary_gpu_metrics_server.py` "
+            "or set SECONDARY_LAPTOP_SSH=user@host."
         )
     else:
-        out["error"] = out.get("ollama_error") or out.get("ssh_error") or "unreachable"
+        out["error"] = (
+            out.get("ollama_error")
+            or out.get("ssh_error")
+            or out.get("http_error")
+            or "unreachable"
+        )
     return out
 
 

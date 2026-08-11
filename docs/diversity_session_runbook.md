@@ -82,4 +82,6 @@ Safe while the GCP Engine VM is running. Never full-file rsync `pipeline.db`.
 `./scripts/run_ops_dashboard.sh` → open `http://127.0.0.1:8765`  
 Shows batch stages, Mac/GCP fleet + golden-by-size skew, Mac CPU/RAM, GCP **NVIDIA L4** (nvidia-smi), secondary **GTX 1050 4GB** (Ollama; util/temp/power only with SSH).
 
-For live util/temp/power on the secondary GPU, enable SSH and set `SECONDARY_LAPTOP_SSH=user@192.168.0.8`. Defaults: `SECONDARY_GPU_NAME=NVIDIA GeForce GTX 1050`, `SECONDARY_GPU_VRAM_MB=4096`. Without SSH those sensors show **n/a** (not invented). GCP tok/s comes from vLLM `/metrics` counter deltas.
+For secondary GPU util/temp/power (no SSH required): on that laptop run
+`python3 scripts/secondary_gpu_metrics_server.py` → serves `:9191/gpu.json`.
+Or set `SECONDARY_LAPTOP_SSH=user@host`. Defaults: GTX 1050 / 4096 MB. Missing sensors show **n/a**.

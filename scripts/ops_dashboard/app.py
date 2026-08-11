@@ -59,21 +59,38 @@ def _snapshot_fresh() -> dict:
             fut.result()
 
     mac = results.get("mac") or {"ok": False}
+    gcp = results.get("gcp") or {"ok": False}
     from datetime import datetime, timezone
+
+    hero = mac.get("hero") if mac.get("ok") else None
+    if hero and gcp.get("ok"):
+        hero = dict(hero)
+        hero["golden_gcp"] = gcp.get("golden")
+        hero["golden_gcp_source"] = "GCP pipeline.db (Engine V4 truth)"
+        hero["golden_last_hour_gcp"] = gcp.get("golden_last_hour")
 
     return {
         "ts": datetime.now(timezone.utc).isoformat(),
         "title": "Golden Data Generator",
-        "hero": mac.get("hero") if mac.get("ok") else None,
+        "hero": hero,
         "batch": mac.get("batch") if mac.get("ok") else _latest_batch_empty(),
         "mac": mac,
-        "gcp": results.get("gcp") or {"ok": False},
+        "gcp": gcp,
         "hardware": {
             "mac": results.get("hw_mac") or {"ok": False},
             "gcp": results.get("hw_gcp") or {"ok": False},
             "secondary": results.get("ollama") or {"ok": False},
-            # keep alias for older UI
             "ollama": results.get("ollama") or {"ok": False},
+        },
+        "flow": {
+            "phases": [
+                {"id": "p1_claim", "label": "Claim 60", "where": "Mac"},
+                {"id": "p1_01", "label": "Backtranslate", "where": "Mac · Groq"},
+                {"id": "p1_02b", "label": "Vectorize", "where": "Mac · Chroma"},
+                {"id": "p1_02a", "label": "Persona+DPBC", "where": "Secondary · Ollama"},
+                {"id": "p1_sync", "label": "Delta sync", "where": "→ GCP"},
+                {"id": "p2_engine", "label": "Evolve golden", "where": "GCP · Engine V4"},
+            ]
         },
     }
 

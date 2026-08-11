@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InboxEval Ops</title>
+  <style>
+    :root {
+      --bg: #0f1218;
+      --panel: #171b24;
+      --text: #e8ecf4;
+      --muted: #8b95a8;
+      --accent: #3d9cf0;
+      --ok: #3ecf8e;
+      --warn: #e6b84d;
+      --bad: #e25c5c;
+      --track: #2a3140;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 1.25rem 1.5rem 2rem;
+    }
+    header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin: 0;
+    }
+    .meta { color: var(--muted); font-size: 0.8rem; }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge.ok { background: #1a3d2e; color: var(--ok); }
+    .badge.bad { background: #3d1a1a; color: var(--bad); }
+    .badge.warn { background: #3d3420; color: var(--warn); }
+
+    section {
+      background: var(--panel);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 1rem;
+    }
+    section h2 {
+      margin: 0 0 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .batch-id {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 1.05rem;
+      margin-bottom: 0.85rem;
+    }
+    .stages {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .stage {
+      flex: 1;
+      min-width: 5.5rem;
+      background: var(--track);
+      border-radius: 8px;
+      padding: 0.65rem 0.7rem;
+      border: 2px solid transparent;
+    }
+    .stage.active { border-color: var(--accent); }
+    .stage.done { border-color: var(--ok); opacity: 0.95; }
+    .stage .label { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.25rem; }
+    .stage .count {
+      font-size: 1.35rem;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+    }
+    .stage .of { font-size: 0.75rem; color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card h3 {
+      margin: 0 0 0.6rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.55rem 1rem;
+    }
+    .metric .k { font-size: 0.68rem; color: var(--muted); }
+    .metric .v {
+      font-size: 1.25rem;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+    }
+    .metric .v.small { font-size: 0.95rem; }
+
+    .hw-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+    }
+    @media (max-width: 900px) {
+      .hw-grid { grid-template-columns: 1fr; }
+    }
+    .bar {
+      height: 6px;
+      background: var(--track);
+      border-radius: 3px;
+      margin-top: 0.35rem;
+      overflow: hidden;
+    }
+    .bar > span {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+    .bar.hot > span { background: var(--warn); }
+    .bar.crit > span { background: var(--bad); }
+    .hw-row { margin-bottom: 0.55rem; }
+    .hw-row .top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+    }
+    .err { color: var(--muted); font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>InboxEval Ops</h1>
+      <div class="meta">Phase-1 harvest + Engine fleet · auto-refresh 5s</div>
+    </div>
+    <div class="meta" id="ts">—</div>
+  </header>
+
+  <section>
+    <h2>Current batch</h2>
+    <div class="batch-id" id="batch-id">—</div>
+    <div class="stages" id="stages"></div>
+  </section>
+
+  <section>
+    <h2>Fleet</h2>
+    <div class="grid">
+      <div class="card" id="mac-card"></div>
+      <div class="card" id="gcp-card"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Hardware</h2>
+    <div class="hw-grid">
+      <div class="card" id="hw-mac"></div>
+      <div class="card" id="hw-gcp"></div>
+      <div class="card" id="hw-ollama"></div>
+    </div>
+  </section>
+
+  <script>
+    const STAGE_ORDER = ["claim", "step_01", "step_02b", "step_02a", "sync"];
+    const STAGE_LABEL = {
+      claim: "Claim",
+      step_01: "Step 01",
+      step_02b: "Step 02b",
+      step_02a: "Step 02a",
+      sync: "Sync",
+    };
+
+    function badge(ok, labelOk, labelBad) {
+      return ok
+        ? `<span class="badge ok">${labelOk}</span>`
+        : `<span class="badge bad">${labelBad}</span>`;
+    }
+
+    function bar(pct, hotAt = 80, critAt = 92) {
+      const p = Math.max(0, Math.min(100, pct || 0));
+      let cls = "bar";
+      if (p >= critAt) cls += " crit";
+      else if (p >= hotAt) cls += " hot";
+      return `<div class="${cls}"><span style="width:${p}%"></span></div>`;
+    }
+
+    function renderStages(batch) {
+      const claimed = batch.claimed || 0;
+      const stages = batch.stages || {};
+      const current = batch.current_stage;
+      const el = document.getElementById("stages");
+      el.innerHTML = STAGE_ORDER.map((key) => {
+        const n = stages[key] ?? 0;
+        let cls = "stage";
+        if (current === "done" || (current && STAGE_ORDER.indexOf(key) < STAGE_ORDER.indexOf(current))) {
+          if (key !== "claim" || claimed > 0) cls += " done";
+        }
+        if (current === key) cls += " active";
+        if (current === "done" && key === "sync" && n >= claimed && claimed > 0) cls += " done";
+        return `<div class="${cls}">
+          <div class="label">${STAGE_LABEL[key]}</div>
+          <div class="count">${n}</div>
+          <div class="of">/ ${claimed}</div>
+        </div>`;
+      }).join("");
+      document.getElementById("batch-id").textContent = batch.batch_id
+        ? `BATCH ${batch.batch_id} · stage ${current || "—"}`
+        : "No diversity_batch yet";
+    }
+
+    function renderFleet(id, title, data) {
+      const el = document.getElementById(id);
+      if (!data || !data.ok) {
+        el.innerHTML = `<h3>${title} ${badge(false, "", "offline")}</h3>
+          <div class="err">${(data && data.error) || "unreachable"}</div>`;
+        return;
+      }
+      const status = data.status || {};
+      const statusStr = Object.entries(status)
+        .map(([k, v]) => `${k}:${v}`)
+        .join(" · ");
+      let extra = "";
+      if (data.golden_last_hour != null) {
+        extra = `<div class="metric"><div class="k">Golden / last hour</div><div class="v">+${data.golden_last_hour}</div></div>`;
+      }
+      if (data.sync_backlog != null) {
+        extra += `<div class="metric"><div class="k">Sync backlog</div><div class="v">${data.sync_backlog}</div></div>`;
+      }
+      if (data.pending_enrichment != null) {
+        extra += `<div class="metric"><div class="k">Pending enrich</div><div class="v">${data.pending_enrichment}</div></div>`;
+      }
+      if (data.pending != null) {
+        extra += `<div class="metric"><div class="k">Pending (Engine)</div><div class="v">${data.pending}</div></div>`;
+      }
+      el.innerHTML = `<h3>${title} ${badge(true, "live", "")}</h3>
+        <div class="metrics">
+          <div class="metric"><div class="k">Golden</div><div class="v">${data.golden ?? "—"}</div></div>
+          <div class="metric"><div class="k">Enriched non-micro</div><div class="v">${data.enriched_non_micro ?? "—"}</div></div>
+          ${extra}
+          <div class="metric" style="grid-column:1/-1">
+            <div class="k">Status mix</div>
+            <div class="v small">${statusStr || "—"}</div>
+          </div>
+        </div>`;
+    }
+
+    function renderHwMac(data) {
+      const el = document.getElementById("hw-mac");
+      if (!data || !data.ok) {
+        el.innerHTML = `<h3>Mac ${badge(false, "", "n/a")}</h3><div class="err">${(data && data.error) || ""}</div>`;
+        return;
+      }
+      el.innerHTML = `<h3>Mac ${badge(true, "live", "")}</h3>
+        <div class="hw-row"><div class="top"><span>CPU</span><span>${data.cpu_pct}%</span></div>${bar(data.cpu_pct)}</div>
+        <div class="hw-row"><div class="top"><span>RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>
+        ${data.temp_c != null ? `<div class="hw-row"><div class="top"><span>Temp</span><span>${data.temp_c}°C</span></div>${bar(data.temp_c, 70, 90)}</div>` : ""}`;
+    }
+
+    function renderHwGcp(data) {
+      const el = document.getElementById("hw-gcp");
+      if (!data || !data.ok) {
+        el.innerHTML = `<h3>GCP GPU ${badge(false, "", "offline")}</h3><div class="err">${(data && data.error) || ""}</div>`;
+        return;
+      }
+      const vramPct = data.gpu_vram_total_mb
+        ? (100 * data.gpu_vram_used_mb) / data.gpu_vram_total_mb
+        : 0;
+      el.innerHTML = `<h3>GCP GPU ${badge(true, "live", "")}</h3>
+        <div class="hw-row"><div class="top"><span>GPU util</span><span>${data.gpu_util_pct}%</span></div>${bar(data.gpu_util_pct)}</div>
+        <div class="hw-row"><div class="top"><span>VRAM</span><span>${Math.round(data.gpu_vram_used_mb)} / ${Math.round(data.gpu_vram_total_mb)} MB</span></div>${bar(vramPct)}</div>
+        <div class="hw-row"><div class="top"><span>Temp</span><span>${data.gpu_temp_c}°C</span></div>${bar(data.gpu_temp_c, 70, 85)}</div>
+        ${data.gpu_power_w != null ? `<div class="hw-row"><div class="top"><span>Power</span><span>${data.gpu_power_w} W</span></div></div>` : ""}
+        ${data.ram_pct != null ? `<div class="hw-row"><div class="top"><span>Host RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>` : ""}`;
+    }
+
+    function renderOllama(data) {
+      const el = document.getElementById("hw-ollama");
+      if (!data || !data.ok) {
+        el.innerHTML = `<h3>Ollama ${badge(false, "", "unreachable")}</h3><div class="err">${(data && data.error) || ""}</div>`;
+        return;
+      }
+      const models = data.models || [];
+      const list = models.length
+        ? models.map((m) => {
+            const gb = m.size_vram != null ? (m.size_vram / 1e9).toFixed(2) + " GB VRAM" : "";
+            return `<div class="metric"><div class="k">${m.name || "?"}</div><div class="v small">${gb || "loaded"}</div></div>`;
+          }).join("")
+        : `<div class="err">No model loaded (idle)</div>`;
+      el.innerHTML = `<h3>Ollama ${badge(true, "live", "")}</h3>${list}`;
+    }
+
+    async function tick() {
+      try {
+        const res = await fetch("/api/snapshot");
+        const snap = await res.json();
+        document.getElementById("ts").textContent = "Updated " + (snap.ts || "").replace("T", " ").slice(0, 19) + " UTC";
+        renderStages(snap.batch || {});
+        renderFleet("mac-card", "Mac pipeline", snap.mac);
+        renderFleet("gcp-card", "GCP Engine", snap.gcp);
+        renderHwMac(snap.hardware && snap.hardware.mac);
+        renderHwGcp(snap.hardware && snap.hardware.gcp);
+        renderOllama(snap.hardware && snap.hardware.ollama);
+      } catch (e) {
+        document.getElementById("ts").textContent = "Fetch error: " + e;
+      }
+    }
+
+    tick();
+    setInterval(tick, 5000);
+  </script>
+</body>
+</html>

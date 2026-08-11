@@ -15,10 +15,14 @@ source venv/bin/activate
 # Chroma + embeddings for Step 02b (required in venv)
 pip install chromadb sentence-transformers
 
+# Python 3.9 + instructor 1.x needs this for `str | Path` annotations
+pip install eval_type_backport
+
 # Step 01 uses DynamicGroqRotator (GROQ_API_KEY* in .env) — OmniRoute not required
 python3 - <<'PY'
 from dotenv import load_dotenv
-load_dotenv()
+from pathlib import Path
+load_dotenv(Path.cwd() / ".env")
 from src.engine.golden_dataset_generator.utils.dynamic_groq_rotator import load_groq_api_keys
 print(f"Groq keys loaded: {len(load_groq_api_keys())}")
 PY

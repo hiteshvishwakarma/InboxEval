@@ -1,5 +1,6 @@
 import os
 import json
+import asyncio
 import logging
 from typing import List, Optional
 from .schemas import (
@@ -47,131 +48,39 @@ class GoldenDatasetOrchestrator:
         # self.vector_db = VectorDBClient(...)
         # self.telemetry_db = RelationalDBClient(...)
         
+        from dotenv import load_dotenv
+        load_dotenv()
         self.llm_client = llm_client
         if not self.llm_client:
-            try:
-                import os
-                import instructor
-                from groq import Groq
-                from dotenv import load_dotenv
+            from .utils.llm_client_factory import get_robust_llm_client
+            self.llm_client = get_robust_llm_client(is_async=True)
+            if not self.llm_client:
+                logger.warning("Running without LLM client.")
                 
-                load_dotenv()
-                # Fetch all keys starting with GROQ_API_KEY_
-                groq_keys = [val for key, val in os.environ.items() if key.startswith("GROQ_API_KEY_")]
-                if groq_keys:
-                    logger.info(f"Found {len(groq_keys)} Groq API keys. Initializing Rotator...")
-                    
-                    class GroqRotator:
-                        def __init__(self, keys):
-                            self.clients = [instructor.from_groq(Groq(api_key=key), mode=instructor.Mode.TOOLS) for key in keys]
-                            self.current_idx = 0
-                            
-                            # Build the mock structure so self.llm_client.chat.completions.create works
-                            class ChatRotator:
-                                def __init__(self, parent_rotator):
-                                    self.completions = self.CompletionsRotator(parent_rotator)
-                                    
-                                class CompletionsRotator:
-                                    def __init__(self, parent_rotator):
-                                        self.parent_rotator = parent_rotator
-                                        
-                                    def create(self, **kwargs):
-                                        import time
-                                        last_err = None
-                                        
-                                        # We will try every key in the pool up to 2 times
-                                        max_attempts = len(self.parent_rotator.clients) * 2
-                                        for attempt in range(max_attempts):
-                                            client = self.parent_rotator.clients[self.parent_rotator.current_idx]
-                                            try:
-                                                return client.chat.completions.create(**kwargs)
-                                            except Exception as e:
-                                                err_str = str(e).lower()
-                                                if "429" in err_str or "rate limit" in err_str or "connection" in err_str:
-                                                    logger.warning(f"[Rotator] Key {self.parent_rotator.current_idx} hit Rate Limit or Connection Error. Swapping to next key...")
-                                                    self.parent_rotator.current_idx = (self.parent_rotator.current_idx + 1) % len(self.parent_rotator.clients)
-                                                    time.sleep(2) # Small buffer between swaps
-                                                else:
-                                                    # Validation error. Let the universal wrapper handle it.
-                                                    raise e
-                                        
-                                        logger.error("All Groq keys are exhausted or rate limited!")
-                                        raise Exception("Rate limits exhausted")
-                                        
-                            self.chat = ChatRotator(self)
-                            
-                    self.llm_client = GroqRotator(groq_keys)
-                    logger.info("Successfully initialized Groq API Key Rotator with instructor in TOOLS mode.")
-                else:
-                    logger.warning("GROQ_API_KEY not found in environment. Running without LLM client.")
-            except ImportError as e:
-                logger.warning(f"Could not import required libraries for Groq client ({e}). Running without LLM client.")
-        
-        # Apply Universal Tenacity Retry Wrapper
-        if self.llm_client:
-            import tenacity
-            
-            class UniversalRetryWrapper:
-                def __init__(self, raw_client):
-                    self.raw_client = raw_client
-                    self.chat = self.ChatWrapper(raw_client.chat)
-                    
-                class ChatWrapper:
-                    def __init__(self, chat):
-                        self.completions = self.CompletionsWrapper(chat.completions)
-                        
-                    class CompletionsWrapper:
-                        def __init__(self, completions):
-                            self.completions = completions
-                            
-                        @tenacity.retry(
-                            stop=tenacity.stop_after_attempt(10),
-                            wait=tenacity.wait_exponential(multiplier=1, min=2, max=10),
-                            retry=tenacity.retry_if_exception_type(Exception),
-                            before_sleep=lambda retry_state: logger.warning(f"[Universal Retry] LLM Error: {retry_state.outcome.exception()}. Retrying in {retry_state.next_action.sleep}s...")
-                        )
-                        def create(self, **kwargs):
-                            return self.completions.create(**kwargs)
-            
-            self.llm_client = UniversalRetryWrapper(self.llm_client)
-            logger.info("Universal Tenacity Retry Wrapper applied to LLM client.")
-                
-    def run_pipeline(self, raw_email_text: str, email_id: str = None, output_path: str = "data/golden_dataset.jsonl") -> SuperPrompt:
-        """Executes the full 12-step evolutionary pipeline."""
-        logger.info("Starting Pipeline A for new raw email...")
+    async def run_pipeline(self, email_id: int, original_email_text: str, persona: PersonaProfile, dpbc: DPBCThresholds) -> SuperPrompt:
+        """
+        Executes the vertical FSM loop (Steps 4-12) asynchronously.
+        Steps 0-3 must be completed horizontally before this is invoked.
+        """
+        logger.info(f"Starting Vertical Pipeline for email ID {email_id}...")
 
-        # ==========================================
-        # PHASE 1: PREPARATION
-        # ==========================================
+        # Initialize Telemetry State inside lexical scope (Async-Safe)
+        state = GenerationState(human_email_id=str(email_id))
+        tracer = TraceLogger(str(email_id))
         
-        # Step 1: Ingestion
-        import uuid
-        actual_id = email_id if email_id else f"email_{uuid.uuid4().hex[:8]}"
-        human_email: HumanEmail = self._step_01_ingest(raw_email_text, actual_id)
-        
-        # Step 2: Persona Extraction
-        persona: PersonaProfile = self._step_02_extract_persona(human_email)
-        
-        # Step 3: Vectorization & DPBC Thresholds
-        dpbc: DPBCThresholds = self._step_03_get_dpbc_thresholds(persona, human_email)
+        # We wrap the original email into a HumanEmail object for backwards compatibility
+        human_email = HumanEmail(id=str(email_id), raw_text=original_email_text)
 
         # ==========================================
         # PHASE 2: GENESIS
         # ==========================================
         # Step 4: Dynamic Context-Aware Persona Synthesis
-        dynamic_personas: List[str] = self._step_04_synthesize_personas(human_email, persona)
+        # In a fully async system, engine steps should ideally be async too. Assuming the underlying clients use acreate().
+        dynamic_personas: List[str] = await self._step_04_synthesize_personas(human_email, persona)
         
         # Step 5: Genesis Mutation
-        current_mutations: List[PromptMutation] = self._step_05_genesis_mutation(human_email, persona, dynamic_personas)
+        current_mutations: List[PromptMutation] = await self._step_05_genesis_mutation(human_email, persona, dynamic_personas)
         
-        # Initialize Telemetry State and Tracer
-        state = GenerationState(human_email_id=human_email.id)
-        tracer = TraceLogger(actual_id)
-        
-        # Log initial steps
-        tracer.log_step("Step01_Ingest", -1, {"raw_text": raw_email_text}, human_email)
-        tracer.log_step("Step02_PersonaExtract", -1, {"email_id": human_email.id}, persona)
-        tracer.log_step("Step03_Vectorization", -1, {"persona": persona.model_dump()}, dpbc)
         tracer.log_step("Step04_PersonaSynthesis", -1, {"persona": persona.model_dump()}, {"dynamic_personas": dynamic_personas})
         tracer.log_step("Step05_GenesisMutation", 0, {"dynamic_personas": dynamic_personas}, {"mutations": current_mutations})
 
@@ -181,47 +90,45 @@ class GoldenDatasetOrchestrator:
         MAX_GENERATIONS = 10
         
         while state.current_generation < MAX_GENERATIONS and not state.is_converged:
-            logger.info(f"--- Running Generation {state.current_generation} ---")
+            logger.info(f"--- Running Generation {state.current_generation} for {email_id} ---")
             
             # Step 6: Forward Generation & Dual-Scoring
-            evaluations: List[EvaluatedEmail] = self._step_06_evaluate(current_mutations, human_email, dpbc)
+            evaluations: List[EvaluatedEmail] = await self._step_06_evaluate(current_mutations, human_email, dpbc)
             tracer.log_step("Step06_Evaluate", state.current_generation, {"mutations": current_mutations}, {"evaluations": evaluations})
             
             # Step 7: KDA Matrix & Ranking
             kda_matrix: KDAMatrix = self._step_07_kda_ranking(evaluations, state.current_generation)
             tracer.log_step("Step07_KDARanking", state.current_generation, {"evaluations": evaluations}, kda_matrix)
             
-            # Step 11: Early Stopping / Plateau Detection
-            # The orchestrator checks if the overall_delta hit ~0 or plateaued for N generations
-            if self._step_11_check_convergence(kda_matrix, state):
-                logger.info("Convergence or Plateau reached. Breaking loop.")
-                break
-                
             # Step 8: Closed Feedback Loop
-            feedback: JudgeFeedback = self._step_08_feedback_loop(kda_matrix, human_email, dpbc)
+            feedback: JudgeFeedback = await self._step_08_feedback_loop(kda_matrix, human_email, dpbc)
             tracer.log_step("Step08_FeedbackLoop", state.current_generation, {"kda_matrix": kda_matrix.model_dump()}, feedback)
             
             # Step 9: Polygenic Crossover
-            super_prompt: SuperPrompt = self._step_09_crossover(kda_matrix, feedback, persona)
+            super_prompt: SuperPrompt = await self._step_09_crossover(kda_matrix, feedback, persona)
             tracer.log_step("Step09_PolygenicCrossover", state.current_generation, {"kda_matrix": kda_matrix.model_dump(), "feedback": feedback.model_dump()}, super_prompt)
             state.reigning_champion = super_prompt
+
+            # Step 11: Early Stopping / Plateau Detection
+            if self._step_11_check_convergence(kda_matrix, state):
+                win_delta = min((e.overall_delta for e in kda_matrix.evaluations), default=0.0)
+                logger.info(f"Convergence reached for {email_id}. Champion locked: {super_prompt.id} (Delta: {win_delta:.2f}). Breaking loop.")
+                break
             
             # Step 10: Elitism (Carry over champion, mutate 4 new challengers)
-            current_mutations = self._step_10_elitism(super_prompt, state.current_generation + 1)
+            current_mutations = await self._step_10_elitism(super_prompt, state.current_generation + 1)
             tracer.log_step("Step10_Elitism", state.current_generation, {"champion": super_prompt.model_dump()}, {"mutations": current_mutations})
             
-            # Telemetry Logging would happen here (saving to PostgreSQL)
             state.current_generation += 1
+            await asyncio.sleep(0.1) # Yield to event loop
 
         # ==========================================
         # PHASE 5: COMMIT
         # ==========================================
-        # Step 12: Golden Record Export
         if state.reigning_champion:
-            self._step_12_golden_record_export(state.reigning_champion, human_email, output_path)
             return state.reigning_champion
         else:
-            raise RuntimeError("Pipeline failed to generate a champion.")
+            raise RuntimeError(f"Pipeline failed to generate a champion for {email_id}.")
 
     # ---------------------------------------------------------
     # PIPELINE NODE EXECUTORS
@@ -230,25 +137,25 @@ class GoldenDatasetOrchestrator:
         from .engine_steps.step_01_ingest import ingest_raw_email
         return ingest_raw_email(text, email_id)
         
-    def _step_02_extract_persona(self, email: HumanEmail) -> PersonaProfile:
+    async def _step_02_extract_persona(self, email: HumanEmail) -> PersonaProfile:
         from .engine_steps.step_02_persona_extract import extract_persona
-        return extract_persona(email, llm_client=self.llm_client)
+        return await extract_persona(email, llm_client=self.llm_client)
         
     def _step_03_get_dpbc_thresholds(self, persona: PersonaProfile, email: HumanEmail) -> DPBCThresholds:
         from .engine_steps.step_03_vectorization import get_dpbc_thresholds
         return get_dpbc_thresholds(persona, email, vector_db_client=None, llm_client=self.llm_client)
         
-    def _step_04_synthesize_personas(self, email: HumanEmail, persona: PersonaProfile) -> List[str]:
+    async def _step_04_synthesize_personas(self, email: HumanEmail, persona: PersonaProfile) -> List[str]:
         from .engine_steps.step_04_persona_synthesis import synthesize_dynamic_personas
-        return synthesize_dynamic_personas(email, persona, llm_client=self.llm_client)
+        return await synthesize_dynamic_personas(email, persona, llm_client=self.llm_client)
         
-    def _step_05_genesis_mutation(self, email: HumanEmail, persona: PersonaProfile, dynamic_personas: List[str]) -> List[PromptMutation]:
+    async def _step_05_genesis_mutation(self, email: HumanEmail, persona: PersonaProfile, dynamic_personas: List[str]) -> List[PromptMutation]:
         from .engine_steps.step_05_genesis_mutation import generate_genesis_mutations
-        return generate_genesis_mutations(email, persona, dynamic_personas, llm_client=self.llm_client)
+        return await generate_genesis_mutations(email, persona, dynamic_personas, llm_client=self.llm_client)
         
-    def _step_06_evaluate(self, mutations: List[PromptMutation], email: HumanEmail, dpbc: DPBCThresholds) -> List[EvaluatedEmail]:
+    async def _step_06_evaluate(self, mutations: List[PromptMutation], email: HumanEmail, dpbc: DPBCThresholds) -> List[EvaluatedEmail]:
         from .engine_steps.step_06_evaluator import evaluate_mutations
-        return evaluate_mutations(mutations, email, dpbc, llm_client=self.llm_client)
+        return await evaluate_mutations(mutations, email, dpbc, llm_client=self.llm_client)
         
     def _step_07_kda_ranking(self, evals: List[EvaluatedEmail], gen_num: int) -> KDAMatrix:
         from .engine_steps.step_07_kda_ranking import calculate_kda_ranking
@@ -258,17 +165,17 @@ class GoldenDatasetOrchestrator:
         from .engine_steps.step_11_early_stop import check_convergence
         return check_convergence(kda, state)
         
-    def _step_08_feedback_loop(self, kda: KDAMatrix, email: HumanEmail, dpbc: DPBCThresholds) -> JudgeFeedback:
+    async def _step_08_feedback_loop(self, kda: KDAMatrix, email: HumanEmail, dpbc: DPBCThresholds) -> JudgeFeedback:
         from .engine_steps.step_08_feedback_loop import generate_feedback_loop
-        return generate_feedback_loop(kda, email, dpbc, llm_client=self.llm_client)
+        return await generate_feedback_loop(kda, email, dpbc, llm_client=self.llm_client)
         
-    def _step_09_crossover(self, kda: KDAMatrix, feedback: JudgeFeedback, persona: PersonaProfile) -> SuperPrompt:
+    async def _step_09_crossover(self, kda: KDAMatrix, feedback: JudgeFeedback, persona: PersonaProfile) -> SuperPrompt:
         from .engine_steps.step_09_crossover import generate_super_prompt
-        return generate_super_prompt(kda, feedback, persona, llm_client=self.llm_client)
+        return await generate_super_prompt(kda, feedback, persona, llm_client=self.llm_client)
         
-    def _step_10_elitism(self, champion: SuperPrompt, next_gen_num: int) -> List[PromptMutation]:
+    async def _step_10_elitism(self, champion: SuperPrompt, next_gen_num: int) -> List[PromptMutation]:
         from .engine_steps.step_10_elitism import execute_elitism_loop
-        return execute_elitism_loop(champion, next_gen_num, llm_client=self.llm_client)
+        return await execute_elitism_loop(champion, next_gen_num, llm_client=self.llm_client)
         
     def _step_12_golden_record_export(self, champion: SuperPrompt, email: HumanEmail, output_path: str):
         from .engine_steps.step_12_golden_record_export import export_golden_record

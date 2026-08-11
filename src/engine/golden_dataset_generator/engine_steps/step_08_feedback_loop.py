@@ -4,7 +4,9 @@ from ..config import config
 
 logger = logging.getLogger("Step08_FeedbackLoop")
 
-def generate_feedback_loop(kda: KDAMatrix, human_email: HumanEmail, dpbc: DPBCThresholds, llm_client=None) -> JudgeFeedback:
+import asyncio
+
+async def generate_feedback_loop(kda: KDAMatrix, human_email: HumanEmail, dpbc: DPBCThresholds, llm_client=None) -> JudgeFeedback:
     """
     Step 8: Closed Feedback Loop.
     Extracts the winning generation and asks the LLM Judge to explicitly critique 
@@ -44,11 +46,12 @@ def generate_feedback_loop(kda: KDAMatrix, human_email: HumanEmail, dpbc: DPBCTh
         class FeedbackResult(BaseModel):
             feedback_text: str
             
-        result = llm_client.chat.completions.create(
+        res = llm_client.chat.completions.create(
             model=config.DEFAULT_GENERATION_MODEL,
             response_model=FeedbackResult,
             messages=[{"role": "user", "content": feedback_prompt}]
         )
+        result = await res if asyncio.iscoroutine(res) else res
         feedback_text = result.feedback_text
         
     else:

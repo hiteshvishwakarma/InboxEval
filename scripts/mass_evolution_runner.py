@@ -1,97 +1,109 @@
 import os
-import json
-import time
+import sys
+import asyncio
 import logging
-from tqdm import tqdm
-from src.engine.golden_dataset_generator.orchestrator import GoldenDatasetOrchestrator
+from dotenv import load_dotenv
+load_dotenv()
 
-logging.basicConfig(level=logging.WARNING) # Set to WARNING to keep the progress bar clean
+from tqdm.asyncio import tqdm
+from src.engine.golden_dataset_generator.orchestrator import GoldenDatasetOrchestrator
+from src.engine.golden_dataset_generator.db.pipeline_db import DB_PATH
+from src.engine.golden_dataset_generator.schemas import PersonaProfile, DPBCThresholds
+
+try:
+    import aiosqlite
+except ImportError:
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "aiosqlite"])
+    import aiosqlite
+
+logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("MassEvolutionRunner")
 
-JSON_INPUT_PATH = "data/golden_dataset.json"
-JSONL_OUTPUT_PATH = "data/golden_dataset.jsonl"
+CONCURRENCY_LIMIT = 60
 
-def get_processed_ids():
-    """Reads the JSONL file to find out which IDs have already been processed."""
-    processed_ids = set()
-    if os.path.exists(JSONL_OUTPUT_PATH):
-        with open(JSONL_OUTPUT_PATH, 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.strip():
-                    try:
-                        record = json.loads(line)
-                        processed_ids.add(str(record.get("email_id")))
-                    except json.JSONDecodeError:
-                        continue
-    return processed_ids
-
-def main():
-    print(f"--- InboxEval Mass Evolution Runner ---")
+async def process_email(orchestrator, row, semaphore, db):
+    email_id = row[0]
+    clean_text = row[1]
+    prompt = row[2]
+    email_id, clean_text, p_text, ctx, target_persona = row
     
-    # 1. Load the raw JSON data
-    if not os.path.exists(JSON_INPUT_PATH):
-        print(f"Error: Could not find {JSON_INPUT_PATH}")
-        return
-        
-    with open(JSON_INPUT_PATH, 'r', encoding='utf-8') as f:
-        raw_data = json.load(f)
-        
-    print(f"Loaded {len(raw_data)} total records from {JSON_INPUT_PATH}.")
-    
-    # 2. Get stateful checkpoint
-    processed_ids = get_processed_ids()
-    print(f"Found {len(processed_ids)} already processed records in {JSONL_OUTPUT_PATH}.")
-    
-    # 3. Filter out records that are already done
-    pending_records = [r for r in raw_data if str(r.get("id")) not in processed_ids]
-    
-    # TEST MODE INJECTION FOR GROQ
-    import random
-    if len(pending_records) > 10:
-        pending_records = random.sample(pending_records, 10)
-        
-    TEMP_OUTPUT = "data/temp_dataset.jsonl"
-    print(f"GROQ TEST MODE: Evolving {len(pending_records)} records into {TEMP_OUTPUT}")
-    
-    if not pending_records:
-        print("All records have been processed! Exiting.")
-        return
-
-    # 4. Initialize the Engine
-    orchestrator = GoldenDatasetOrchestrator()
-    
-    # 5. Run the Engine over pending records with a Progress Bar
-    for record in tqdm(pending_records, desc="Evolving Golden Dataset", unit="email"):
-        record_id = str(record.get("id"))
-        
-        # Extract the human baseline text.
-        human_text = ""
-        evaluations = record.get("evaluations", [])
-        for e in evaluations:
-            if e.get("case_type") == "Human Baseline":
-                human_text = e.get("email_text")
-                break
-                
-        if not human_text:
-            human_text = record.get("prompt", "")
-            
+    async with semaphore:
         try:
-            # The engine runs all 12 steps and auto-appends to the JSONL via Step 12.
-            champion = orchestrator.run_pipeline(
-                raw_email_text=human_text, 
-                email_id=record_id,
-                output_path=TEMP_OUTPUT
+            # Step 01: Ingest HumanEmail object
+            human_email = orchestrator._step_01_ingest(clean_text, str(email_id))
+
+            # Step 02: Extract PersonaProfile
+            target_persona_obj = await orchestrator._step_02_extract_persona(human_email)
+
+            # Step 03: DPBC Thresholds
+            dpbc = orchestrator._step_03_get_dpbc_thresholds(target_persona_obj, human_email)
+
+            # Steps 04-12: Full Evolutionary FSM Loop
+            golden_record = await orchestrator.run_pipeline(
+                email_id=email_id,
+                original_email_text=clean_text,
+                persona=target_persona_obj,
+                dpbc=dpbc
             )
-            
-            # Brief pause to cool down local GPUs or prevent API rate limiting
-            time.sleep(0.5)
+
+            # Step 12: Export Golden Record into SQLite database table
+            await db.execute(
+                """INSERT INTO golden_dataset 
+                   (raw_email_id, original_text, synthetic_text, target_persona, kda_winner_mutation_id, tone_score, conciseness_score, accuracy_score)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                (
+                    email_id,
+                    clean_text,
+                    golden_record.final_prompt_text if hasattr(golden_record, 'final_prompt_text') else str(golden_record),
+                    target_persona_obj.typology_classification,
+                    golden_record.id if hasattr(golden_record, 'id') else "mut_winner",
+                    dpbc.tone_target,
+                    dpbc.conciseness_target,
+                    dpbc.accuracy_target
+                )
+            )
+
+            # Mark email as completed in raw_emails table
+            await db.execute("UPDATE raw_emails SET status='completed' WHERE id=?", (email_id,))
+            await db.commit()
             
         except Exception as e:
-            logger.error(f"Failed to evolve record {record_id}: {e}")
-            # Do not crash the whole script on one bad record. Continue to the next.
-            continue
+            logger.error(f"Failed to evolve record {email_id}: {e}")
+            await db.execute("UPDATE raw_emails SET status='failed', error_log=? WHERE id=?", (str(e), email_id))
+            await db.commit()
 
-    print("\n--- Mass Evolution Complete ---")
+async def main():
+    print("🚀 Initializing Mass Evolution Runner (Steps 4-12) via true Asyncio")
+    orchestrator = GoldenDatasetOrchestrator()
+    
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute("SELECT id, clean_text, raw_text, prompt, context, target_persona FROM raw_emails WHERE status='backtranslated' AND id NOT IN (SELECT raw_email_id FROM golden_dataset)") as cursor:
+            pending_rows = await cursor.fetchall()
+            
+        if not pending_rows:
+            print("All records processed or none available in 'backtranslated' state.")
+            return
+            
+        # Clean up text fallbacks for rows where clean_text was just dashes & enforce max length safety
+        cleaned_pending_rows = []
+        for row in pending_rows:
+            r_id, c_text, r_text, p_text, ctx, persona = row
+            text_to_use = c_text if (c_text and len(c_text.strip('- \n\t')) >= 10) else r_text
+            if text_to_use:
+                text_to_use = text_to_use[:8000] # Safe 8000 character cap to prevent vLLM >4096 context errors
+            cleaned_pending_rows.append((r_id, text_to_use, p_text, ctx, persona))
+
+        print(f"Evolving {len(cleaned_pending_rows)} emails concurrently...")
+        semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
+        
+        tasks = []
+        for row in cleaned_pending_rows:
+            tasks.append(asyncio.create_task(process_email(orchestrator, row, semaphore, db)))
+            
+        await tqdm.gather(*tasks, desc="Evolving Golden Dataset", unit="email")
+        
+    print("\n🎯 Mass Evolution Complete!")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

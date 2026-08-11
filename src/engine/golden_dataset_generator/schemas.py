@@ -3,6 +3,35 @@ from typing import List, Dict, Optional, Any, Literal
 from pydantic import BaseModel, Field
 from datetime import datetime
 
+class RawEmailRecord(BaseModel):
+    """Database Schema: Represents a single row in the SQLite raw_emails table."""
+    id: Optional[int] = Field(None, description="SQLite Auto-Increment ID")
+    source_id: str = Field(..., description="Unique Enron Source ID")
+    raw_text: str = Field(..., description="The raw, uncleaned text")
+    clean_text: str = Field(..., description="The stripped and noise-filtered text")
+    word_count: int = Field(..., description="Number of words in clean_text")
+    size_category: Literal['micro', 'short', 'medium', 'long', 'massive'] = Field(..., description="Categorization based on word_count")
+    prompt: Optional[str] = Field(None, description="The backtranslated prompt (added in Step 01)")
+    context: Optional[str] = Field(None, description="The backtranslated context (added in Step 01)")
+    target_persona: Optional[str] = Field(None, description="The backtranslated target persona (added in Step 01)")
+    status: str = Field(default='pending', description="Current pipeline state ('pending', 'backtranslated', 'completed', 'failed')")
+    current_step: int = Field(default=1, description="Which of the 13 steps this email is currently on")
+    error_log: Optional[str] = Field(None, description="Detailed stack trace or LLM failure reason if status is 'failed'")
+    created_at: Optional[datetime] = Field(None)
+
+class GoldenDatasetRecord(BaseModel):
+    """Database Schema: Represents a single row in the SQLite golden_dataset table."""
+    id: Optional[int] = Field(None, description="SQLite Auto-Increment ID")
+    raw_email_id: int = Field(..., description="Foreign key to raw_emails")
+    original_text: str = Field(..., description="The original human text")
+    synthetic_text: str = Field(..., description="The winning generated text")
+    target_persona: str = Field(..., description="The persona that generated the win")
+    kda_winner_mutation_id: str = Field(..., description="The mutation ID of the winner")
+    tone_score: float = Field(..., description="Final absolute tone score")
+    conciseness_score: float = Field(..., description="Final absolute conciseness score")
+    accuracy_score: float = Field(..., description="Final absolute accuracy score")
+    created_at: Optional[datetime] = Field(None)
+
 class HumanEmail(BaseModel):
     """Step 1: The raw human email ingested from the dataset."""
     id: str = Field(..., description="Unique identifier for the historical email")

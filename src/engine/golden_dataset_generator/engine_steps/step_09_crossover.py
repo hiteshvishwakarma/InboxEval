@@ -1,5 +1,6 @@
 import uuid
 import logging
+import asyncio
 from typing import Dict, Any
 
 from ..schemas import KDAMatrix, JudgeFeedback, SuperPrompt, EvaluatedEmail, PersonaProfile
@@ -7,7 +8,7 @@ from ..config import config
 
 logger = logging.getLogger("Step09_PolygenicCrossover")
 
-def generate_super_prompt(kda: KDAMatrix, feedback: JudgeFeedback, persona: PersonaProfile, llm_client=None) -> SuperPrompt:
+async def generate_super_prompt(kda: KDAMatrix, feedback: JudgeFeedback, persona: PersonaProfile, llm_client=None) -> SuperPrompt:
     """
     Step 9: Polygenic Crossover.
     Executes a Multi-Parent crossover. Merges the base structure of the overall winner 
@@ -53,29 +54,27 @@ def generate_super_prompt(kda: KDAMatrix, feedback: JudgeFeedback, persona: Pers
     }
     required_verbs = category_verbs.get(persona.nlp_task, "'Write', 'Draft', or 'Generate'")
 
-    # 3. Polygenic Crossover Prompt
+    # 2. Crossover Prompt
     crossover_prompt = f"""
-    You are an Evolutionary Prompt Engineer.
-    Your task is to breed a new 'Super Prompt' by combining the best traits of multiple parents, 
-    while explicitly fixing the flaws identified by the Judge.
+    You are a Genetic Algorithm Crossover Engine. 
+    Your goal is to synthesize a single 'Super Prompt' by combining the best traits of multiple winning prompt mutations, while strictly fixing the issues highlighted in the Judge's Feedback.
     
-    BASE STRUCTURE PROMPT:
-    {base_prompt_text}
+    --- DONOR DNA ---
+    1. Base Architecture Winner: "{base_prompt_text}"
+    2. Best Tone Sub-Metric Winner: "{tone_prompt_text}"
+    3. Best Conciseness Sub-Metric Winner: "{conciseness_prompt_text}"
+    4. Best Factual Accuracy Sub-Metric Winner: "{accuracy_prompt_text}"
     
-    TONE DONOR PROMPT:
-    {tone_prompt_text}
+    --- JUDGE'S CRITIQUE & INSTRUCTIONS ---
+    "{feedback.feedback_text}"
     
-    CONCISENESS DONOR PROMPT:
-    {conciseness_prompt_text}
-    
-    ACCURACY DONOR PROMPT:
-    {accuracy_prompt_text}
-    
-    JUDGE FEEDBACK TO FIX: {feedback.feedback_text}
+    --- CROSSOVER INSTRUCTIONS ---
+    Synthesize a brand new prompt. It must inherit the base structure of Donor 1, adopt the stylistic tone constraints of Donor 2, adopt the brevity/formatting constraints of Donor 3, and adopt the factual precision of Donor 4.
+    Incorporate the Judge's feedback to eliminate the remaining error delta.
     
     CRITICAL CONSTRAINT: You must output a strict instructional command.
     Your 'action_command' MUST begin with EXACTLY ONE of the following verbs: {required_verbs}. Do not use any other verbs. (This is a {persona.nlp_task} task in the {persona.domain} domain, structured as a {persona.format}).
-    Your 'context_details' MUST retain the authentic, natural humanness of the DONOR prompts, ensuring they align with these atomic traits:
+    Your 'context_details' MUST reflect the persona traits of the target author:
     - Intent: {persona.intent}
     - Sentiment: {persona.sentiment}
     - Power Dynamic: {persona.power_dynamic}
@@ -93,11 +92,12 @@ def generate_super_prompt(kda: KDAMatrix, feedback: JudgeFeedback, persona: Pers
             action_command: str = Field(..., description="The instructional command, MUST start with verbs like 'Write an email', 'Draft a response', etc.")
             context_details: str = Field(..., description="The actual context, details, and persona constraints for the email.")
             
-        result = llm_client.chat.completions.create(
+        res = llm_client.chat.completions.create(
             model=config.DEFAULT_GENERATION_MODEL,
             response_model=CrossoverResult,
             messages=[{"role": "user", "content": crossover_prompt}]
         )
+        result = await res if asyncio.iscoroutine(res) else res
         final_prompt_text = f"{result.action_command} {result.context_details}"
         
     else:

@@ -5,7 +5,7 @@ from ..schemas import HumanEmail, PersonaProfile
 
 logger = logging.getLogger("Step02_PersonaExtraction")
 
-def extract_persona(email: HumanEmail, llm_client=None) -> PersonaProfile:
+async def extract_persona(email: HumanEmail, llm_client=None) -> PersonaProfile:
     """
     Step 2: Reverse Engineering & Persona Extraction.
     Analyzes the historical email to extract intent, domain, sentiment, and 
@@ -48,14 +48,18 @@ def extract_persona(email: HumanEmail, llm_client=None) -> PersonaProfile:
     ---
     """
     
-    # In production, this uses `instructor` to enforce the PersonaProfile Pydantic schema
+    import asyncio
     from ..config import config
     if llm_client:
-        persona = llm_client.chat.completions.create(
-            model=config.DEFAULT_GENERATION_MODEL, # Using Groq's fast LLaMA 3 model
+        res = llm_client.chat.completions.create(
+            model=config.DEFAULT_GENERATION_MODEL,
             response_model=PersonaProfile,
             messages=[{"role": "user", "content": extraction_prompt}]
         )
+        if asyncio.iscoroutine(res):
+            persona = await res
+        else:
+            persona = res
         return persona
     
     # Fallback / Mock for testing before LLM client is hooked up

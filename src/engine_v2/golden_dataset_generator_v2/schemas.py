@@ -28,6 +28,27 @@ class PersonaProfileV2(BaseModel):
     prompting_strategies: List[str] = Field(..., description="5 pre-cached prompting strategies (bypasses Step 04 LLM call during vertical run)")
     typology_classification: str = Field(..., description="Overall Persona tag (e.g., 'B2B_Hardware_Angry_Support')")
 
+class PersonaProfileV3(BaseModel):
+    """Phase 1: Full 11-Axis Persona Profile computed horizontally offline."""
+    intent: str = Field(..., description="Primary goal of the email (e.g., 'Demand Refund')")
+    sentiment: str = Field(..., description="Emotional state (e.g., 'Angry', 'Urgent')")
+    
+    # Core Classification Axes
+    nlp_task: Literal['Zero-Shot Drafting', 'Data Extraction', 'Thread Summarization', 'Tone Translation'] = Field(..., description="Must be exactly one of the 4 valid NLP tasks.")
+    domain: str = Field(..., description="Industry or topic (e.g., 'SaaS Patch Notes', 'E-Commerce Refunds')")
+    format: str = Field(..., description="Physical layout (e.g., 'Cold Pitch', 'System Alert')")
+    
+    # Behavioral & Stylistic Axes
+    power_dynamic: str = Field(..., description="Relationship dynamic (e.g., 'Vendor to Client')")
+    formality_scale: Literal['Hyper-Casual', 'Casual', 'Semi-Professional', 'Professional', 'Hyper-Formal'] = Field(..., description="Strict formality scale rating.")
+    conciseness_tier: Literal['Hyper-Brief', 'Standard', 'Verbose', 'Rambling'] = Field(..., description="Target length/verbosity tier.")
+    
+    # Evidence & Injection Traits
+    behavioral_quirks: List[str] = Field(..., description="List of specific traits (e.g., 'Passive-aggressive')")
+    evidence_quotes: List[str] = Field(..., description="Verbatim substring quotes from raw email proving behavioral quirks.")
+    prompting_strategies: List[str] = Field(..., description="5 pre-cached prompting strategies.")
+    typology_classification: str = Field(..., description="Overall Persona tag (e.g., 'B2B_Hardware_Angry_Support')")
+
 class SingleGenesisPrompt(BaseModel):
     p_strategy: str = Field(..., description="Prompting strategy used.")
     action_command: str = Field(..., description="Instruction verb: Write/Draft/Generate/etc.")

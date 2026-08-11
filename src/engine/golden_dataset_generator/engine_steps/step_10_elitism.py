@@ -1,5 +1,6 @@
 import uuid
 import logging
+import asyncio
 from typing import List
 
 from ..schemas import SuperPrompt, PromptMutation
@@ -7,7 +8,9 @@ from ..config import config
 
 logger = logging.getLogger("Step10_Elitism")
 
-def execute_elitism_loop(champion: SuperPrompt, next_gen_num: int, llm_client=None) -> List[PromptMutation]:
+import asyncio
+
+async def execute_elitism_loop(champion: SuperPrompt, next_gen_num: int, llm_client=None) -> List[PromptMutation]:
     """
     Step 10: Elitism Loop.
     Converts the SuperPrompt into the Reigning Champion for the next generation.
@@ -42,12 +45,12 @@ def execute_elitism_loop(champion: SuperPrompt, next_gen_num: int, llm_client=No
         prompts: List[str]
 
     if llm_client:
-        # In production, Instructor would force the LLM to return exactly a List[str] of size 4
-        response_data = llm_client.chat.completions.create(
+        res = llm_client.chat.completions.create(
             model=config.DEFAULT_GENERATION_MODEL,
             response_model=ChallengersList,
             messages=[{"role": "user", "content": challenger_prompt}]
         )
+        response_data = await res if asyncio.iscoroutine(res) else res
         generated_texts = response_data.prompts
         
     else:

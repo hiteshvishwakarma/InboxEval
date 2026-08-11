@@ -73,8 +73,13 @@ class DiversitySampler:
             """)
             row = cursor.fetchone()
             
-        conn.close()
-        
         if row:
-            return dict(row)
-        return None
+            # INSTANT LOCK: Prevent race conditions by marking it so the next worker in the batch loop doesn't fetch it!
+            cursor.execute("UPDATE raw_emails SET status = 'locked_v3' WHERE id = ?", (row['id'],))
+            conn.commit()
+            result = dict(row)
+        else:
+            result = None
+            
+        conn.close()
+        return result

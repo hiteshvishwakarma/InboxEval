@@ -5,7 +5,7 @@ from ..config import config
 
 logger = logging.getLogger("Step04_PersonaSynthesis")
 
-def synthesize_dynamic_personas(email: HumanEmail, persona: PersonaProfile, llm_client=None) -> List[str]:
+async def synthesize_dynamic_personas(email: HumanEmail, persona: PersonaProfile, llm_client=None) -> List[str]:
     """
     Step 4: Dynamic Prompting Strategy Synthesis.
     Takes the deeply extracted Persona from Step 2 and generates 5 diverse 
@@ -32,7 +32,7 @@ def synthesize_dynamic_personas(email: HumanEmail, persona: PersonaProfile, llm_
     Raw Text: {email.raw_text}
     """
     
-    # In production, the LLM would return a list of 5 synthesized personas
+    import asyncio
     personas: List[str] = []
     
     from pydantic import BaseModel
@@ -40,11 +40,15 @@ def synthesize_dynamic_personas(email: HumanEmail, persona: PersonaProfile, llm_
         personas: List[str]
 
     if llm_client:
-        response_data = llm_client.chat.completions.create(
+        res = llm_client.chat.completions.create(
             model=config.DEFAULT_GENERATION_MODEL,
             response_model=PersonasList,
             messages=[{"role": "user", "content": synthesis_prompt}]
         )
+        if asyncio.iscoroutine(res):
+            response_data = await res
+        else:
+            response_data = res
         personas = response_data.personas
         
     else:

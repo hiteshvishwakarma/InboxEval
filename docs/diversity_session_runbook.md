@@ -26,6 +26,14 @@ Optional: `SLEEP_SEC=30 ./scripts/run_diversity_daemon.sh` between rounds. Ctrl+
 
 ---
 
+## One-shot (single batch)
+
+1. Harvest only — `./scripts/run_diversity_session.sh`
+2. Harvest + sync — `./scripts/run_diversity_session.sh --sync`
+3. Reuse a batch — set `BATCH_ID`, then `./scripts/run_diversity_session.sh --reuse` (add `--sync` if needed)
+
+Order inside a session: claim → Step 01 ∥ 02b → 02a → optional sync.
+
 ---
 
 ## What each stage does

@@ -135,7 +135,7 @@ graph LR
 2. **Per “session batch”, round-robin by `size_category`**, e.g. short → medium → long → massive, fixed small N each (not 50K micro in one query).
 3. **Mirror the same pattern for enrichment:** each chunk takes K emails **stratified by category** among `backtranslated AND dpbc_targets IS NULL`.
 4. **Vectorize incrementally** after each backtranslate session so KNN includes new length diversity.
-5. **Sync `data/pipeline.db` (+ `data/chroma_db` if vectorized locally) to GCP** when batches are stable—same as existing GCP playbook.
+5. **Sync enrichment via `scripts/sync_delta_to_gcp.py`** when batches are fully ready (`prompt`+`target_persona`+`dpbc_targets`)—never full-file replace of GCP `pipeline.db`.
 
 ### Suggested batch quotas (one “session” — small batches)
 

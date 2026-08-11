@@ -12,4 +12,6 @@
 
 **Why not split 02a:** Persona+DPBC stay one UPDATE; splitting adds SQLite contention without quality gain. Order is 02b → 02a (Chroma write then read).
 
-**Scripts:** `claim_diversity_batch.py`, `step_01_backtranslate.py`, `batch_vectorize.py`, `mass_horizontal_enrichment.py`, `sync_delta_to_gcp.py`. Runbook: `docs/diversity_session_runbook.md`.
+**Scripts:** `claim_diversity_batch.py`, `step_01_backtranslate.py`, `batch_vectorize.py`, `mass_horizontal_enrichment.py`, `sync_delta_to_gcp.py`, `run_diversity_daemon.sh`, `run_ops_dashboard.sh`. Runbook: `docs/diversity_session_runbook.md`.
+
+**Ops dashboard:** Local FastAPI at `:8765` — latest diversity batch stages, Mac vs GCP pipeline counts, Mac CPU/RAM + GCP GPU (SSH) + Ollama `/api/ps` (best-effort).

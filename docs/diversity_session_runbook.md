@@ -77,6 +77,7 @@ Safe while the GCP Engine VM is running. Never full-file rsync `pipeline.db`.
 
 ---
 
-## Later: dashboard
+## Dashboard
 
-UI stages in order: `claim → step_01 → step_02b → step_02a → sync` (poll Mac `pipeline.db` per `BATCH_ID`).
+`./scripts/run_ops_dashboard.sh` → open `http://127.0.0.1:8765`  
+Stages: `claim → step_01 → step_02b → step_02a → sync` (Mac DB + GCP SSH + hardware).

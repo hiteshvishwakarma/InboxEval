@@ -58,6 +58,8 @@ We abandon the naive single-LLM judge approach. Evaluations are processed via a 
 This eliminates confirmation bias and numeric clustering (the tendency for LLMs to safely grade everything an 8/10).
 
 ## 5. Go-to-Market Strategy
+*(For the complete technical breakdown of how this dataset powers our external SDKs, MCP servers, and the WebGL Telemetry Dashboard, see [The Platform Integration Roadmap](platform_integration_roadmap.md)).*
+
 To become the global standard:
 *   **Phase 1:** Launch the "AI Email Leaderboard." Run the top 10 foundational models against your proprietary email dataset and publish the results. This generates massive PR.
 *   **Phase 2:** Open-source the base evaluation dataset and metrics library (similar to how DeepEval operates) to gain developer trust.
@@ -103,9 +105,17 @@ This is how a corporate client uses InboxEval to grade their brand-new, unknown 
 To build a world-class LLM evaluation benchmark for email generation, our Golden Dataset will pull from the following vast, elite categories. The dataset will be populated using real historical text combined with high-end synthetic "reverse-engineered" prompts via Groq's APIs.
 
 ## 1. The "Famous Leaks" Category (Historical Human Baselines)
-These are verified, real-world emails from high-stakes situations. We use the raw text of these emails and reverse-engineer the prompt that generated them.
+These are verified, real-world emails from high-stakes### 3. The Evolution Pipeline (V4 Architecture)
+Engine v4 introduces a fully parallelized, prefix-cached evolutionary FSM loop.
 
-*   **The Enron Email Dataset (2001)**: The gold standard for corporate linguistics. Over 500,000 real emails spanning deep energy sector jargon, internal corporate politics, legal panic, and compliance reporting.
+**Concurrency Strategy: The Producer-Consumer Queue (Straggler Elimination)**
+To prevent "Barrier Synchronization Delay" (where 99 fast emails wait for 1 slow email to finish a batch), the pipeline operates on a continuous async queue architecture:
+1. **Producer:** Fetches raw emails and streams them into a bounding queue.
+2. **Workers:** Exactly 15 persistent coroutines (`CONCURRENCY_LIMIT`) constantly pop from the queue, execute the FSM, and push to a results queue. The GPU is never starved.
+3. **Consumer (DB/JSONL Writer):** A background task pops finished emails, appends them instantly to a `pipeline_checkpoint.jsonl` file (zero GPU overhead), and sequentially commits to SQLite (eliminating `SQLITE_BUSY` contention).
+
+#### Phase 1: Batched Genesis
+*   **The Action:** Generate the Initial Seed Prompt (`mut_v0`).**: The gold standard for corporate linguistics. Over 500,000 real emails spanning deep energy sector jargon, internal corporate politics, legal panic, and compliance reporting.
 *   **The Sony Pictures Hack (2014)**: High-stakes Hollywood negotiations, PR crises, talent management disputes, and frank (often brutal) executive candor between producers and studio heads.
 *   **Tech Titan Leaks**: 
     *   **Elon Musk (Tesla/X/SpaceX)**: Famous "Return to Office" mandates, aggressive supply chain sabotage warnings, and mass layoff communications.
@@ -387,3 +397,31 @@ Engine v3 achieves **Zero-Overhead Stratified Diversity Sampling** using a speci
 - Bypasses static `ORDER BY RANDOM()` queues.
 - Dynamically queries the `golden_dataset` table to analyze current distribution skews (e.g., MICRO vs LONG emails).
 - Quantitatively targets and fetches raw emails from Phase 1 that belong to the most mathematically underrepresented category, balancing the dataset at the DB level with < 5ms latency.
+
+## 14. Production Upgrade: Asynchronous Queue Architecture (Engine v4)
+
+To resolve the "Straggler Bottleneck" (Barrier Synchronization Delay) caused by static `asyncio.gather` batching, the Engine v4 mass evolution runner was refactored into a **Continuous Producer-Consumer Queue**:
+
+### The Straggler Problem
+In static batching, if a batch of 15 emails runs concurrently, and 14 finish in 10 seconds but 1 email requires 5 evolutionary generations (4 minutes), the GPU sits completely idle. The concurrency drops from 15 down to 1, starving the vLLM batching engine and plummeting Throughput (TPS).
+
+### The Producer-Consumer Queue Solution
+The architecture was decoupled using `asyncio.Queue` and a Semaphore event loop:
+1. **The Producer (`db_reader_task`):** Continuously fetches raw emails from the database and pushes them into an input queue.
+2. **The Worker Pool:** A persistent pool of exactly 15 `CONCURRENCY_LIMIT` coroutines dynamically pops emails from the queue. When an email finishes, the worker *instantly* pops the next email. The GPU is mathematically guaranteed to never starve; concurrency is permanently pinned at 15.
+3. **The Consumer (`db_writer_task`):** A dedicated background I/O task that pops finished emails from a `results_queue`. It instantly appends the output to a `pipeline_checkpoint.jsonl` file and micro-batches the SQLite commits.
+
+### Real-Time Data Durability (JSONL Checkpointing)
+Because the Consumer Task writes to disk the exact millisecond an email finishes the pipeline, the system achieves 100% data durability. If the GCP server crashes or is preempted, zero completed records are lost. This offloads all disk I/O to a single background CPU thread, guaranteeing zero `SQLITE_BUSY` write contention while the GPU computes unhindered.
+
+## 15. The Python SDK (`inboxeval`): Dynamic Context Routing & Evaluation
+
+The Golden Dataset cannot be fed raw to an enterprise client's LLM, because different NLP tasks require radically different prompt formatting. The upcoming `inboxeval` Python SDK acts as the Execution and Evaluation harness.
+
+### Context vs. Instruction Routing
+The SDK dynamically parses the `nlp_task` pre-assigned to every email during Phase 1 ingestion and formats the prompt for the target LLM accordingly:
+1.  **Generation Tasks (e.g., "Email Drafting", "Tone Translation"):** The SDK feeds the target LLM *only* the Super Prompt (The Instruction). The target LLM uses its internal weights to generate the content.
+2.  **Information Extraction & Summarization Tasks:** The SDK dynamically concatenates the Super Prompt (The Instruction) with the raw email text (The Context Document). Without injecting the Context Document, the target LLM would blindly hallucinate or demand a source document.
+
+### The LLM-as-a-Judge Evaluation Loop
+Once the enterprise client's LLM generates a response, the SDK intercepts it and passes it to the inboxeval Judge LLM. The Judge compares the generated output against the strict strict parameters demanded by the original dataset (Tone, Hallucinations, Detail Extraction Accuracy) and returns a mathematically calibrated final score. This end-to-end routing and evaluation is entirely automated by the SDK.

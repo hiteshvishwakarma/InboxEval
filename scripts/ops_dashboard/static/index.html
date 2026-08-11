@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>InboxEval Ops</title>
+  <title>Golden Data Generator</title>
   <style>
     :root {
       --bg: #0f1218;
@@ -30,12 +30,12 @@
       align-items: baseline;
       justify-content: space-between;
       gap: 1rem;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
     }
     h1 {
-      font-size: 1.15rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
+      font-size: 1.35rem;
+      font-weight: 650;
+      letter-spacing: 0.01em;
       margin: 0;
     }
     .meta { color: var(--muted); font-size: 0.8rem; }
@@ -67,16 +67,34 @@
       letter-spacing: 0.08em;
     }
 
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 1000px) {
+      .hero-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .stat {
+      background: var(--track);
+      border-radius: 8px;
+      padding: 0.7rem 0.75rem;
+    }
+    .stat .k { font-size: 0.68rem; color: var(--muted); margin-bottom: 0.2rem; }
+    .stat .v {
+      font-size: 1.35rem;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat .sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+
     .batch-id {
       font-family: ui-monospace, "SF Mono", Menlo, monospace;
-      font-size: 1.05rem;
+      font-size: 1.0rem;
       margin-bottom: 0.85rem;
     }
-    .stages {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
+    .stages { display: flex; gap: 0.4rem; flex-wrap: wrap; }
     .stage {
       flex: 1;
       min-width: 5.5rem;
@@ -86,49 +104,25 @@
       border: 2px solid transparent;
     }
     .stage.active { border-color: var(--accent); }
-    .stage.done { border-color: var(--ok); opacity: 0.95; }
+    .stage.done { border-color: var(--ok); }
     .stage .label { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.25rem; }
-    .stage .count {
-      font-size: 1.35rem;
-      font-weight: 650;
-      font-variant-numeric: tabular-nums;
-    }
+    .stage .count { font-size: 1.35rem; font-weight: 650; font-variant-numeric: tabular-nums; }
     .stage .of { font-size: 0.75rem; color: var(--muted); }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.85rem;
-    }
-    @media (max-width: 720px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-    .card h3 {
-      margin: 0 0 0.6rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+    .card h3 { margin: 0 0 0.35rem; font-size: 0.9rem; font-weight: 600; }
     .metrics {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 0.55rem 1rem;
     }
     .metric .k { font-size: 0.68rem; color: var(--muted); }
-    .metric .v {
-      font-size: 1.25rem;
-      font-weight: 650;
-      font-variant-numeric: tabular-nums;
-    }
-    .metric .v.small { font-size: 0.95rem; }
+    .metric .v { font-size: 1.2rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+    .metric .v.small { font-size: 0.9rem; }
 
-    .hw-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.85rem;
-    }
-    @media (max-width: 900px) {
-      .hw-grid { grid-template-columns: 1fr; }
-    }
+    .hw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; }
+    @media (max-width: 900px) { .hw-grid { grid-template-columns: 1fr; } }
     .bar {
       height: 6px;
       background: var(--track);
@@ -136,55 +130,42 @@
       margin-top: 0.35rem;
       overflow: hidden;
     }
-    .bar > span {
-      display: block;
-      height: 100%;
-      background: var(--accent);
-      border-radius: 3px;
-    }
+    .bar > span { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
     .bar.hot > span { background: var(--warn); }
     .bar.crit > span { background: var(--bad); }
+    .bar.na > span { width: 0 !important; background: transparent; }
     .hw-row { margin-bottom: 0.55rem; }
-    .hw-row .top {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.78rem;
-    }
-    .err { color: var(--muted); font-size: 0.8rem; }
-    .note {
-      margin-top: 0.75rem;
-      font-size: 0.78rem;
-      color: var(--warn);
-      line-height: 1.35;
-    }
-    .sublabel {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin: -0.35rem 0 0.65rem;
-      font-weight: 500;
-    }
-    .skew {
-      margin-top: 0.75rem;
-      padding-top: 0.65rem;
-      border-top: 1px solid var(--track);
-    }
+    .hw-row .top { display: flex; justify-content: space-between; font-size: 0.78rem; gap: 0.5rem; }
+    .err { color: var(--muted); font-size: 0.78rem; line-height: 1.35; }
+    .note { margin-top: 0.75rem; font-size: 0.78rem; color: var(--warn); line-height: 1.35; }
+    .sublabel { font-size: 0.72rem; color: var(--muted); margin: 0 0 0.65rem; }
+    .skew { margin-top: 0.75rem; padding-top: 0.65rem; border-top: 1px solid var(--track); }
     .skew .title {
+      font-size: 0.68rem; color: var(--muted); margin-bottom: 0.45rem;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .source {
+      margin-top: 0.55rem;
       font-size: 0.68rem;
       color: var(--muted);
-      margin-bottom: 0.45rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-family: ui-monospace, Menlo, monospace;
     }
   </style>
 </head>
 <body>
   <header>
     <div>
-      <h1>InboxEval Ops</h1>
-      <div class="meta">Phase-1 harvest + Engine fleet · auto-refresh 5s</div>
+      <h1 id="page-title">Golden Data Generator</h1>
+      <div class="meta">Phase-1 harvest + Engine fleet · factual counters · auto-refresh 5s</div>
     </div>
     <div class="meta" id="ts">—</div>
   </header>
+
+  <section>
+    <h2>Corpus overview</h2>
+    <div class="hero-grid" id="hero-stats"></div>
+    <div class="skew" id="hero-skew"></div>
+  </section>
 
   <section>
     <h2>Current batch</h2>
@@ -206,18 +187,15 @@
     <div class="hw-grid">
       <div class="card" id="hw-mac"></div>
       <div class="card" id="hw-gcp"></div>
-      <div class="card" id="hw-ollama"></div>
+      <div class="card" id="hw-secondary"></div>
     </div>
   </section>
 
   <script>
     const STAGE_ORDER = ["claim", "step_01", "step_02b", "step_02a", "sync"];
     const STAGE_LABEL = {
-      claim: "Claim",
-      step_01: "Step 01",
-      step_02b: "Step 02b",
-      step_02a: "Step 02a",
-      sync: "Sync",
+      claim: "Claim", step_01: "Step 01", step_02b: "Step 02b",
+      step_02a: "Step 02a", sync: "Sync",
     };
 
     function badge(ok, labelOk, labelBad) {
@@ -227,10 +205,10 @@
     }
 
     function bar(pct, hotAt = 80, critAt = 92) {
-      if (pct == null || Number.isNaN(pct)) {
-        return `<div class="bar"><span style="width:0%"></span></div>`;
+      if (pct == null || Number.isNaN(Number(pct))) {
+        return `<div class="bar na"><span></span></div>`;
       }
-      const p = Math.max(0, Math.min(100, pct));
+      const p = Math.max(0, Math.min(100, Number(pct)));
       let cls = "bar";
       if (p >= critAt) cls += " crit";
       else if (p >= hotAt) cls += " hot";
@@ -238,28 +216,51 @@
     }
 
     function fmt(v, suffix = "") {
-      return v == null || Number.isNaN(v) ? "—" : `${v}${suffix}`;
+      if (v == null || Number.isNaN(v)) return "n/a";
+      return `${v}${suffix}`;
     }
 
-    function renderSkew(skew) {
-      if (!skew || !Object.keys(skew).length) return "";
-      const total = Object.values(skew).reduce((a, b) => a + b, 0) || 1;
-      const order = ["micro", "short", "medium", "long", "massive", "unknown"];
-      const keys = [...order.filter((k) => skew[k] != null), ...Object.keys(skew).filter((k) => !order.includes(k))];
-      const rows = keys.map((k) => {
-        const n = skew[k];
-        const pct = (100 * n) / total;
-        return `<div class="hw-row"><div class="top"><span>${k}</span><span>${n} (${pct.toFixed(1)}%)</span></div>${bar(pct, 50, 80)}</div>`;
-      }).join("");
-      return `<div class="skew"><div class="title">Golden by size</div>${rows}</div>`;
+    function num(n) {
+      if (n == null) return "—";
+      return Number(n).toLocaleString();
+    }
+
+    function renderHero(hero, mac) {
+      const h = hero || {};
+      const total = h.total_emails ?? mac?.total_raw;
+      const golden = h.golden ?? mac?.golden;
+      const pct = total ? ((100 * (golden || 0)) / total).toFixed(2) : "—";
+      document.getElementById("hero-stats").innerHTML = [
+        ["Total emails", total, null],
+        ["Golden dataset", golden, `${pct}% of corpus`],
+        ["Backtranslated", h.backtranslated ?? mac?.backtranslated, "has prompt"],
+        ["Persona extracted", h.persona_extracted ?? mac?.persona_extracted, "target_persona"],
+        ["DPBC extracted", h.dpbc_extracted ?? mac?.dpbc_extracted, "dpbc_targets"],
+        ["Vectorized", h.vectorized ?? mac?.vectorized, "Chroma inbox_eval_vectors"],
+      ].map(([k, v, sub]) => `<div class="stat"><div class="k">${k}</div><div class="v">${num(v)}</div>${sub ? `<div class="sub">${sub}</div>` : ""}</div>`).join("");
+
+      const rows = h.size_breakdown || mac?.size_breakdown || [];
+      if (!rows.length) {
+        document.getElementById("hero-skew").innerHTML = "";
+        return;
+      }
+      const maxE = Math.max(...rows.map((r) => r.emails || 0), 1);
+      document.getElementById("hero-skew").innerHTML =
+        `<div class="title">Size skew — corpus vs golden</div>` +
+        rows.map((r) => {
+          const gPct = r.emails ? ((100 * (r.golden || 0)) / r.emails).toFixed(2) : "0";
+          return `<div class="hw-row">
+            <div class="top"><span>${r.size}</span><span>${num(r.emails)} emails · ${num(r.golden)} golden (${gPct}%)</span></div>
+            ${bar((100 * (r.emails || 0)) / maxE, 70, 95)}
+          </div>`;
+        }).join("");
     }
 
     function renderStages(batch) {
       const claimed = batch.claimed || 0;
       const stages = batch.stages || {};
       const current = batch.current_stage;
-      const el = document.getElementById("stages");
-      el.innerHTML = STAGE_ORDER.map((key) => {
+      document.getElementById("stages").innerHTML = STAGE_ORDER.map((key) => {
         const n = stages[key] ?? 0;
         let cls = "stage";
         if (current === "done" || (current && STAGE_ORDER.indexOf(key) < STAGE_ORDER.indexOf(current))) {
@@ -267,112 +268,101 @@
         }
         if (current === key) cls += " active";
         if (current === "done" && key === "sync" && n >= claimed && claimed > 0) cls += " done";
-        return `<div class="${cls}">
-          <div class="label">${STAGE_LABEL[key]}</div>
-          <div class="count">${n}</div>
-          <div class="of">/ ${claimed}</div>
-        </div>`;
+        return `<div class="${cls}"><div class="label">${STAGE_LABEL[key]}</div><div class="count">${n}</div><div class="of">/ ${claimed}</div></div>`;
       }).join("");
       const worker = batch.worker && batch.worker.enriching ? " · worker live" : "";
       document.getElementById("batch-id").textContent = batch.batch_id
-        ? `BATCH ${batch.batch_id} · stage ${current || "—"}${worker}`
+        ? `BATCH ${batch.batch_id} · ${current || "—"}${worker}`
         : "No diversity_batch yet";
       const note = document.getElementById("batch-note");
-      if (batch.note) {
-        note.hidden = false;
-        note.textContent = batch.note;
-      } else {
-        note.hidden = true;
-        note.textContent = "";
-      }
+      if (batch.note) { note.hidden = false; note.textContent = batch.note; }
+      else { note.hidden = true; note.textContent = ""; }
+    }
+
+    function renderSkewFleet(skew) {
+      if (!skew || !Object.keys(skew).length) return "";
+      const total = Object.values(skew).reduce((a, b) => a + b, 0) || 1;
+      const order = ["micro", "short", "medium", "long", "massive"];
+      const keys = [...order.filter((k) => skew[k] != null), ...Object.keys(skew).filter((k) => !order.includes(k))];
+      return `<div class="skew"><div class="title">Golden by size</div>` +
+        keys.map((k) => {
+          const n = skew[k];
+          const pct = (100 * n) / total;
+          return `<div class="hw-row"><div class="top"><span>${k}</span><span>${num(n)} (${pct.toFixed(1)}%)</span></div>${bar(pct, 50, 80)}</div>`;
+        }).join("") + `</div>`;
     }
 
     function renderFleet(id, title, data) {
       const el = document.getElementById(id);
       if (!data || !data.ok) {
-        el.innerHTML = `<h3>${title} ${badge(false, "", "offline")}</h3>
-          <div class="err">${(data && data.error) || "unreachable"}</div>`;
+        el.innerHTML = `<h3>${title} ${badge(false, "", "offline")}</h3><div class="err">${(data && data.error) || "unreachable"}</div>`;
         return;
       }
-      const status = data.status || {};
-      const statusStr = Object.entries(status)
-        .map(([k, v]) => `${k}:${v}`)
-        .join(" · ");
+      const statusStr = Object.entries(data.status || {}).map(([k, v]) => `${k}:${v}`).join(" · ");
       let extra = "";
-      if (data.golden_last_hour != null) {
-        extra = `<div class="metric"><div class="k">Golden / last hour</div><div class="v">+${data.golden_last_hour}</div></div>`;
-      }
-      if (data.sync_backlog != null) {
-        extra += `<div class="metric"><div class="k">Sync backlog</div><div class="v">${data.sync_backlog}</div></div>`;
-      }
-      if (data.pending_enrichment != null) {
-        extra += `<div class="metric"><div class="k">Pending enrich</div><div class="v">${data.pending_enrichment}</div></div>`;
-      }
-      if (data.pending != null) {
-        extra += `<div class="metric"><div class="k">Pending (Engine)</div><div class="v">${data.pending}</div></div>`;
-      }
+      if (data.golden_last_hour != null) extra += `<div class="metric"><div class="k">Golden / last hour</div><div class="v">+${data.golden_last_hour}</div></div>`;
+      if (data.sync_backlog != null) extra += `<div class="metric"><div class="k">Sync backlog</div><div class="v">${num(data.sync_backlog)}</div></div>`;
+      if (data.pending_enrichment != null) extra += `<div class="metric"><div class="k">Pending enrich</div><div class="v">${num(data.pending_enrichment)}</div></div>`;
+      if (data.pending != null) extra += `<div class="metric"><div class="k">Pending (Engine)</div><div class="v">${num(data.pending)}</div></div>`;
       el.innerHTML = `<h3>${title} ${badge(true, "live", "")}</h3>
         <div class="metrics">
-          <div class="metric"><div class="k">Golden</div><div class="v">${data.golden ?? "—"}</div></div>
-          <div class="metric"><div class="k">Enriched non-micro</div><div class="v">${data.enriched_non_micro ?? "—"}</div></div>
+          <div class="metric"><div class="k">Golden</div><div class="v">${num(data.golden)}</div></div>
+          <div class="metric"><div class="k">Enriched non-micro</div><div class="v">${num(data.enriched_non_micro)}</div></div>
           ${extra}
-          <div class="metric" style="grid-column:1/-1">
-            <div class="k">Status mix</div>
-            <div class="v small">${statusStr || "—"}</div>
-          </div>
-        </div>
-        ${renderSkew(data.golden_by_size)}`;
+          <div class="metric" style="grid-column:1/-1"><div class="k">Status mix</div><div class="v small">${statusStr || "—"}</div></div>
+        </div>${renderSkewFleet(data.golden_by_size)}`;
     }
 
-    function renderHwMac(data) {
-      const el = document.getElementById("hw-mac");
-      if (!data || !data.ok) {
-        el.innerHTML = `<h3>Mac ${badge(false, "", "n/a")}</h3><div class="err">${(data && data.error) || ""}</div>`;
-        return;
-      }
-      el.innerHTML = `<h3>${data.label || "Mac"} ${badge(true, "live", "")}</h3>
-        <div class="hw-row"><div class="top"><span>CPU</span><span>${data.cpu_pct}%</span></div>${bar(data.cpu_pct)}</div>
-        <div class="hw-row"><div class="top"><span>RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>
-        ${data.temp_c != null ? `<div class="hw-row"><div class="top"><span>Temp</span><span>${data.temp_c}°C</span></div>${bar(data.temp_c, 70, 90)}</div>` : ""}`;
-    }
-
-    function renderGpuCard(elId, fallbackTitle, data) {
+    function renderMachine(elId, data, fallback) {
       const el = document.getElementById(elId);
       if (!data || !data.ok) {
-        el.innerHTML = `<h3>${fallbackTitle} ${badge(false, "", "offline")}</h3><div class="err">${(data && data.error) || ""}</div>`;
+        el.innerHTML = `<h3>${fallback} ${badge(false, "", "offline")}</h3><div class="err">${(data && data.error) || ""}</div>`;
         return;
       }
-      const title = data.label || fallbackTitle;
-      const vramPct = data.gpu_vram_total_mb
-        ? (100 * (data.gpu_vram_used_mb || 0)) / data.gpu_vram_total_mb
-        : null;
-      const models = data.models || [];
-      const modelLine = models.length
-        ? `<div class="hw-row"><div class="top"><span>Ollama</span><span>${models.map((m) => m.name).join(", ")}</span></div></div>`
-        : "";
-      const note = data.note ? `<div class="err" style="margin-top:0.5rem">${data.note}</div>` : "";
-      el.innerHTML = `<h3>${title} ${badge(true, "live", "")}</h3>
-        <div class="sublabel">${data.gpu_name || ""}</div>
+      const role = data.role || "";
+      const title = data.label || fallback;
+      const models = (data.models || []).map((m) => m.name).filter(Boolean).join(", ");
+      const vramPct = (data.gpu_vram_total_mb && data.gpu_vram_used_mb != null)
+        ? (100 * data.gpu_vram_used_mb) / data.gpu_vram_total_mb : null;
+      const hasGpu = data.gpu_name || data.gpu_vram_total_mb != null;
+      const gpuBlock = hasGpu ? `
         <div class="hw-row"><div class="top"><span>GPU util</span><span>${fmt(data.gpu_util_pct, "%")}</span></div>${bar(data.gpu_util_pct)}</div>
         <div class="hw-row"><div class="top"><span>VRAM</span><span>${fmt(data.gpu_vram_used_mb != null ? Math.round(data.gpu_vram_used_mb) : null)} / ${fmt(data.gpu_vram_total_mb != null ? Math.round(data.gpu_vram_total_mb) : null)} MB</span></div>${bar(vramPct)}</div>
         <div class="hw-row"><div class="top"><span>Temp</span><span>${fmt(data.gpu_temp_c, "°C")}</span></div>${bar(data.gpu_temp_c, 70, 85)}</div>
-        <div class="hw-row"><div class="top"><span>Power</span><span>${fmt(data.gpu_power_w, " W")}</span></div></div>
-        ${data.ram_pct != null ? `<div class="hw-row"><div class="top"><span>Host RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>` : ""}
-        ${modelLine}
-        ${note}`;
+        <div class="hw-row"><div class="top"><span>Power</span><span>${fmt(data.gpu_power_w, " W")}</span></div></div>` : "";
+      const cpuBlock = data.cpu_pct != null ? `
+        <div class="hw-row"><div class="top"><span>CPU</span><span>${data.cpu_pct}%</span></div>${bar(data.cpu_pct)}</div>
+        <div class="hw-row"><div class="top"><span>RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>` : "";
+      const hostRam = (data.ram_pct != null && data.cpu_pct == null) ? `
+        <div class="hw-row"><div class="top"><span>Host RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>` : "";
+      const tps = data.tokens_per_sec != null
+        ? `${data.tokens_per_sec} tok/s gen`
+        : (data.tokens_per_sec_note || "n/a");
+      const promptTps = data.prompt_tokens_per_sec != null ? ` · ${data.prompt_tokens_per_sec} tok/s prompt` : "";
+      const running = data.requests_running != null ? ` · ${data.requests_running} in flight` : "";
+      el.innerHTML = `<h3>${title} ${badge(true, "live", "")}</h3>
+        <div class="sublabel">${role}${data.gpu_name ? " · " + data.gpu_name : ""}</div>
+        ${cpuBlock}${gpuBlock}${hostRam}
+        <div class="hw-row"><div class="top"><span>Model</span><span>${models || "—"}</span></div></div>
+        <div class="hw-row"><div class="top"><span>Throughput</span><span>${tps}${promptTps}${running}</span></div></div>
+        ${data.note ? `<div class="err">${data.note}</div>` : ""}
+        <div class="source">source: ${data.metrics_source || "—"}</div>`;
     }
 
     async function tick() {
       try {
         const res = await fetch("/api/snapshot");
         const snap = await res.json();
+        if (snap.title) document.getElementById("page-title").textContent = snap.title;
         document.getElementById("ts").textContent = "Updated " + (snap.ts || "").replace("T", " ").slice(0, 19) + " UTC";
+        renderHero(snap.hero, snap.mac);
         renderStages(snap.batch || {});
         renderFleet("mac-card", "Mac pipeline", snap.mac);
         renderFleet("gcp-card", "GCP Engine", snap.gcp);
-        renderHwMac(snap.hardware && snap.hardware.mac);
-        renderGpuCard("hw-gcp", "GCP GPU", snap.hardware && snap.hardware.gcp);
-        renderGpuCard("hw-ollama", "Secondary GPU", snap.hardware && snap.hardware.ollama);
+        const hw = snap.hardware || {};
+        renderMachine("hw-mac", hw.mac, "Mac");
+        renderMachine("hw-gcp", hw.gcp, "GCP GPU");
+        renderMachine("hw-secondary", hw.secondary || hw.ollama, "Secondary GPU");
       } catch (e) {
         document.getElementById("ts").textContent = "Fetch error: " + e;
       }

@@ -25,10 +25,15 @@ OLLAMA_BASE = os.getenv(
 if OLLAMA_BASE.endswith("/v1"):
     OLLAMA_BASE = OLLAMA_BASE[:-3].rstrip("/")
 
-# Secondary laptop GPU (Ollama host) — full nvidia-smi needs SSH
+# Secondary laptop GPU (Ollama host) — full nvidia-smi needs SSH.
+# Defaults match operator hardware: GeForce GTX 1050 4GB (not invented at runtime).
 SECONDARY_SSH = os.getenv("SECONDARY_LAPTOP_SSH", "").strip()
-SECONDARY_GPU_NAME = os.getenv("SECONDARY_GPU_NAME", "NVIDIA GeForce GTX 1080")
-SECONDARY_GPU_VRAM_MB = float(os.getenv("SECONDARY_GPU_VRAM_MB", "8192"))  # 8GB retail; set 4096 if 4GB card
+SECONDARY_GPU_NAME = os.getenv("SECONDARY_GPU_NAME", "NVIDIA GeForce GTX 1050")
+SECONDARY_GPU_VRAM_MB = float(os.getenv("SECONDARY_GPU_VRAM_MB", "4096"))
+
+# vLLM tok/s derived from counter deltas (factual), not invented.
+_vllm_tok_lock = __import__("threading").Lock()
+_vllm_tok_prev: Dict[str, float] = {"t": 0.0, "gen": 0.0, "prompt": 0.0}
 
 
 def _now() -> str:
@@ -271,7 +276,43 @@ def collect_mac_pipeline(db_path: str = LOCAL_DB) -> Dict[str, Any]:
             pass
 
         skew = _golden_skew(conn)
+        email_by_size = {
+            str(cat): int(n)
+            for cat, n in c.execute(
+                "SELECT size_category, COUNT(*) FROM raw_emails GROUP BY size_category"
+            ).fetchall()
+        }
+        backtranslated = int(
+            c.execute(
+                "SELECT COUNT(*) FROM raw_emails WHERE prompt IS NOT NULL AND prompt != ''"
+            ).fetchone()[0]
+        )
+        persona_n = int(
+            c.execute(
+                "SELECT COUNT(*) FROM raw_emails WHERE target_persona IS NOT NULL"
+            ).fetchone()[0]
+        )
+        dpbc_n = int(
+            c.execute(
+                "SELECT COUNT(*) FROM raw_emails WHERE dpbc_targets IS NOT NULL"
+            ).fetchone()[0]
+        )
+        vectorized = _chroma_vector_count()
         batch = _latest_batch(conn)
+        # Per-size: corpus vs golden (factual joins)
+        size_rows = []
+        for cat in ("micro", "short", "medium", "long", "massive"):
+            size_rows.append(
+                {
+                    "size": cat,
+                    "emails": email_by_size.get(cat, 0),
+                    "golden": skew.get(cat, 0),
+                }
+            )
+        for cat, n in email_by_size.items():
+            if cat not in ("micro", "short", "medium", "long", "massive"):
+                size_rows.append({"size": cat, "emails": n, "golden": skew.get(cat, 0)})
+
         conn.close()
         out.update(
             {
@@ -280,18 +321,53 @@ def collect_mac_pipeline(db_path: str = LOCAL_DB) -> Dict[str, Any]:
                 "status": status,
                 "golden": golden,
                 "golden_by_size": skew,
+                "email_by_size": email_by_size,
+                "size_breakdown": size_rows,
+                "backtranslated": backtranslated,
+                "persona_extracted": persona_n,
+                "dpbc_extracted": dpbc_n,
+                "vectorized": vectorized,
                 "non_micro": non_micro,
                 "enriched_non_micro": enriched,
                 "pending_enrichment": pending_enrich,
                 "synced": synced,
                 "sync_backlog": sync_backlog,
                 "batch": batch,
+                "hero": {
+                    "title": "Golden Data Generator",
+                    "total_emails": total,
+                    "golden": golden,
+                    "backtranslated": backtranslated,
+                    "persona_extracted": persona_n,
+                    "dpbc_extracted": dpbc_n,
+                    "vectorized": vectorized,
+                    "size_breakdown": size_rows,
+                },
             }
         )
         return out
     except Exception as e:
         out["error"] = str(e)
         return out
+
+
+def _chroma_vector_count() -> Optional[int]:
+    """Count vectors in local Chroma inbox_eval_vectors (factual)."""
+    try:
+        import chromadb
+
+        path = os.path.abspath(os.path.join(_ROOT, "data/chroma_db"))
+        if not os.path.isdir(path):
+            return None
+        client = chromadb.PersistentClient(path=path)
+        for col in client.list_collections():
+            if col.name == "inbox_eval_vectors":
+                return int(col.count())
+        # fallback: largest collection
+        counts = [int(c.count()) for c in client.list_collections()]
+        return max(counts) if counts else None
+    except Exception:
+        return None
 
 
 def collect_gcp_pipeline() -> Dict[str, Any]:
@@ -355,7 +431,17 @@ conn.close()
 
 
 def collect_mac_hardware() -> Dict[str, Any]:
-    out: Dict[str, Any] = {"ok": False, "error": None, "label": "MacBook Pro"}
+    out: Dict[str, Any] = {
+        "ok": False,
+        "error": None,
+        "role": "Mac · Step 01 (Groq API)",
+        "label": "MacBook Pro",
+        "gpu_name": None,
+        "models": [{"name": "GROQ_API_KEY* rotator (cloud)"}],
+        "tokens_per_sec": None,
+        "tokens_per_sec_note": "n/a — Groq is remote; no local tok/s counter",
+        "metrics_source": "psutil",
+    }
     try:
         import psutil
 
@@ -429,8 +515,86 @@ _NVIDIA_QUERY = (
 )
 
 
+def collect_vllm_throughput() -> Dict[str, Any]:
+    """
+    Factual tok/s from vLLM /metrics counter deltas on GCP.
+    Returns null rates until a second sample exists.
+    """
+    out: Dict[str, Any] = {
+        "ok": False,
+        "model": None,
+        "tokens_per_sec": None,
+        "prompt_tokens_per_sec": None,
+        "generation_tokens_total": None,
+        "requests_running": None,
+    }
+    cmd = (
+        "curl -s --max-time 2 http://127.0.0.1:8000/metrics 2>/dev/null | "
+        "grep -E '^vllm:(generation_tokens_total|prompt_tokens_total|num_requests_running)\\{' "
+        "| head -20"
+    )
+    try:
+        result = ssh_run(cmd, timeout=8.0)
+        if result.returncode != 0 or not result.stdout.strip():
+            out["error"] = "vLLM /metrics unreachable"
+            return out
+        import re
+        import time as _time
+
+        gen = None
+        prompt = None
+        running = None
+        model = None
+        for line in result.stdout.splitlines():
+            m = re.search(r'model_name="([^"]+)"', line)
+            if m:
+                model = m.group(1)
+            if line.startswith("vllm:generation_tokens_total"):
+                gen = float(line.rsplit(" ", 1)[-1])
+            elif line.startswith("vllm:prompt_tokens_total{"):
+                prompt = float(line.rsplit(" ", 1)[-1])
+            elif line.startswith("vllm:num_requests_running"):
+                running = float(line.rsplit(" ", 1)[-1])
+        now = _time.monotonic()
+        out.update(
+            {
+                "ok": True,
+                "model": model,
+                "generation_tokens_total": gen,
+                "prompt_tokens_total": prompt,
+                "requests_running": running,
+            }
+        )
+        with _vllm_tok_lock:
+            prev_t = _vllm_tok_prev["t"]
+            prev_g = _vllm_tok_prev["gen"]
+            prev_p = _vllm_tok_prev["prompt"]
+            if prev_t > 0 and gen is not None and now > prev_t:
+                dt = now - prev_t
+                out["tokens_per_sec"] = round((gen - prev_g) / dt, 1)
+                if prompt is not None:
+                    out["prompt_tokens_per_sec"] = round((prompt - prev_p) / dt, 1)
+            if gen is not None:
+                _vllm_tok_prev["t"] = now
+                _vllm_tok_prev["gen"] = gen
+                if prompt is not None:
+                    _vllm_tok_prev["prompt"] = prompt
+        if out["tokens_per_sec"] is None:
+            out["tokens_per_sec_note"] = "warming — need 2 samples (~5s)"
+        return out
+    except Exception as e:
+        out["error"] = str(e)
+        return out
+
+
 def collect_gcp_hardware() -> Dict[str, Any]:
-    out: Dict[str, Any] = {"ok": False, "error": None, "label": "GCP Engine GPU"}
+    out: Dict[str, Any] = {
+        "ok": False,
+        "error": None,
+        "role": "GCP · Engine V4 (vLLM)",
+        "label": "GCP Engine GPU",
+        "metrics_source": "nvidia-smi",
+    }
     try:
         result = ssh_run(_NVIDIA_QUERY, timeout=8.0)
         if result.returncode != 0:
@@ -441,7 +605,17 @@ def collect_gcp_hardware() -> Dict[str, Any]:
         out.update(parsed)
         name = parsed.get("gpu_name") or "NVIDIA GPU"
         vram_gb = round(parsed.get("gpu_vram_total_mb", 0) / 1024, 1)
-        out["label"] = f"{name} ({vram_gb} GB)"
+        out["label"] = f"{name} · {vram_gb} GB"
+        out["gpu_name"] = name
+        # Attach vLLM model + tok/s (factual deltas)
+        vllm = collect_vllm_throughput()
+        out["vllm"] = vllm
+        if vllm.get("model"):
+            out["models"] = [{"name": vllm["model"]}]
+        out["tokens_per_sec"] = vllm.get("tokens_per_sec")
+        out["tokens_per_sec_note"] = vllm.get("tokens_per_sec_note")
+        out["prompt_tokens_per_sec"] = vllm.get("prompt_tokens_per_sec")
+        out["requests_running"] = vllm.get("requests_running")
         return out
     except Exception as e:
         out["error"] = str(e)
@@ -466,34 +640,37 @@ def _ollama_ps() -> Dict[str, Any]:
 
 def collect_secondary_hardware() -> Dict[str, Any]:
     """
-    Secondary laptop GPU (runs Ollama). Prefer nvidia-smi over SSH when
-    SECONDARY_LAPTOP_SSH is set; always merge Ollama /api/ps.
+    Secondary laptop GPU (Ollama). nvidia-smi only when SECONDARY_LAPTOP_SSH works.
+    Without SSH: configured GTX 1050 4GB name + factual Ollama model VRAM only.
+    Never invents util/temp/power.
     """
     out: Dict[str, Any] = {
         "ok": False,
         "error": None,
+        "role": "Secondary · Step 02a (Ollama)",
         "label": SECONDARY_GPU_NAME,
         "gpu_name": SECONDARY_GPU_NAME,
         "gpu_vram_total_mb": SECONDARY_GPU_VRAM_MB,
         "models": [],
         "metrics_source": None,
+        "tokens_per_sec": None,
+        "tokens_per_sec_note": "n/a — Ollama /api/ps does not expose tok/s",
     }
-    # Ollama process list
     try:
         ps = _ollama_ps()
         out["models"] = ps["models"]
         out["loaded"] = ps["loaded"]
         out["ollama_ok"] = True
         if ps["models"] and ps["models"][0].get("size_vram"):
-            out["gpu_vram_used_mb"] = round(ps["models"][0]["size_vram"] / (1024 * 1024), 1)
+            out["gpu_vram_used_mb"] = round(
+                ps["models"][0]["size_vram"] / (1024 * 1024), 1
+            )
     except Exception as e:
         out["ollama_ok"] = False
         out["ollama_error"] = str(e)[:160]
 
-    # Full GPU metrics via optional SSH
     ssh_host = SECONDARY_SSH
     if not ssh_host:
-        # best-effort: same host as Ollama URL, user from env
         host = urlparse(OLLAMA_BASE).hostname
         user = os.getenv("SECONDARY_LAPTOP_SSH_USER", "").strip()
         if host and user:
@@ -508,29 +685,31 @@ def collect_secondary_hardware() -> Dict[str, Any]:
                 out["metrics_source"] = "nvidia-smi"
                 name = parsed.get("gpu_name") or SECONDARY_GPU_NAME
                 vram_gb = round(parsed.get("gpu_vram_total_mb", 0) / 1024, 1)
-                out["label"] = f"{name} ({vram_gb} GB)"
+                out["label"] = f"{name} · {vram_gb} GB"
                 out["gpu_name"] = name
                 out["ok"] = True
+                out["note"] = None
                 return out
             out["ssh_error"] = (result.stderr or "ssh failed").strip()[:200]
         except Exception as e:
             out["ssh_error"] = str(e)[:200]
 
-    # Fallback: static card name + Ollama VRAM occupancy
     vram_gb = round(SECONDARY_GPU_VRAM_MB / 1024, 1)
-    out["label"] = f"{SECONDARY_GPU_NAME} ({vram_gb} GB)"
-    out["metrics_source"] = "ollama+static"
+    out["label"] = f"{SECONDARY_GPU_NAME} · {vram_gb} GB"
+    out["metrics_source"] = "config+ollama"
+    # Explicitly omit inventing zeros — UI must show n/a
+    out.pop("gpu_util_pct", None)
+    out.pop("gpu_temp_c", None)
+    out.pop("gpu_power_w", None)
+    out["gpu_util_pct"] = None
+    out["gpu_temp_c"] = None
+    out["gpu_power_w"] = None
     if out.get("ollama_ok"):
         out["ok"] = True
-        # util/temp/power unknown without SSH
-        out["gpu_util_pct"] = None
-        out["gpu_temp_c"] = None
-        out["gpu_power_w"] = None
-        if "gpu_vram_used_mb" not in out:
-            out["gpu_vram_used_mb"] = 0.0
         out["note"] = (
-            "Set SECONDARY_LAPTOP_SSH=user@host for live util/temp/power "
-            "(SSH to secondary timed out or unset)."
+            "util/temp/power unavailable — enable SSH "
+            "(SECONDARY_LAPTOP_SSH=user@host). "
+            "VRAM used is from Ollama; total 4GB is configured for GTX 1050."
         )
     else:
         out["error"] = out.get("ollama_error") or out.get("ssh_error") or "unreachable"

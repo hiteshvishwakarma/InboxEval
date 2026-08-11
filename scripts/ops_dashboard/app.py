@@ -63,12 +63,16 @@ def _snapshot_fresh() -> dict:
 
     return {
         "ts": datetime.now(timezone.utc).isoformat(),
+        "title": "Golden Data Generator",
+        "hero": mac.get("hero") if mac.get("ok") else None,
         "batch": mac.get("batch") if mac.get("ok") else _latest_batch_empty(),
         "mac": mac,
         "gcp": results.get("gcp") or {"ok": False},
         "hardware": {
             "mac": results.get("hw_mac") or {"ok": False},
             "gcp": results.get("hw_gcp") or {"ok": False},
+            "secondary": results.get("ollama") or {"ok": False},
+            # keep alias for older UI
             "ollama": results.get("ollama") or {"ok": False},
         },
     }

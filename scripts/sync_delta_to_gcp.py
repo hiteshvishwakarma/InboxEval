@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import shlex
 import sqlite3
 import subprocess
 import sys
@@ -41,6 +42,28 @@ LOCAL_DB = os.path.abspath(os.path.join(_ROOT, "data/pipeline.db"))
 GCP_SSH_ALIAS = "inbox-engine"
 GCP_DB_PATH = "/home/hitesh/InboxEval/data/pipeline.db"
 SYNC_COLS = ["prompt", "context", "target_persona", "dpbc_targets", "status"]
+
+
+def ssh_python(
+    script: str,
+    *,
+    input_text: str | None = None,
+    timeout: int = 60,
+) -> subprocess.CompletedProcess:
+    """
+    Run a Python snippet on GCP via SSH.
+
+    Must use shlex.quote — nesting python3 -c '...' with inner single quotes
+    strips path quotes and breaks bash (seen as: sqlite3.connect(/home/...)).
+    """
+    remote = f"python3 -c {shlex.quote(script)}"
+    return subprocess.run(
+        ["ssh", GCP_SSH_ALIAS, remote],
+        input=input_text,
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+    )
 
 
 def ensure_sync_log(conn: sqlite3.Connection) -> None:
@@ -117,17 +140,12 @@ def gcp_golden_count() -> int | None:
     """Snapshot golden_dataset COUNT(*) on GCP before sync."""
     gcp_python = (
         "import sqlite3\n"
-        f"conn = sqlite3.connect('{GCP_DB_PATH}', timeout=30)\n"
+        f"conn = sqlite3.connect({GCP_DB_PATH!r}, timeout=30)\n"
         "print(conn.execute('SELECT COUNT(*) FROM golden_dataset').fetchone()[0])\n"
         "conn.close()\n"
     )
     try:
-        result = subprocess.run(
-            ["ssh", GCP_SSH_ALIAS, f"python3 -c '{gcp_python}'"],
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
+        result = ssh_python(gcp_python, timeout=30)
         if result.returncode != 0:
             logger.error("Failed to read golden_dataset count: %s", result.stderr)
             return None
@@ -141,19 +159,13 @@ def run_on_gcp(sql: str) -> bool:
     gcp_python = (
         "import sqlite3, sys\n"
         "sql = sys.stdin.read()\n"
-        f"conn = sqlite3.connect('{GCP_DB_PATH}', timeout=30)\n"
+        f"conn = sqlite3.connect({GCP_DB_PATH!r}, timeout=30)\n"
         "conn.executescript(sql)\n"
         "conn.close()\n"
         "print('SYNC_OK')\n"
     )
     try:
-        result = subprocess.run(
-            ["ssh", GCP_SSH_ALIAS, f"python3 -c '{gcp_python}'"],
-            input=sql,
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
+        result = ssh_python(gcp_python, input_text=sql, timeout=120)
         if result.returncode != 0 or "SYNC_OK" not in result.stdout:
             logger.error("GCP error:\n%s\n%s", result.stderr, result.stdout)
             return False
@@ -173,20 +185,15 @@ def fetch_applied_ids_on_gcp(ids: list) -> list[int]:
     id_list = ",".join(str(i) for i in ids)
     gcp_python = (
         "import sqlite3\n"
-        f"conn = sqlite3.connect('{GCP_DB_PATH}', timeout=30)\n"
+        f"conn = sqlite3.connect({GCP_DB_PATH!r}, timeout=30)\n"
         "c = conn.cursor()\n"
         f"c.execute('SELECT id FROM raw_emails WHERE id IN ({id_list}) "
-        f"AND status = \\\"backtranslated\\\" AND dpbc_targets IS NOT NULL')\n"
+        f"AND status = \"backtranslated\" AND dpbc_targets IS NOT NULL')\n"
         "print(','.join(str(r[0]) for r in c.fetchall()))\n"
         "conn.close()\n"
     )
     try:
-        result = subprocess.run(
-            ["ssh", GCP_SSH_ALIAS, f"python3 -c '{gcp_python}'"],
-            capture_output=True,
-            text=True,
-            timeout=60,
-        )
+        result = ssh_python(gcp_python, timeout=60)
         if result.returncode != 0:
             logger.error("Failed to verify applied IDs: %s", result.stderr)
             return []
@@ -212,7 +219,7 @@ def verify_on_gcp(ids: list, golden_before: int | None) -> None:
     id_list = ",".join(str(i) for i in ids[:10])
     gcp_python = (
         "import sqlite3\n"
-        f"conn = sqlite3.connect('{GCP_DB_PATH}', timeout=10)\n"
+        f"conn = sqlite3.connect({GCP_DB_PATH!r}, timeout=10)\n"
         "c = conn.cursor()\n"
         f"c.execute('SELECT id, size_category, status, "
         f"prompt IS NOT NULL, target_persona IS NOT NULL, dpbc_targets IS NOT NULL "
@@ -223,12 +230,7 @@ def verify_on_gcp(ids: list, golden_before: int | None) -> None:
         "print('golden_dataset rows:', c.fetchone()[0])\n"
         "conn.close()\n"
     )
-    result = subprocess.run(
-        ["ssh", GCP_SSH_ALIAS, f"python3 -c '{gcp_python}'"],
-        capture_output=True,
-        text=True,
-        timeout=30,
-    )
+    result = ssh_python(gcp_python, timeout=30)
     logger.info("GCP spot-check (first 10 IDs):\n%s", result.stdout)
     if golden_before is not None and result.stdout:
         for line in result.stdout.splitlines():

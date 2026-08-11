@@ -1,5 +1,11 @@
 # Solo developer roadmap (architecture notes)
 
+## 2026-08-12 — L4 GPU occupancy (max useful tok/s)
+
+**Problem:** Runner `CONCURRENCY=15` × genesis `gather(5)` flooded vLLM (Running~6, Waiting~50), thrashing KV and failing long/massive on 8192.
+
+**Fix:** `gpu_occupancy.py` — global LLM semaphore (6), email seat pool (4, size-weighted), admit gate on `vllm:num_requests_waiting`, size-aware genesis fan-out (5/4/3/2), head+tail email fit for context. Wired into runner + steps 05/06/08/10.
+
 ## 2026-08-12 — Engine V4 sampler must not fall back to micro
 
 **Why diversification stalled:** Phase-1 Mac harvest correctly enriched non-micro rows, but `DiversitySampler.get_next_batch` only *preferred* the scarcest size, then filled the rest of each 100-wide batch with `size_category != target` — which included the huge `backtranslated` **micro** pool. Result: most Engine V4 goldens stayed micro; the skew radar barely moved.

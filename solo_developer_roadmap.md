@@ -1,5 +1,31 @@
 # Solo developer roadmap (architecture notes)
 
+## 2026-08-13 — Project parked (Engine V4 is not the product)
+
+**Decision:** Stop treating InboxEval as a live golden-harvest. The vision (a SWE-bench-shaped metric for AI that writes / replies / acts-then-replies over email) is still open. The evolutionary Enron super-prompt loop is not that metric. Do not restart the L4 runner until there is a one-sentence oracle.
+
+**What was actually achieved:** a working T-shaped pipeline (Mac enrichment + GCP vertical), ~497k sized Enron rows, 4,508 unique goldens merged locally, GPU occupancy, delta-sync without clobbering DBs, and a hard lesson: lock the eval object before scaling generation.
+
+**Canonical keep:** `src/engine` + `engine_v2` + `engine_v3` + `engine_v4`, `tests/`, `docs/`, `data/pipeline.db`, `data/chroma_db`, `data/chroma_db_gcp`, `data/traces`, `data/gcp_engine_delta.db`.
+
+**Decluttered (not in git):** split `data_chunk_*` / `data_part_*`, `data_backup.tar.gz`, empty stub `pipeline.db`s, superseded snapshots `pipeline_backup_gcp.db` and `pipeline_phase1_completed.db` (both 958 goldens), benchmark logs. Engine source and runners left in place.
+
+**GCP:** instance halted (no L4 burn). Boot disk still bills until the VM is deleted in console.
+
+## 2026-08-13 — Halt GCP Engine VM; merge goldens into Mac `pipeline.db`
+
+**Why:** Stop L4 burn. Do **not** rsync-replace `data/pipeline.db` — Mac owns horizontal enrichment (`diversity_batch`, `sync_log`, extra `backtranslated`/dpbc) while GCP owned vertical Engine output.
+
+**What stopped on `inbox-eval-engine`:** `mass_evolution_runner_v4.py` (SIGTERM), `vllm serve`, then `sudo shutdown -h now`. GPU was idle before halt.
+
+**Conflict-safe merge (column ownership):**
+- `golden_dataset`: insert GCP rows whose `raw_email_id` is missing locally (3549 new). Do not reuse GCP `id` — 17 PK collisions from local duplicate goldens on raw 346. Traces key by `raw_email_id`.
+- `raw_emails.status`: apply GCP `completed` / `failed` only. Leave `locked_v4` as `backtranslated` (in-flight locks, engine dead). Never write GCP `pending` over Mac `backtranslated`.
+- Enrichment (`prompt`/`persona`/`dpbc_targets`): **do not overwrite**. ~45k overlapping rows have *different* persona JSON (Mac vs GCP extractors). Fill only if local is empty (0 fills).
+- Chroma: keep Mac `data/chroma_db` (313M > GCP 242M). GCP copy is `data/chroma_db_gcp`. Traces rsynced into `data/traces`. Delta snapshot: `data/gcp_engine_delta.db`.
+
+**Post-merge local truth:** golden distinct raw **4508** (rows 4607 incl. historical dups), `completed` 4508, Mac dpbc/diversity tables preserved.
+
 ## 2026-08-12 — L4 GPU occupancy (max useful tok/s)
 
 **Problem:** Runner `CONCURRENCY=15` × genesis `gather(5)` flooded vLLM (Running~6, Waiting~50), thrashing KV and failing long/massive on 8192.

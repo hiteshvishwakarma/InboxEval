@@ -4,3 +4,23 @@ __pycache__/
 .env
 .DS_Store
 datasets/golden_dataset.json
+
+# Local pipeline artifacts (canonical DB is data/pipeline.db — never commit)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/chroma_db/
+data/chroma_db_gcp/
+data/traces/
+data/*.log
+data/*.jsonl
+data_chunk_*
+data_part_*
+*.tar.gz
+pipeline.db
+
+# ARG/Easter Egg Secrets
+docs/SECRET_ARG_PLAN.md
+
+# PRAXIS local memory (may contain project details — commit only after review)
+.praxis/

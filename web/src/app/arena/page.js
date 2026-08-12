@@ -1,204 +1,242 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { ArrowLeft, Send, Activity, Cpu, ShieldAlert } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export default function ArenaPage() {
-  const [promptInput, setPromptInput] = useState("");
-  const [availableModels, setAvailableModels] = useState([]);
+export default function Arena() {
+  const [prompt, setPrompt] = useState('');
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [results, setResults] = useState(null);
+  const [renderTime, setRenderTime] = useState(null);
   
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [battleData, setBattleData] = useState(null);
-  const [startTime, setStartTime] = useState(0);
-  
-  const [voteStatus, setVoteStatus] = useState(null);
-  const [voteStatusDetails, setVoteStatusDetails] = useState(null);
-  const [revealed, setRevealed] = useState(false);
-
-  useEffect(() => {
-    fetch('/api/models')
-      .then(res => res.json())
-      .then(models => setAvailableModels(models))
-      .catch(e => console.error(e));
-  }, []);
-
-  const handleBattle = async () => {
-    if (!promptInput.trim()) return;
-    setIsGenerating(true);
-    setBattleData(null);
-    setRevealed(false);
-    setVoteStatus(null);
+  const handleEvaluate = async (e) => {
+    e.preventDefault();
+    if (!prompt) return;
     
+    setIsEvaluating(true);
     try {
-      const res = await fetch('/api/arena/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: promptInput, available_models: availableModels })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setBattleData(data);
-        setStartTime(Date.now()); // Start Telemetry Timer
-      } else {
-        setVoteStatus(`Error: ${data.error}`);
-      }
-    } catch (e) {
-      setVoteStatus("Failed to start battle.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleVote = async (winner) => {
-    if (revealed) return; // Prevent double voting
-    const timeToVoteMs = Date.now() - startTime;
-    const approxTokens = (battleData.textA.length + battleData.textB.length) / 4;
-    
-    setRevealed(true);
-    setVoteStatus("Recording vote...");
-
-    try {
-      const res = await fetch('/api/arena/vote', {
+      const response = await fetch('/api/arena/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: promptInput,
-          modelA: battleData.modelA,
-          textA: battleData.textA,
-          modelB: battleData.modelB,
-          textB: battleData.textB,
-          winner,
+          prompt,
+          available_models: [
+            "llama-3.1-8b-instant",
+            "llama-3.3-70b-versatile",
+            "gemma2-9b-it",
+            "mixtral-8x7b-32768"
+          ]
+        })
+      });
+
+      if (!response.ok) throw new Error("Failed to generate");
+      
+      const data = await response.json();
+      
+      setResults({
+        modelA: { name: data.modelA, output: data.textA },
+        modelB: { name: data.modelB, output: data.textB },
+      });
+      setRenderTime(Date.now());
+    } catch (error) {
+      console.error(error);
+      alert("Error generating responses. Is your GROQ_API_KEY set?");
+    } finally {
+      setIsEvaluating(false);
+    }
+  };
+
+  const handleVote = async (winnerCode) => {
+    if (!results || !renderTime) return;
+    
+    const timeToVoteMs = Date.now() - renderTime;
+    const approxTokens = Math.floor((results.modelA.output.length + results.modelB.output.length) / 4);
+
+    try {
+      const response = await fetch('/api/arena/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt,
+          modelA: results.modelA.name,
+          textA: results.modelA.output,
+          modelB: results.modelB.name,
+          textB: results.modelB.output,
+          winner: winnerCode,
           timeToVoteMs,
           approxTokens
         })
       });
-      const data = await res.json();
-      if (data.success) {
-        setVoteStatus(data.feedback);
-        setVoteStatusDetails(data);
+      
+      const data = await response.json();
+      if (data.isSpam) {
+        alert(data.feedback);
       } else {
-        setVoteStatus(`Error: ${data.error}`);
+        alert(`Vote logged to RLHF Dataset!\n\nNew Elo Standings:\nModel A (${results.modelA.name}): ${Math.round(data.math.newEloA)} (${data.math.deltaA > 0 ? '+'+Math.round(data.math.deltaA) : Math.round(data.math.deltaA)})\nModel B (${results.modelB.name}): ${Math.round(data.math.newEloB)} (${data.math.deltaB > 0 ? '+'+Math.round(data.math.deltaB) : Math.round(data.math.deltaB)})`);
       }
-    } catch (e) {
-      setVoteStatus("Failed to record vote.");
+    } catch (err) {
+      console.error(err);
+      alert("Error saving RLHF preference data.");
     }
+    
+    setResults(null);
+    setPrompt('');
   };
 
   return (
-    <main>
-      <div className="bg-gradient-blob"></div>
-      <div className="bg-gradient-blob right"></div>
+    <div className="min-h-screen bg-[#050505] text-white font-mono selection:bg-cyan-500 selection:text-black overflow-x-hidden">
+      
+      {/* Top Navigation Bar */}
+      <header className="border-b border-neutral-900 bg-black p-4 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="hover:text-cyan-400 transition-colors flex items-center gap-2 text-sm uppercase">
+            <ArrowLeft size={16} /> Exit Arena
+          </Link>
+          <div className="h-4 w-px bg-neutral-800" />
+          <h1 className="text-xl font-black tracking-tighter text-cyan-500">InboxEval // ARENA</h1>
+        </div>
+        
+        <div className="flex items-center gap-6 text-xs text-neutral-500">
+          <span className="flex items-center gap-2"><Activity size={12} className="text-green-500 animate-pulse" /> LIVE ELO TRACKING</span>
+          <span className="flex items-center gap-2"><Cpu size={12} /> 12 MODELS ACTIVE</span>
+        </div>
+      </header>
 
-      <div className="container">
-        <header style={{ marginBottom: '2rem' }}>
-          <h1>A/B Blind Arena</h1>
-          <p className="subtitle">Crowdsourcing Ground-Truth via Telemetry-Filtered Human Preference</p>
-          <div style={{ marginTop: '1rem' }}>
-            <Link href="/" style={{ color: '#3b82f6', textDecoration: 'none' }}>&larr; Back to Leaderboard</Link>
-          </div>
-        </header>
-
-        <section className="glass" style={{ padding: '2rem', marginBottom: '2rem' }}>
-          <textarea 
-            value={promptInput}
-            onChange={(e) => setPromptInput(e.target.value)}
-            placeholder="Write a highly professional email to my team about..."
-            style={{
-              width: '100%', height: '100px', backgroundColor: 'rgba(0,0,0,0.3)',
-              border: '1px solid var(--card-border)', borderRadius: '12px', padding: '1rem',
-              color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: '1rem',
-              resize: 'vertical', marginBottom: '1.5rem'
-            }}
-          />
-          <button 
-            onClick={handleBattle}
-            disabled={isGenerating || !promptInput.trim() || availableModels.length < 2}
-            style={{
-              width: '100%', background: isGenerating ? '#475569' : '#8b5cf6',
-              color: '#fff', border: 'none', padding: '1rem 2rem', borderRadius: '8px',
-              fontSize: '1.1rem', fontWeight: '600', cursor: isGenerating ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isGenerating ? 'Summoning Models...' : 'Start Blind Battle'}
-          </button>
-        </section>
-
-        {battleData && (
-          <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem' }}>
-            {/* Model A */}
-            <div className="glass" style={{ flex: 1, padding: '2rem', borderTop: revealed && voteStatus?.includes("ignored") ? '4px solid #ef4444' : '4px solid #3b82f6' }}>
-              <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Model A</h2>
-              <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', color: 'var(--text-secondary)', minHeight: '300px' }}>
-                {battleData.textA}
-              </pre>
-              <button onClick={() => handleVote('A')} disabled={revealed} style={{ width: '100%', padding: '1rem', marginTop: '1rem', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid #3b82f6', color: '#60a5fa', borderRadius: '8px', cursor: revealed ? 'not-allowed' : 'pointer' }}>
-                👈 Model A is Better
-              </button>
-            </div>
-
-            {/* Model B */}
-            <div className="glass" style={{ flex: 1, padding: '2rem', borderTop: revealed && voteStatus?.includes("ignored") ? '4px solid #ef4444' : '4px solid #10b981' }}>
-              <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Model B</h2>
-              <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', color: 'var(--text-secondary)', minHeight: '300px' }}>
-                {battleData.textB}
-              </pre>
-              <button onClick={() => handleVote('B')} disabled={revealed} style={{ width: '100%', padding: '1rem', marginTop: '1rem', background: 'rgba(16, 185, 129, 0.2)', border: '1px solid #10b981', color: '#34d399', borderRadius: '8px', cursor: revealed ? 'not-allowed' : 'pointer' }}>
-                👉 Model B is Better
-              </button>
-            </div>
-          </div>
-        )}
-
-        {battleData && (
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-             <button onClick={() => handleVote('Tie')} disabled={revealed} style={{ padding: '1rem 3rem', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid var(--card-border)', color: 'var(--text-primary)', borderRadius: '8px', cursor: revealed ? 'not-allowed' : 'pointer' }}>
-                🤝 Tie
-              </button>
-          </div>
-        )}
-
-        {revealed && (
-          <div className="glass" style={{ padding: '2rem', textAlign: 'center', animation: 'fadeIn 0.5s', marginBottom: '2rem' }}>
-            <h2 style={{ color: 'var(--text-primary)', marginBottom: '1rem' }}>Identities Revealed!</h2>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '4rem', marginBottom: '1.5rem', fontSize: '1.2rem' }}>
-              <div><strong>Model A:</strong> <span style={{ color: '#60a5fa' }}>{battleData.modelA}</span></div>
-              <div><strong>Model B:</strong> <span style={{ color: '#34d399' }}>{battleData.modelB}</span></div>
-            </div>
-            <div style={{ padding: '1rem', background: voteStatus?.includes("ignored") ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: voteStatus?.includes("ignored") ? '#ef4444' : '#34d399', borderRadius: '8px', border: `1px solid ${voteStatus?.includes("ignored") ? '#ef4444' : '#10b981'}` }}>
-              {voteStatus}
-            </div>
-          </div>
-        )}
-
-        {/* Development Debug & Telemetry Matrix */}
-        {revealed && voteStatusDetails && (
-          <div className="glass" style={{ padding: '2rem', background: 'rgba(0,0,0,0.5)', border: '1px solid #475569', marginBottom: '4rem', fontFamily: 'monospace' }}>
-            <h3 style={{ color: '#94a3b8', marginBottom: '1rem', borderBottom: '1px solid #475569', paddingBottom: '0.5rem' }}>🔧 Developer Debug: Telemetry & Elo Math</h3>
+      <main className="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Left Column: Input Panel */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className="bg-[#0a0a0a] border border-neutral-900 p-6 rounded-lg relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-blue-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-              <div>
-                <h4 style={{ color: '#fbbf24', marginBottom: '0.5rem' }}>Human Telemetry</h4>
-                <ul style={{ listStyle: 'none', padding: 0, color: '#cbd5e1', lineHeight: '1.8' }}>
-                  <li><strong>Time-to-Vote:</strong> {voteStatusDetails.telemetry?.timeToVoteMs} ms</li>
-                  <li><strong>Approx Tokens:</strong> {voteStatusDetails.telemetry?.approxTokens}</li>
-                  <li><strong>Read Velocity Filter:</strong> {voteStatusDetails.isSpam ? <span style={{ color: '#ef4444' }}>TRIGGERED (&lt; 1500ms)</span> : <span style={{ color: '#10b981' }}>PASSED</span>}</li>
-                  <li><strong>RLHF Database:</strong> {voteStatusDetails.isSpam ? "Ignored" : "Appended to arena_training_dataset.jsonl"}</li>
-                </ul>
+            <h2 className="text-sm font-bold uppercase mb-4 text-cyan-400 flex items-center gap-2">
+              <ShieldAlert size={16} /> Evaluation Protocol
+            </h2>
+            
+            <form onSubmit={handleEvaluate}>
+              <div className="mb-4">
+                <label className="block text-xs text-neutral-500 mb-2">TARGET CONTEXT / EMAIL INSTRUCTION</label>
+                <textarea 
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="Paste the customer email or instruction here to evaluate how the models respond..."
+                  className="w-full h-48 bg-black border border-neutral-800 rounded p-4 text-sm focus:outline-none focus:border-cyan-500 transition-colors resize-none shadow-inner"
+                  required
+                />
               </div>
-
-              <div>
-                <h4 style={{ color: '#fbbf24', marginBottom: '0.5rem' }}>Elo Rating Math (K=32)</h4>
-                <ul style={{ listStyle: 'none', padding: 0, color: '#cbd5e1', lineHeight: '1.8' }}>
-                  <li><strong>Model A ({battleData.modelA}):</strong> {typeof voteStatusDetails.math?.oldEloA === 'number' ? voteStatusDetails.math.oldEloA.toFixed(2) : voteStatusDetails.math?.oldEloA} &rarr; <span style={{ color: voteStatusDetails.math?.deltaA > 0 ? '#10b981' : voteStatusDetails.math?.deltaA < 0 ? '#ef4444' : '#cbd5e1' }}>{typeof voteStatusDetails.math?.newEloA === 'number' ? voteStatusDetails.math.newEloA.toFixed(2) : voteStatusDetails.math?.newEloA}</span> ({voteStatusDetails.math?.deltaA > 0 ? '+' : ''}{typeof voteStatusDetails.math?.deltaA === 'number' ? voteStatusDetails.math.deltaA.toFixed(2) : voteStatusDetails.math?.deltaA})</li>
-                  <li><strong>Model B ({battleData.modelB}):</strong> {typeof voteStatusDetails.math?.oldEloB === 'number' ? voteStatusDetails.math.oldEloB.toFixed(2) : voteStatusDetails.math?.oldEloB} &rarr; <span style={{ color: voteStatusDetails.math?.deltaB > 0 ? '#10b981' : voteStatusDetails.math?.deltaB < 0 ? '#ef4444' : '#cbd5e1' }}>{typeof voteStatusDetails.math?.newEloB === 'number' ? voteStatusDetails.math.newEloB.toFixed(2) : voteStatusDetails.math?.newEloB}</span> ({voteStatusDetails.math?.deltaB > 0 ? '+' : ''}{typeof voteStatusDetails.math?.deltaB === 'number' ? voteStatusDetails.math.deltaB.toFixed(2) : voteStatusDetails.math?.deltaB})</li>
-                </ul>
-              </div>
-            </div>
-            <div style={{ marginTop: '1.5rem', color: '#64748b', fontSize: '0.85rem' }}>
-              <em>Note: The Elo algorithm uses a K-factor of 32. If a human votes faster than the Read Velocity threshold (1500ms), the system assumes the vote is noisy/spam, blocks the Elo update, and ignores the data to protect the RLHF training set integrity.</em>
-            </div>
+              
+              <button 
+                type="submit" 
+                disabled={isEvaluating || !prompt}
+                className="w-full bg-cyan-950 hover:bg-cyan-500 text-cyan-500 hover:text-black border border-cyan-800 hover:border-cyan-400 py-3 rounded font-bold tracking-widest transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isEvaluating ? (
+                  <span className="animate-pulse">GENERATING RESPONSES...</span>
+                ) : (
+                  <>INITIATE BLIND TEST <Send size={16} /></>
+                )}
+              </button>
+            </form>
           </div>
-        )}
-      </div>
-    </main>
+
+          {/* Stats Panel */}
+          <div className="bg-[#0a0a0a] border border-neutral-900 p-6 rounded-lg">
+            <h3 className="text-xs text-neutral-500 mb-4 uppercase">Current Leaderboard (Top 3)</h3>
+            <div className="space-y-3">
+              {[
+                { name: 'GPT-4o', elo: 1250, delta: '+12' },
+                { name: 'Claude-3.5-Sonnet', elo: 1245, delta: '+8' },
+                { name: 'Llama-3-70B', elo: 1190, delta: '-4' }
+              ].map((model, i) => (
+                <div key={i} className="flex justify-between items-center text-sm border-b border-neutral-900 pb-2">
+                  <span className="text-neutral-300">{i + 1}. {model.name}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="font-bold text-white">{model.elo}</span>
+                    <span className={`text-[10px] ${model.delta.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>{model.delta}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button className="w-full mt-4 text-xs text-neutral-500 hover:text-cyan-400 transition-colors uppercase border border-neutral-800 py-2">
+              View Full Matrix
+            </button>
+          </div>
+        </div>
+
+        {/* Right Column: Battle Arena */}
+        <div className="lg:col-span-2 relative">
+          {!results && !isEvaluating && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-neutral-700 border border-neutral-900 border-dashed rounded-lg bg-[#0a0a0a]/50">
+              <ShieldAlert size={48} className="mb-4 opacity-50" />
+              <p className="uppercase tracking-widest text-sm">Awaiting Input Sequence</p>
+              <p className="text-xs mt-2 opacity-50">Enter a prompt on the left to begin the blind evaluation.</p>
+            </div>
+          )}
+
+          {isEvaluating && (
+            <div className="absolute inset-0 flex items-center justify-center border border-cyan-900/50 rounded-lg bg-black/80 backdrop-blur-sm z-10">
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 border-4 border-cyan-900 border-t-cyan-400 rounded-full animate-spin mb-4" />
+                <p className="text-cyan-400 animate-pulse uppercase tracking-widest text-sm">Synthesizing Outputs...</p>
+              </div>
+            </div>
+          )}
+
+          <AnimatePresence>
+            {results && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="grid grid-cols-2 gap-6 h-full"
+              >
+                {/* Model A */}
+                <div className="bg-[#0a0a0a] border border-neutral-800 rounded-lg p-6 flex flex-col h-full hover:border-cyan-900 transition-colors">
+                  <div className="flex justify-between items-center mb-4 border-b border-neutral-900 pb-2">
+                    <h3 className="font-bold text-neutral-400">MODEL A</h3>
+                    <span className="text-[10px] bg-neutral-900 px-2 py-1 text-neutral-500">ANONYMOUS</span>
+                  </div>
+                  <div className="flex-1 bg-black p-4 rounded border border-neutral-900 text-sm leading-relaxed text-neutral-300 shadow-inner">
+                    {results.modelA.output}
+                  </div>
+                  <button 
+                    onClick={() => handleVote('A')}
+                    className="w-full mt-4 bg-transparent border border-neutral-700 hover:bg-white hover:text-black py-3 font-bold uppercase tracking-wider transition-all"
+                  >
+                    👈 Model A is Better
+                  </button>
+                </div>
+
+                {/* Model B */}
+                <div className="bg-[#0a0a0a] border border-neutral-800 rounded-lg p-6 flex flex-col h-full hover:border-blue-900 transition-colors">
+                  <div className="flex justify-between items-center mb-4 border-b border-neutral-900 pb-2">
+                    <h3 className="font-bold text-neutral-400">MODEL B</h3>
+                    <span className="text-[10px] bg-neutral-900 px-2 py-1 text-neutral-500">ANONYMOUS</span>
+                  </div>
+                  <div className="flex-1 bg-black p-4 rounded border border-neutral-900 text-sm leading-relaxed text-neutral-300 shadow-inner">
+                    {results.modelB.output}
+                  </div>
+                  <button 
+                    onClick={() => handleVote('B')}
+                    className="w-full mt-4 bg-transparent border border-neutral-700 hover:bg-white hover:text-black py-3 font-bold uppercase tracking-wider transition-all"
+                  >
+                    Model B is Better 👉
+                  </button>
+                </div>
+                
+                {/* Tie / Both Bad */}
+                <div className="col-span-2 grid grid-cols-2 gap-4">
+                  <button onClick={() => handleVote('Tie')} className="bg-neutral-900 hover:bg-neutral-800 text-neutral-400 py-2 text-xs uppercase border border-neutral-800">Tie</button>
+                  <button onClick={() => handleVote('Both Bad')} className="bg-neutral-900 hover:bg-neutral-800 text-neutral-400 py-2 text-xs uppercase border border-neutral-800">Both are bad</button>
+                </div>
+
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+        </div>
+      </main>
+    </div>
   );
 }

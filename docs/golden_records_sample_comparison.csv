@@ -1,0 +1,271 @@
+batch_type,golden_record_pk,raw_email_id,target_persona,original_email_text,evolved_super_prompt,tone_score,conciseness_score,accuracy_score,created_at
+Early Baseline (10-Gen Fixed),1,201,A busy office worker or manager who needs to coordinate tasks with colleagues.,Are we going to inspect tomorrow?,"Draft an email to confirm if the inspection is scheduled for the next day. Keep the tone neutral and direct, as if you are communicating with a peer in a semi-professional setting. Avoid extraneous details and pleasantries, focusing solely on verifying the inspection date. Do not include any unnecessary details or greetings.",6.5,9.4,9.5,2026-08-07 12:11:29
+Early Baseline (10-Gen Fixed),2,202,"Phillip, a colleague in a corporate setting","mac, We will be there on the 9th and I will bring the paperwork. phillip","Write a quick message mac We will be there on the 9th and I'll bring the paperwork. The intent is to inform about an upcoming meeting. The tone should be neutral, reflecting a peer-to-peer relationship with casual formality. Key points include confirming attendance on the 9th and bringing necessary paperwork. Use a casual and direct tone, avoiding formalities and unnecessary elements such as greetings or sign-offs. Ensure the message is brief and to-the-point, using informal abbreviations where appropriate. Avoid adding extra phrases like 'Just wanted to let you know' or 'I'll have the paperwork with me' to maintain brevity.",6.6,9.2,9.5,2026-08-07 12:12:13
+Early Baseline (10-Gen Fixed),3,230,A project manager or team lead in an energy or finance company,The file is updated and renamed as Gas Basis Mar 00.,"Write an email To a peer in the finance department, inform them that the file 'Gas Basis Mar 00' has been updated. Keep the tone neutral and professional, the message brief and to the point. Avoid formal greetings and closings, and focus solely on delivering the information directly without adding any instructions or extra words. Ensure the update is framed with directness and immediacy, reflecting a professional tone and factual precision, without implying completion or using words like 'finalized'.",6.6,9.3,9.5,2026-08-07 12:14:02
+Early Baseline (10-Gen Fixed),4,188,Corporate Manager,"Re: SW Gas  
+
+Mike McDonald and I met with SW Gas this morning.  They were polite regarding 
+asset management and procurement function outsourcing and are willing to 
+listen to a proposal.  However, they are very interested in weather hedges to 
+protect throughput related earnings.  We are pursuing a confidentiality 
+agreement with them to facilitate the sharing of information that will enable 
+us to develop proposals.  Our pitch was based upon enhancing shareholder 
+value by outsourcing a non-profit and costly function (procurement) and by 
+reducing the volatility of their earnings by managing throughput via a 
+weather product.
+
+As to your other question.  We have yet to identify or pursue other 
+candidates; however, Mike McDonald and I are developing a coverage strategy 
+to ensure that we meet with all potential entities and investigate our 
+opportunities.  We met with 8 entities this week (7 Municipals and SWG) as we 
+implement our strategy in California.
+
+Are there any entities that you think would be interested in an asset 
+management deal that we should approach?  Otherwise, we intend to 
+systematically identify and work through all the candidates. 
+
+Laird","Write an email Demanding a refund for a defective product with product ID 123456. Use professional language and show impatience through brevity. Address the recipient directly to convey assertiveness and avoid overly formal phrases like 'To Whom It May Concern'. Avoid overly aggressive phrases and unnecessary flattery. Include corporate buzzwords and specify the product ID is 123456. Emphasize the urgency of resolving this issue promptly, and provide specific details about how the defect impacts strategic objectives. Do not include a subject line or assume a specific delivery date.",6.5,9.4,9.5,2026-08-07 12:16:48
+Early Baseline (10-Gen Fixed),5,215,Manager from Product Development,"Maps
+
+As requested by John, here's the map and the forecast...
+Call me if you have any questions (403) 974-6756.","Write an email to a customer service representative regarding a refund for a 'SmartWatch Pro' purchased on December 15, 2022, with order number 123456789. The watch was returned because the touchscreen malfunctioned, causing it to freeze frequently. The email should demand a refund promptly and firmly, emphasizing the urgency and your entitlement to a refund according to company policy. Start with a direct greeting and conclude with a polite closing, restating the purchase date, the specific issue with the touchscreen, and the order number. Mention that all supporting documents have been attached and are ready for review. Emphasize the need for a resolution within 10 business days and indicate that no prior attempts at resolving the issue internally were made before requesting a refund. Maintain a professional tone throughout the email.",6.5,9.4,9.5,2026-08-07 12:19:25
+Early Baseline (10-Gen Fixed),6,213,Corporate professional,"Maps
+
+As requested by John, here's the map and the forecast...
+Call me if you have any questions (403) 974-6756.","Write an email to the technical support team regarding the urgent retrieval of key documents: 'Project Alpha Final Report' and 'Beta Project Milestone Data'. These documents are crucial for ongoing projects and were deleted from a shared drive. Begin the email with a polite greeting, maintain a professional tone, and stress the urgency of retrieving these documents. Conclude with a formal sign-off and include your full name. Ensure the email is clear, concise, and professionally written, without unnecessary details like the exact date of deletion unless it is pertinent to the retrieval process.",6.5,9.4,9.5,2026-08-07 12:23:12
+Early Baseline (10-Gen Fixed),7,176,"A senior sales manager in a large retail corporation, likely with 5+ years of experience in sales leadership and strong communication skills.","Transport p&l
+
+Phillip--
+I've noticed one thing on your intra-month transport p&l that looks strange 
+to me.  Remember that I do not know the Northwest at all, so this may not be 
+an issue, but I'll point it out and let you decide.  Let me know if this is 
+O.K. as is, so I'll know to ignore it in the future.  Also, if you want me to 
+get with Kim and the Sitara people to change the mapping, let me know and 
+I'll take care of it..
+
+On PG&E NW, it appears that PGEN Kingsgate is mapped to a Malin Citygate 
+curve instead of a Kingsgate curve, resulting in a total transport loss of 
+$235,019.   
+(If the mapping were changed, it should just reallocate p&l--not change your 
+overall p&l.)  Maybe there is a reason for this mapping or maybe it affects 
+something else somewhere that I am not seeing, but anyway, here are the Deal 
+#'s, paths and p&l impacts of each.
+  139195  From Kingsgate to Malin     ($182,030)
+  139196 From Kingsgate to PGEN/Tuscarora   ($    4,024)
+  139197  From Kingsgate to PGEN Malin    ($    8,271)
+  231321  From Kingsgate to Malin     ($  38,705)
+  153771 From Kingsgate to Stanfield    ($     1,988)
+ Suggested fix:  Change PGEN Kingsgate mapping from GDP-Malin Citygate to 
+GDP-Kingsgate.
+
+ Clay Basin storage--this is really a FYI more than anything else--I see five 
+different tickets in Sitara for Clay Basin activity--one appears to be for 
+withdrawals and the other four are injections.  Clay Basin is valued as a 
+Questar curve, which is substantially below NWPL points.  What this means is 
+that any time you are injecting gas, these tickets will show transport 
+losses; each time you are withdrawing, you will show big gains on transport.  
+I'm not sure of the best way to handle this since we don't really have a 
+systematic Sitara way of handling storage deals.  In an ideal world, it seems 
+that you would map it the way you have it today, but during injection times, 
+the transport cost would pass through as storage costs.  Anyway, here's the 
+detail on the tickets just for your info, plus I noticed three days where it 
+appears we were both withdrawing and injecting from Clay Basin.  There may be 
+an operational reason why this occurred that I'm not aware of, and the dollar 
+impact is very small, but I thought I'd bring it to your attention just in 
+case there's something you want to do about it.  The columns below show the 
+volumes under each ticket and the p&L associated with each. 
+ 
+Deal #  251327                  159540                   265229         
+106300   201756
+P&L  $29,503                ($15,960)                ($3,199)          
+($2,769)   ($273)
+Rec:   Ques/Clay Basin/0184   NWPL/Opal 543  NWPL/Opal   Sumas      NWPL/S of 
+Gr Rvr
+Del:   NWPL/S of Green River/Clay   Ques/Clay Basin/0852   Ques/Clay 
+Basin/0852   Ques/Clay Basin    Ques/Clay Basin
+1        329       8,738
+2     1,500
+3         2,974    11,362
+4         6,741    12,349       1,439
+5       19,052          3,183
+9            333
+13  30,863       2,680
+14  30,451    
+15  35,226    
+16         6,979              235 
+17  17,464     
+18    9,294     
+20  10,796          771
+21  17,930     
+22  10,667     
+23       14,415          9,076
+25  23,934       8,695
+26     3,284     
+27         1,976
+28     1,751     
+29     1,591     
+30  20,242","Write an email to the customer service department demanding a full refund for a leather briefcase received on March 15th in a damaged condition. The product has visible scratches and a malfunctioning clasp, failing to meet the expected quality and utility standards. Begin with 'Dear', keep the tone professional yet resolute, and emphasize the necessity for immediate action. Repeat phrases such as 'full refund' and 'urgent resolution required'. Include order number 123456789 and state that you are prepared to provide photographic evidence of the damage. Ensure the tone remains assertive without crossing into aggression, and clearly communicate your expectation of swift action, with no tolerance for further delays. Mention that initial attempts to resolve this issue through phone calls were unsuccessful, and now demand a quick resolution. Convey anticipation for a timely response and imply consideration of alternative actions if unresolved. Avoid being overly harsh and ensure the closing is courteous.",6.5,9.4,9.5,2026-08-07 12:31:17
+Early Baseline (10-Gen Fixed),8,225,A senior business development manager with a professional and courteous tone,"Instructions for FERC Meetings
+
+ 		
+
+
+Here is the URL address for the Capitol Connection.  You should be able to simply click on this URL below and it should come up for you.  (This is assuming your computer is configured for Real Video/Audio).  We will pay for the annual contract and bill your cost centers.
+
+You are connected for tomorrow as long as you have access to Real Video.
+
+http://www.capitolconnection.gmu.edu/
+
+Instructions:
+
+Once into the Capitol Connection sight, click on FERC
+Click on first line (either ""click here"" or box)
+Dialogue box should require:  user name:  enron-y
+			           password:  fercnow
+
+Real Player will connect you to the meeting
+
+Expand your screen as you wish for easier viewing
+
+Adjust your sound as you wish","Write an urgent email to TechSolutions Inc., urgently requesting help to recover important business documents accidentally erased on March 15th. Start the email with 'Dear TechSolutions Team,' and stress the importance of these documents to several ongoing projects. The tone should be both professional and warm, such as beginning with 'I hope this message finds you well.' Mention that you have tried to recover the documents using standard backup methods without success. Ask for immediate recovery of the files, a confirmation of receipt, and an action plan. Highlight the need for quick action due to the critical nature of the documents. Be sure to include specific details about the documents, such as their relevance to ongoing projects, and any associated deadlines. Conclude with a formal sign-off and your name.",6.5,9.4,9.5,2026-08-07 12:37:47
+Early Baseline (10-Gen Fixed),9,208,A professional business development manager with a polite and courteous tone,"Western Strategy Briefing Materials
+
+Slides from this week's strategy session are attached:","Write an urgent email to IT support Regarding a critical issue with server logs on a Windows Server 2019 that ceased updating at 16:00 UTC yesterday. Indicate that the log management tool has malfunctioned and that preliminary checks such as restarting the service and verifying file permissions have not resolved the problem. Maintain a professional tone that is slightly less formal and more direct than typical corporate communication, ensuring the urgency is clear yet concise. Provide specific details about the troubleshooting steps taken, including any particular errors encountered. Conclude with your name and express gratitude for their swift assistance. The intent is to request information and solutions in a polite manner, reflecting a customer-to-support dynamic, while maintaining a detailed and patient approach typical of someone familiar with technical terms.",6.5,9.4,9.5,2026-08-07 12:38:02
+Early Baseline (10-Gen Fixed),10,231,A stressed IT Manager at a software development company,"Western Strategy Summaries
+
+Slides from yesterday's meeting are attached:","Draft an email to a company demanding a refund for a premium leather briefcase that was not delivered; instead, a subpar artificial bag was received. Start the email with 'Dear Sir/Madam,' and clearly express dissatisfaction with the discrepancy between the advertised product and what was actually received. The order was placed on March 15th, and the incorrect item was delivered on March 20th. Insist on a full refund within two days, emphasizing the misleading product description and the significant difference between the promised leather briefcase and the subpar artificial bag. Repeat the key point about the misleading product description and the demand for a refund to reinforce the urgency and seriousness of the request. Maintain a professional yet angry tone, using strong language to convey the frustration and the intent to seek resolution.",6.5,9.4,9.5,2026-08-07 12:41:31
+Optimized Turbo (Batch + Adaptive Stop),1,201,A busy office worker or manager who needs to coordinate tasks with colleagues.,Are we going to inspect tomorrow?,"Draft an email to confirm if the inspection is scheduled for the next day. Keep the tone neutral and direct, as if you are communicating with a peer in a semi-professional setting. Avoid extraneous details and pleasantries, focusing solely on verifying the inspection date. Do not include any unnecessary details or greetings.",6.5,9.4,9.5,2026-08-07 12:11:29
+Optimized Turbo (Batch + Adaptive Stop),2,202,"Phillip, a colleague in a corporate setting","mac, We will be there on the 9th and I will bring the paperwork. phillip","Write a quick message mac We will be there on the 9th and I'll bring the paperwork. The intent is to inform about an upcoming meeting. The tone should be neutral, reflecting a peer-to-peer relationship with casual formality. Key points include confirming attendance on the 9th and bringing necessary paperwork. Use a casual and direct tone, avoiding formalities and unnecessary elements such as greetings or sign-offs. Ensure the message is brief and to-the-point, using informal abbreviations where appropriate. Avoid adding extra phrases like 'Just wanted to let you know' or 'I'll have the paperwork with me' to maintain brevity.",6.6,9.2,9.5,2026-08-07 12:12:13
+Optimized Turbo (Batch + Adaptive Stop),3,230,A project manager or team lead in an energy or finance company,The file is updated and renamed as Gas Basis Mar 00.,"Write an email To a peer in the finance department, inform them that the file 'Gas Basis Mar 00' has been updated. Keep the tone neutral and professional, the message brief and to the point. Avoid formal greetings and closings, and focus solely on delivering the information directly without adding any instructions or extra words. Ensure the update is framed with directness and immediacy, reflecting a professional tone and factual precision, without implying completion or using words like 'finalized'.",6.6,9.3,9.5,2026-08-07 12:14:02
+Optimized Turbo (Batch + Adaptive Stop),4,188,Corporate Manager,"Re: SW Gas  
+
+Mike McDonald and I met with SW Gas this morning.  They were polite regarding 
+asset management and procurement function outsourcing and are willing to 
+listen to a proposal.  However, they are very interested in weather hedges to 
+protect throughput related earnings.  We are pursuing a confidentiality 
+agreement with them to facilitate the sharing of information that will enable 
+us to develop proposals.  Our pitch was based upon enhancing shareholder 
+value by outsourcing a non-profit and costly function (procurement) and by 
+reducing the volatility of their earnings by managing throughput via a 
+weather product.
+
+As to your other question.  We have yet to identify or pursue other 
+candidates; however, Mike McDonald and I are developing a coverage strategy 
+to ensure that we meet with all potential entities and investigate our 
+opportunities.  We met with 8 entities this week (7 Municipals and SWG) as we 
+implement our strategy in California.
+
+Are there any entities that you think would be interested in an asset 
+management deal that we should approach?  Otherwise, we intend to 
+systematically identify and work through all the candidates. 
+
+Laird","Write an email Demanding a refund for a defective product with product ID 123456. Use professional language and show impatience through brevity. Address the recipient directly to convey assertiveness and avoid overly formal phrases like 'To Whom It May Concern'. Avoid overly aggressive phrases and unnecessary flattery. Include corporate buzzwords and specify the product ID is 123456. Emphasize the urgency of resolving this issue promptly, and provide specific details about how the defect impacts strategic objectives. Do not include a subject line or assume a specific delivery date.",6.5,9.4,9.5,2026-08-07 12:16:48
+Optimized Turbo (Batch + Adaptive Stop),5,215,Manager from Product Development,"Maps
+
+As requested by John, here's the map and the forecast...
+Call me if you have any questions (403) 974-6756.","Write an email to a customer service representative regarding a refund for a 'SmartWatch Pro' purchased on December 15, 2022, with order number 123456789. The watch was returned because the touchscreen malfunctioned, causing it to freeze frequently. The email should demand a refund promptly and firmly, emphasizing the urgency and your entitlement to a refund according to company policy. Start with a direct greeting and conclude with a polite closing, restating the purchase date, the specific issue with the touchscreen, and the order number. Mention that all supporting documents have been attached and are ready for review. Emphasize the need for a resolution within 10 business days and indicate that no prior attempts at resolving the issue internally were made before requesting a refund. Maintain a professional tone throughout the email.",6.5,9.4,9.5,2026-08-07 12:19:25
+Optimized Turbo (Batch + Adaptive Stop),6,213,Corporate professional,"Maps
+
+As requested by John, here's the map and the forecast...
+Call me if you have any questions (403) 974-6756.","Write an email to the technical support team regarding the urgent retrieval of key documents: 'Project Alpha Final Report' and 'Beta Project Milestone Data'. These documents are crucial for ongoing projects and were deleted from a shared drive. Begin the email with a polite greeting, maintain a professional tone, and stress the urgency of retrieving these documents. Conclude with a formal sign-off and include your full name. Ensure the email is clear, concise, and professionally written, without unnecessary details like the exact date of deletion unless it is pertinent to the retrieval process.",6.5,9.4,9.5,2026-08-07 12:23:12
+Optimized Turbo (Batch + Adaptive Stop),7,176,"A senior sales manager in a large retail corporation, likely with 5+ years of experience in sales leadership and strong communication skills.","Transport p&l
+
+Phillip--
+I've noticed one thing on your intra-month transport p&l that looks strange 
+to me.  Remember that I do not know the Northwest at all, so this may not be 
+an issue, but I'll point it out and let you decide.  Let me know if this is 
+O.K. as is, so I'll know to ignore it in the future.  Also, if you want me to 
+get with Kim and the Sitara people to change the mapping, let me know and 
+I'll take care of it..
+
+On PG&E NW, it appears that PGEN Kingsgate is mapped to a Malin Citygate 
+curve instead of a Kingsgate curve, resulting in a total transport loss of 
+$235,019.   
+(If the mapping were changed, it should just reallocate p&l--not change your 
+overall p&l.)  Maybe there is a reason for this mapping or maybe it affects 
+something else somewhere that I am not seeing, but anyway, here are the Deal 
+#'s, paths and p&l impacts of each.
+  139195  From Kingsgate to Malin     ($182,030)
+  139196 From Kingsgate to PGEN/Tuscarora   ($    4,024)
+  139197  From Kingsgate to PGEN Malin    ($    8,271)
+  231321  From Kingsgate to Malin     ($  38,705)
+  153771 From Kingsgate to Stanfield    ($     1,988)
+ Suggested fix:  Change PGEN Kingsgate mapping from GDP-Malin Citygate to 
+GDP-Kingsgate.
+
+ Clay Basin storage--this is really a FYI more than anything else--I see five 
+different tickets in Sitara for Clay Basin activity--one appears to be for 
+withdrawals and the other four are injections.  Clay Basin is valued as a 
+Questar curve, which is substantially below NWPL points.  What this means is 
+that any time you are injecting gas, these tickets will show transport 
+losses; each time you are withdrawing, you will show big gains on transport.  
+I'm not sure of the best way to handle this since we don't really have a 
+systematic Sitara way of handling storage deals.  In an ideal world, it seems 
+that you would map it the way you have it today, but during injection times, 
+the transport cost would pass through as storage costs.  Anyway, here's the 
+detail on the tickets just for your info, plus I noticed three days where it 
+appears we were both withdrawing and injecting from Clay Basin.  There may be 
+an operational reason why this occurred that I'm not aware of, and the dollar 
+impact is very small, but I thought I'd bring it to your attention just in 
+case there's something you want to do about it.  The columns below show the 
+volumes under each ticket and the p&L associated with each. 
+ 
+Deal #  251327                  159540                   265229         
+106300   201756
+P&L  $29,503                ($15,960)                ($3,199)          
+($2,769)   ($273)
+Rec:   Ques/Clay Basin/0184   NWPL/Opal 543  NWPL/Opal   Sumas      NWPL/S of 
+Gr Rvr
+Del:   NWPL/S of Green River/Clay   Ques/Clay Basin/0852   Ques/Clay 
+Basin/0852   Ques/Clay Basin    Ques/Clay Basin
+1        329       8,738
+2     1,500
+3         2,974    11,362
+4         6,741    12,349       1,439
+5       19,052          3,183
+9            333
+13  30,863       2,680
+14  30,451    
+15  35,226    
+16         6,979              235 
+17  17,464     
+18    9,294     
+20  10,796          771
+21  17,930     
+22  10,667     
+23       14,415          9,076
+25  23,934       8,695
+26     3,284     
+27         1,976
+28     1,751     
+29     1,591     
+30  20,242","Write an email to the customer service department demanding a full refund for a leather briefcase received on March 15th in a damaged condition. The product has visible scratches and a malfunctioning clasp, failing to meet the expected quality and utility standards. Begin with 'Dear', keep the tone professional yet resolute, and emphasize the necessity for immediate action. Repeat phrases such as 'full refund' and 'urgent resolution required'. Include order number 123456789 and state that you are prepared to provide photographic evidence of the damage. Ensure the tone remains assertive without crossing into aggression, and clearly communicate your expectation of swift action, with no tolerance for further delays. Mention that initial attempts to resolve this issue through phone calls were unsuccessful, and now demand a quick resolution. Convey anticipation for a timely response and imply consideration of alternative actions if unresolved. Avoid being overly harsh and ensure the closing is courteous.",6.5,9.4,9.5,2026-08-07 12:31:17
+Optimized Turbo (Batch + Adaptive Stop),8,225,A senior business development manager with a professional and courteous tone,"Instructions for FERC Meetings
+
+ 		
+
+
+Here is the URL address for the Capitol Connection.  You should be able to simply click on this URL below and it should come up for you.  (This is assuming your computer is configured for Real Video/Audio).  We will pay for the annual contract and bill your cost centers.
+
+You are connected for tomorrow as long as you have access to Real Video.
+
+http://www.capitolconnection.gmu.edu/
+
+Instructions:
+
+Once into the Capitol Connection sight, click on FERC
+Click on first line (either ""click here"" or box)
+Dialogue box should require:  user name:  enron-y
+			           password:  fercnow
+
+Real Player will connect you to the meeting
+
+Expand your screen as you wish for easier viewing
+
+Adjust your sound as you wish","Write an urgent email to TechSolutions Inc., urgently requesting help to recover important business documents accidentally erased on March 15th. Start the email with 'Dear TechSolutions Team,' and stress the importance of these documents to several ongoing projects. The tone should be both professional and warm, such as beginning with 'I hope this message finds you well.' Mention that you have tried to recover the documents using standard backup methods without success. Ask for immediate recovery of the files, a confirmation of receipt, and an action plan. Highlight the need for quick action due to the critical nature of the documents. Be sure to include specific details about the documents, such as their relevance to ongoing projects, and any associated deadlines. Conclude with a formal sign-off and your name.",6.5,9.4,9.5,2026-08-07 12:37:47
+Optimized Turbo (Batch + Adaptive Stop),9,208,A professional business development manager with a polite and courteous tone,"Western Strategy Briefing Materials
+
+Slides from this week's strategy session are attached:","Write an urgent email to IT support Regarding a critical issue with server logs on a Windows Server 2019 that ceased updating at 16:00 UTC yesterday. Indicate that the log management tool has malfunctioned and that preliminary checks such as restarting the service and verifying file permissions have not resolved the problem. Maintain a professional tone that is slightly less formal and more direct than typical corporate communication, ensuring the urgency is clear yet concise. Provide specific details about the troubleshooting steps taken, including any particular errors encountered. Conclude with your name and express gratitude for their swift assistance. The intent is to request information and solutions in a polite manner, reflecting a customer-to-support dynamic, while maintaining a detailed and patient approach typical of someone familiar with technical terms.",6.5,9.4,9.5,2026-08-07 12:38:02
+Optimized Turbo (Batch + Adaptive Stop),10,231,A stressed IT Manager at a software development company,"Western Strategy Summaries
+
+Slides from yesterday's meeting are attached:","Draft an email to a company demanding a refund for a premium leather briefcase that was not delivered; instead, a subpar artificial bag was received. Start the email with 'Dear Sir/Madam,' and clearly express dissatisfaction with the discrepancy between the advertised product and what was actually received. The order was placed on March 15th, and the incorrect item was delivered on March 20th. Insist on a full refund within two days, emphasizing the misleading product description and the significant difference between the promised leather briefcase and the subpar artificial bag. Repeat the key point about the misleading product description and the demand for a refund to reinforce the urgency and seriousness of the request. Maintain a professional yet angry tone, using strong language to convey the frustration and the intent to seek resolution.",6.5,9.4,9.5,2026-08-07 12:41:31

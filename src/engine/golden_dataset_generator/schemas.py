@@ -1,0 +1,123 @@
+from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Literal
+from pydantic import BaseModel, Field
+from datetime import datetime
+
+class RawEmailRecord(BaseModel):
+    """Database Schema: Represents a single row in the SQLite raw_emails table."""
+    id: Optional[int] = Field(None, description="SQLite Auto-Increment ID")
+    source_id: str = Field(..., description="Unique Enron Source ID")
+    raw_text: str = Field(..., description="The raw, uncleaned text")
+    clean_text: str = Field(..., description="The stripped and noise-filtered text")
+    word_count: int = Field(..., description="Number of words in clean_text")
+    size_category: Literal['micro', 'short', 'medium', 'long', 'massive'] = Field(..., description="Categorization based on word_count")
+    prompt: Optional[str] = Field(None, description="The backtranslated prompt (added in Step 01)")
+    context: Optional[str] = Field(None, description="The backtranslated context (added in Step 01)")
+    target_persona: Optional[str] = Field(None, description="The backtranslated target persona (added in Step 01)")
+    status: str = Field(default='pending', description="Current pipeline state ('pending', 'backtranslated', 'completed', 'failed')")
+    current_step: int = Field(default=1, description="Which of the 13 steps this email is currently on")
+    error_log: Optional[str] = Field(None, description="Detailed stack trace or LLM failure reason if status is 'failed'")
+    created_at: Optional[datetime] = Field(None)
+
+class GoldenDatasetRecord(BaseModel):
+    """Database Schema: Represents a single row in the SQLite golden_dataset table."""
+    id: Optional[int] = Field(None, description="SQLite Auto-Increment ID")
+    raw_email_id: int = Field(..., description="Foreign key to raw_emails")
+    original_text: str = Field(..., description="The original human text")
+    synthetic_text: str = Field(..., description="The winning generated text")
+    target_persona: str = Field(..., description="The persona that generated the win")
+    kda_winner_mutation_id: str = Field(..., description="The mutation ID of the winner")
+    tone_score: float = Field(..., description="Final absolute tone score")
+    conciseness_score: float = Field(..., description="Final absolute conciseness score")
+    accuracy_score: float = Field(..., description="Final absolute accuracy score")
+    created_at: Optional[datetime] = Field(None)
+
+class HumanEmail(BaseModel):
+    """Step 1: The raw human email ingested from the dataset."""
+    id: str = Field(..., description="Unique identifier for the historical email")
+    raw_text: str = Field(..., description="The exact verbatim text of the human email")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Source, date, or contextual tags")
+
+class PersonaProfile(BaseModel):
+    """Step 2: The molecular persona extracted from the human email."""
+    intent: str = Field(..., description="Primary goal of the email (e.g., 'Demand Refund')")
+    sentiment: str = Field(..., description="Emotional state (e.g., 'Angry', 'Urgent')")
+    
+    # The 3-Axis Multi-Dimensional Taxonomy
+    nlp_task: Literal['Zero-Shot Drafting', 'Data Extraction', 'Thread Summarization', 'Tone Translation'] = Field(..., description="Must be exactly one of: 'Zero-Shot Drafting' (writing a net-new email from scratch, MOST COMMON), 'Data Extraction' (pulling structured facts/lists from a sprawling email), 'Thread Summarization' (condensing a long reply chain), or 'Tone Translation' (rewriting an existing draft into a different tone).")
+    domain: str = Field(..., description="Industry or topic (e.g., 'Gaming', 'SaaS Patch Notes', 'E-Commerce Refunds', 'High Finance')")
+    format: str = Field(..., description="Physical layout (e.g., 'Newsletter Blast', 'Reply Chain', 'Cold Pitch', 'System Alert')")
+    
+    # Atomic Behavioral Matrix (Anti-Hallucination)
+    power_dynamic: str = Field(..., description="The relationship dynamic (e.g., 'Subordinate to Boss', 'Vendor to Client', 'Peer to Peer'). Should be dynamically extracted.")
+    formality_scale: Literal['Hyper-Casual', 'Casual', 'Semi-Professional', 'Professional', 'Hyper-Formal'] = Field(..., description="Strict rating. 'Hyper-Casual' (slang, no punctuation), 'Casual' (friendly, relaxed), 'Semi-Professional' (standard workplace), 'Professional' (formal business), 'Hyper-Formal' (legal or strict corporate).")
+    behavioral_quirks: List[str] = Field(..., description="List of specific traits (e.g., 'Passive-aggressive', 'Uses corporate buzzwords', 'Bad grammar')")
+    evidence_quotes: List[str] = Field(..., description="Exact substring quotes extracted directly from the raw email that prove the behavioral quirks exist. MUST be verbatim.")
+    
+    typology_classification: str = Field(..., description="The overall Persona tag (e.g., 'B2B_Hardware_Angry_Support')")
+
+class DPBCThresholds(BaseModel):
+    """Step 3: The KNN-derived semantic target thresholds."""
+    tone_target: float = Field(..., description="Target Tone score (0.0 to 10.0)")
+    conciseness_target: float = Field(..., description="Target Conciseness score (0.0 to 10.0)")
+    accuracy_target: float = Field(..., description="Target Factual Accuracy score (0.0 to 10.0)")
+
+class PromptMutation(BaseModel):
+    """Step 4 & 5: A single generated prompt mutation."""
+    id: str = Field(..., description="Unique ID for this specific prompt mutation")
+    typology_persona: str = Field(..., description="The dynamic persona assigned (e.g., 'The Stressed IT Manager')")
+    prompt_text: str = Field(..., description="The actual generated prompt text")
+    generation_num: int = Field(..., description="Which iteration loop this belongs to (0 for initial Genesis)")
+
+class EvaluatedEmail(BaseModel):
+    """Step 6: The synthetic email generated by a PromptMutation."""
+    mutation_id: str = Field(..., description="The ID of the PromptMutation that generated this")
+    prompt_text: str = Field(..., description="The actual prompt string that was evaluated")
+    synthetic_text: str = Field(..., description="The generated email text")
+    
+    # Absolute Scores given by LLM Judge
+    tone_score: float = Field(..., description="Absolute Tone Score (0.0 to 10.0)")
+    conciseness_score: float = Field(..., description="Absolute Conciseness Score")
+    accuracy_score: float = Field(..., description="Absolute Accuracy Score")
+    
+    # Delta Minimization (Absolute Error from DPBC Targets)
+    tone_delta: float = Field(..., description="|tone_target - tone_score|")
+    conciseness_delta: float = Field(..., description="|conciseness_target - conciseness_score|")
+    accuracy_delta: float = Field(..., description="|accuracy_target - accuracy_score|")
+    
+    # The Dual-Scoring Persona Penalty
+    persona_deviation_penalty: float = Field(0.0, description="Penalty applied if prompt structure violates its Typology Persona")
+    
+    overall_delta: float = Field(..., description="The final combined delta (Lower is Better)")
+
+class KDAMatrix(BaseModel):
+    """Step 7: The isolated parameter winners across the N-Way Tournament."""
+    generation_num: int = Field(..., description="The current generation iteration")
+    overall_winner_mutation_id: str = Field(..., description="ID of the prompt with the lowest overall_delta")
+    best_tone_mutation_id: str = Field(..., description="ID of prompt with lowest tone_delta")
+    best_conciseness_mutation_id: str = Field(..., description="ID of prompt with lowest conciseness_delta")
+    best_accuracy_mutation_id: str = Field(..., description="ID of prompt with lowest accuracy_delta")
+    evaluations: List[EvaluatedEmail] = Field(..., description="All N evaluations for this generation")
+
+class JudgeFeedback(BaseModel):
+    """Step 8: Explicit written feedback from the Judge."""
+    kda_matrix_id: str = Field(..., description="Reference to the KDA Matrix")
+    feedback_text: str = Field(..., description="Written analysis of why the emails failed to hit DPBC targets perfectly")
+
+class SuperPrompt(BaseModel):
+    """Step 9 & 10: The Polygenic offspring prompt."""
+    id: str = Field(..., description="Unique ID for the Super Prompt (e.g., 'Super_P_Gen_1')")
+    base_mutation_id: str = Field(..., description="The overall winner used as the base structure")
+    injected_traits: Dict[str, str] = Field(..., description="Map of parameters to the mutation IDs they were extracted from")
+    final_prompt_text: str = Field(..., description="The newly bred prompt text")
+    elo_delta: float = Field(..., description="The overall delta score of this prompt")
+    is_champion: bool = Field(default=False, description="Whether this prompt is the current reigning champion")
+
+class GenerationState(BaseModel):
+    """Telemetry tracking for a single human email's evolution pipeline."""
+    human_email_id: str = Field(..., description="Reference to the original email")
+    current_generation: int = Field(default=0)
+    reigning_champion: Optional[SuperPrompt] = Field(default=None)
+    plateau_counter: int = Field(default=0, description="Tracks generations without Delta improvement for Early Stopping")
+    is_converged: bool = Field(default=False, description="True if early stop triggered or Delta hits ~0")
+    timestamp: datetime = Field(default_factory=datetime.utcnow)

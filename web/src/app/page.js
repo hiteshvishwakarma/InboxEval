@@ -1,484 +1,526 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+
+import React, { useState, useEffect, useRef } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Html } from '@react-three/drei';
+import * as THREE from 'three';
+import { Terminal, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { AnimatePresence, motion } from 'framer-motion';
 
-export default function Home() {
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [loading, setLoading] = useState(true);
+import { PointerLockControls, PerformanceMonitor, Line } from '@react-three/drei';
 
-  // Sandbox State
-  const [promptInput, setPromptInput] = useState("");
-  const [emailInput, setEmailInput] = useState("");
-  const [availableModels, setAvailableModels] = useState([]);
-  const [selectedModel, setSelectedModel] = useState("auto"); // Default to Intelligent Router
-  const [isGrading, setIsGrading] = useState(false);
-  const [evalResult, setEvalResult] = useState(null);
-  const [expandedRows, setExpandedRows] = useState([]); // Array to allow multi-model comparison
+// --- FIRST PERSON PLAYER CONTROLLER ---
+function Player() {
+  const { camera } = useThree();
+  const moveState = useRef({ forward: false, backward: false, left: false, right: false });
+  const speed = 5;
 
   useEffect(() => {
-    // Check if models exist in local storage, else fetch
-    const fetchModels = async () => {
-      try {
-        const res = await fetch('/api/models');
-        const models = await res.json();
-        if (models && models.length > 0) {
-          setAvailableModels(models);
-        }
-      } catch (e) {
-        console.error("Failed to load models");
-      }
+    const handleKeyDown = (e) => {
+      if (e.code === 'KeyW') moveState.current.forward = true;
+      if (e.code === 'KeyS') moveState.current.backward = true;
+      if (e.code === 'KeyA') moveState.current.left = true;
+      if (e.code === 'KeyD') moveState.current.right = true;
     };
-    
-    fetchModels();
-
-    fetch('/api/leaderboard')
-      .then(res => res.json())
-      .then(data => {
-        setLeaderboard(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
+    const handleKeyUp = (e) => {
+      if (e.code === 'KeyW') moveState.current.forward = false;
+      if (e.code === 'KeyS') moveState.current.backward = false;
+      if (e.code === 'KeyA') moveState.current.left = false;
+      if (e.code === 'KeyD') moveState.current.right = false;
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
   }, []);
 
-  const handleGradeEmail = async () => {
-    if (!emailInput.trim()) return;
-    setIsGrading(true);
-    setEvalResult(null);
-    try {
-      let judgeToUse = selectedModel;
-      let routingInfo = null;
+  useFrame((state, delta) => {
+    const velocity = new THREE.Vector3();
+    const direction = new THREE.Vector3();
 
-      if (selectedModel === "auto") {
-        setEvalResult({ routingState: "Engaging Intelligent Model Router..." });
-        const routeRes = await fetch('/api/route-model', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email_text: emailInput,
-            prompt: promptInput,
-            available_models: availableModels
-          })
-        });
-        const routeData = await routeRes.json();
-        if (routeData.selected_model) {
-          judgeToUse = routeData.selected_model;
-          routingInfo = {
-            model: routeData.selected_model,
-            reasoning: routeData.reasoning
-          };
-        } else {
-          judgeToUse = availableModels.length > 0 ? availableModels[0] : "qwen/qwen3-32b";
-        }
+    if (moveState.current.forward) velocity.z -= 1;
+    if (moveState.current.backward) velocity.z += 1;
+    if (moveState.current.left) velocity.x -= 1;
+    if (moveState.current.right) velocity.x += 1;
+
+    velocity.normalize();
+    
+    direction.copy(velocity).applyQuaternion(camera.quaternion);
+    direction.y = 0; 
+
+    // Calculate proposed new position
+    const newX = camera.position.x + direction.x * speed * delta;
+    const newZ = camera.position.z + direction.z * speed * delta;
+
+    // Simple AABB Collision Detection (Highly Optimized, no physics engine)
+    const padding = 0.5; // Player radius
+
+    // Bounding Box 1: Desk (Position X: -4, Z: 0, Width: 3, Depth: 1.5)
+    const deskMinX = -4 - 1.5 - padding;
+    const deskMaxX = -4 + 1.5 + padding;
+    const deskMinZ = 0 - 0.75 - padding;
+    const deskMaxZ = 0 + 0.75 + padding;
+    const hitDesk = (newX > deskMinX && newX < deskMaxX && newZ > deskMinZ && newZ < deskMaxZ);
+
+    // Bounding Box 2: Server Rack (Position X: 4, Z: 0, Width: 1.5, Depth: 1)
+    const serverMinX = 4 - 0.75 - padding;
+    const serverMaxX = 4 + 0.75 + padding;
+    const serverMinZ = 0 - 0.5 - padding;
+    const serverMaxZ = 0 + 0.5 + padding;
+    const hitServer = (newX > serverMinX && newX < serverMaxX && newZ > serverMinZ && newZ < serverMaxZ);
+
+    // Bounding Box 3: Core Database (Position X: -5, Z: 5, Radius: 1.2)
+    // Treating as AABB for speed
+    const dbMinX = -5 - 1.2 - padding;
+    const dbMaxX = -5 + 1.2 + padding;
+    const dbMinZ = 5 - 1.2 - padding;
+    const dbMaxZ = 5 + 1.2 + padding;
+    const hitDb = (newX > dbMinX && newX < dbMaxX && newZ > dbMinZ && newZ < dbMaxZ);
+
+    // Bounding Box 4: Leaderboard Wall (Position X: -13.5, Z: 0, Width: 0.5, Depth: 16)
+    const boardMinX = -13.5 - 0.25 - padding;
+    const boardMaxX = -13.5 + 0.25 + padding;
+    const boardMinZ = 0 - 8 - padding;
+    const boardMaxZ = 0 + 8 + padding;
+    const hitBoard = (newX > boardMinX && newX < boardMaxX && newZ > boardMinZ && newZ < boardMaxZ);
+
+    // Only apply movement if no collision
+    if (!hitDesk && !hitServer && !hitDb && !hitBoard) {
+      camera.position.x = newX;
+      camera.position.z = newZ;
+    } else {
+      // Allow sliding against walls by testing axes independently
+      if (!(newX > deskMinX && newX < deskMaxX && camera.position.z > deskMinZ && camera.position.z < deskMaxZ) && 
+          !(newX > serverMinX && newX < serverMaxX && camera.position.z > serverMinZ && camera.position.z < serverMaxZ) &&
+          !(newX > dbMinX && newX < dbMaxX && camera.position.z > dbMinZ && camera.position.z < dbMaxZ) &&
+          !(newX > boardMinX && newX < boardMaxX && camera.position.z > boardMinZ && camera.position.z < boardMaxZ)) {
+        camera.position.x = newX;
       }
-
-      const res = await fetch('/api/evaluate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email_text: emailInput,
-          prompt: promptInput,
-          selectedJudge: judgeToUse
-        })
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setEvalResult({ ...data, routingInfo });
-      } else {
-        setEvalResult({ error: data.error });
+      if (!(camera.position.x > deskMinX && camera.position.x < deskMaxX && newZ > deskMinZ && newZ < deskMaxZ) && 
+          !(camera.position.x > serverMinX && camera.position.x < serverMaxX && newZ > serverMinZ && newZ < serverMaxZ) &&
+          !(camera.position.x > dbMinX && camera.position.x < dbMaxX && newZ > dbMinZ && newZ < dbMaxZ) &&
+          !(camera.position.x > boardMinX && camera.position.x < boardMaxX && newZ > boardMinZ && newZ < boardMaxZ)) {
+        camera.position.z = newZ;
       }
-    } catch (err) {
-      setEvalResult({ error: "Failed to connect to the evaluation server." });
-    } finally {
-      setIsGrading(false);
     }
-  };
+    
+    // Room Boundaries
+    if (camera.position.y !== 2) camera.position.y = 2; 
+    if (camera.position.x > 14) camera.position.x = 14;
+    if (camera.position.x < -14) camera.position.x = -14;
+    if (camera.position.z > 14) camera.position.z = 14;
+    if (camera.position.z < -14) camera.position.z = -14;
+  });
 
-  const toggleRow = (modelId) => {
-    setExpandedRows(prev => 
-      prev.includes(modelId) ? prev.filter(id => id !== modelId) : [...prev, modelId]
-    );
-  };
+  return <PointerLockControls />;
+}
 
-  // Prepare data for the Multi-Model Comparison Radar Chart
-  const radarData = [];
-  if (leaderboard.length > 0 && leaderboard[0].paramScores) {
-    const params = Object.keys(leaderboard[0].paramScores);
-    params.forEach(param => {
-      const dataPoint = { subject: param.replace('_', ' ') };
-      expandedRows.forEach(modelId => {
-        const modelData = leaderboard.find(l => l.model === modelId);
-        if (modelData && modelData.paramScores) {
-          dataPoint[modelId] = modelData.paramScores[param];
-        }
-      });
-      radarData.push(dataPoint);
-    });
-  }
+function FloppyDisk() {
+  const [hovered, setHover] = useState(false);
+  return (
+    <group position={[-3.2, 0.55, 0.5]} onClick={(e) => { e.stopPropagation(); alert('Initiating Golden Dataset Download...'); }} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <boxGeometry args={[0.4, 0.4, 0.05]} />
+        <meshStandardMaterial color={hovered ? "#00ffff" : "#333"} metalness={0.5} roughness={0.5} />
+      </mesh>
+      <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.25, 0.2]} />
+        <meshBasicMaterial color="#fff" />
+      </mesh>
+      {hovered && (
+        <Html position={[0, 0, 0.2]} center>
+          <div 
+            className="bg-black/80 text-cyan-400 font-mono text-[10px] p-1 border border-cyan-500 whitespace-nowrap"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            download_dataset.csv
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
 
-  const colors = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'];
+function AirVent({ lightsOn }) {
+  const [hovered, setHover] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+  const isSecretRevealed = !lightsOn;
 
   return (
-    <main>
-      <div className="bg-gradient-blob"></div>
-      <div className="bg-gradient-blob right"></div>
+    <group position={[2, 0, 2]} onClick={(e) => { 
+      if (!isSecretRevealed) return;
+      e.stopPropagation(); 
+      setUnlocked(true);
+    }} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.5, 1.5]} />
+        <meshStandardMaterial color="#0a0a0a" wireframe={true} />
+      </mesh>
       
-      <div className="container">
-        <header>
-          <h1>InboxEval Leaderboard</h1>
-          <p className="subtitle">
-            The industry standard benchmark for enterprise AI email generation. 
-            Models are evaluated across 12 strict parameters including Tone, Persona Adherence, and Hallucination rates.
-          </p>
-        </header>
+      <mesh position={[0, -0.5, 0]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color={isSecretRevealed ? "#ff0000" : "#000"} emissive={isSecretRevealed ? "#ff0000" : "#000"} emissiveIntensity={isSecretRevealed ? (hovered ? 5 : 2) : 0} />
+      </mesh>
 
-        <section className="glass" style={{ padding: '1rem', marginTop: '2rem', minHeight: '300px' }}>
-          <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--card-border)' }}>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Evaluation Context</h3>
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <span className="badge" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa' }}>Dataset: InboxEval Golden (Enterprise Scenarios)</span>
-              <span className="badge" style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c084fc' }}>Rubric: 12-Parameter IPR Standard</span>
-              <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399' }}>Method: 3-Stage Debate (Temp: 0.0)</span>
+      {unlocked && isSecretRevealed && (
+        <Html position={[0, 1, 0]} center>
+          <div 
+            className="w-96 p-6 bg-red-950/90 border border-red-500 rounded text-red-500 font-mono text-sm text-center shadow-[0_0_50px_rgba(255,0,0,0.5)]"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-black mb-4">THE ARCHITECT'S TERMINAL</h2>
+            <p className="mb-4">PRESS ESC TO UNLOCK MOUSE.</p>
+            <p className="mb-4 text-xs">AWAITING CRYPTOGRAPHIC KEY...</p>
+            <input type="password" placeholder="ENTER TOLERANCE..." className="w-full bg-black border border-red-500 text-red-500 p-2 text-center outline-none" />
+            <button className="mt-4 border border-red-500 px-4 py-1 hover:bg-red-500 hover:text-black" onClick={() => setUnlocked(false)}>CLOSE</button>
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
+
+function ServerRack({ hasPliers }) {
+  const [hovered, setHover] = useState(false);
+  const [interacting, setInteracting] = useState(false);
+  const [isWired, setIsWired] = useState(false);
+
+  return (
+    <group position={[4, 0, 0]} onClick={(e) => { e.stopPropagation(); setInteracting(true); }} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+      <mesh position={[0, 1.5, 0]}>
+        <boxGeometry args={[1.5, 3, 1]} />
+        <meshStandardMaterial color="#444" metalness={0.6} roughness={0.4} />
+      </mesh>
+      
+      {[0.5, 1.2, 1.9, 2.6].map((y, i) => (
+        <mesh key={i} position={[0, y, 0.51]}>
+          <boxGeometry args={[1.2, 0.2, 0.1]} />
+          <meshStandardMaterial color={hovered ? "#00ffff" : "#00aaaa"} emissive={hovered ? "#00ffff" : "#005555"} emissiveIntensity={1.5} />
+        </mesh>
+      ))}
+
+      {interacting && (
+        <Html position={[0, 1.5, 0.6]} transform distanceFactor={2}>
+          <div 
+            className="w-64 p-4 bg-black/90 border border-cyan-500 rounded-lg text-cyan-400 font-mono text-xs"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-2 border-b border-cyan-900 pb-2">
+              <span className="flex items-center gap-2"><Terminal size={14} /> MCP_SERVER</span>
+              <button onClick={(e) => { e.stopPropagation(); setInteracting(false); }} className="text-red-500 hover:text-white">X</button>
             </div>
-            <p style={{ marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              Transparency is our core principle. Every model below was strictly evaluated against our proprietary Enterprise Golden Dataset. 
-              Click on any scored model to view its granular performance across all 12 rigorous parameters.
-            </p>
+            <p className="text-green-400 mb-1">{'>'} STATUS: ONLINE</p>
+            
+            {!isWired ? (
+              <>
+                <p className="text-red-500 mb-1">{'>'} ERROR: PHYSICAL WIRING DISCONNECTED</p>
+                {hasPliers ? (
+                  <button onClick={(e) => { e.stopPropagation(); setIsWired(true); }} className="w-full bg-red-900/50 hover:bg-red-500 hover:text-black border border-red-500 py-1 transition-colors mt-2">
+                    [USE PLIERS TO SPLICE WIRE]
+                  </button>
+                ) : (
+                  <p className="text-neutral-500 mt-2 text-[10px]">Find the heavy-duty pliers to fix connection.</p>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="text-cyan-400 mb-1">{'>'} HARDWARE SOCKET: CONNECTED</p>
+                <button className="w-full bg-cyan-900/50 hover:bg-cyan-500 hover:text-black border border-cyan-500 py-1 transition-colors mt-2">
+                  Initialize Socket
+                </button>
+              </>
+            )}
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
+
+function Desk() {
+  const [hovered, setHover] = useState(false);
+  return (
+    <group position={[-4, 0, 0]} onClick={(e) => { e.stopPropagation(); }} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+      <mesh position={[0, 0.5, 0]}>
+        <boxGeometry args={[3, 0.1, 1.5]} />
+        <meshStandardMaterial color="#555" metalness={0.3} roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 1.2, -0.4]} rotation={[-0.1, 0, 0]}>
+        <boxGeometry args={[1.8, 1.2, 0.05]} />
+        <meshStandardMaterial color={hovered ? "#fff" : "#222"} emissive={hovered ? "#333" : "#000"} />
+      </mesh>
+
+      <FloppyDisk />
+
+      <Html position={[0, 1.2, -0.3]} transform distanceFactor={1.5}>
+        <div 
+          className="w-48 p-2 bg-black border border-white text-white font-mono text-center shadow-lg"
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          <h3 className="mb-2 font-bold uppercase">Eval Arena</h3>
+          <p className="text-[8px] text-neutral-400 mb-2">PRESS ESC TO UNLOCK MOUSE</p>
+          <Link href="/arena" className="block w-full bg-white text-black py-1 hover:bg-cyan-400 transition-colors pointer-events-auto">
+            ENTER
+          </Link>
+        </div>
+      </Html>
+    </group>
+  );
+}
+
+function LightSwitch({ lightsOn, setLightsOn }) {
+  const [hovered, setHover] = useState(false);
+  return (
+    <group position={[0, 2, -6]} onClick={(e) => { e.stopPropagation(); setLightsOn(!lightsOn); }} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+      <mesh>
+        <boxGeometry args={[0.4, 0.6, 0.1]} />
+        <meshStandardMaterial color="#666" metalness={0.3} />
+      </mesh>
+      <mesh position={[0, lightsOn ? 0.1 : -0.1, 0.05]} rotation={[lightsOn ? -0.2 : 0.2, 0, 0]}>
+        <boxGeometry args={[0.15, 0.3, 0.1]} />
+        <meshStandardMaterial color={hovered ? "#fff" : "#888"} />
+      </mesh>
+      <mesh position={[0, 0.4, 0.05]}>
+        <sphereGeometry args={[0.05, 8, 8]} />
+        <meshStandardMaterial color={lightsOn ? "#00ff00" : "#ff0000"} emissive={lightsOn ? "#00ff00" : "#ff0000"} emissiveIntensity={2} />
+      </mesh>
+      {hovered && (
+        <Html position={[0, -0.6, 0]} center>
+          <div className="bg-black text-white font-mono text-xs p-1 border border-white">
+            {lightsOn ? 'MAIN_BREAKER: ON' : 'MAIN_BREAKER: OFF'}
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
+
+function Pliers({ hasPliers, setHasPliers }) {
+  const [hovered, setHover] = useState(false);
+  if (hasPliers) return null;
+
+  return (
+    <group position={[-2, 0.55, -2]} onClick={(e) => { e.stopPropagation(); setHasPliers(true); alert("You picked up the API PLIERS."); }} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+      <mesh position={[0.1, 0, 0]} rotation={[0, 0, 0.2]}>
+        <boxGeometry args={[0.3, 0.05, 0.1]} />
+        <meshStandardMaterial color={hovered ? "#ff3333" : "#cc0000"} />
+      </mesh>
+      <mesh position={[-0.1, 0, 0]} rotation={[0, 0, -0.2]}>
+        <boxGeometry args={[0.3, 0.05, 0.1]} />
+        <meshStandardMaterial color={hovered ? "#ff3333" : "#cc0000"} />
+      </mesh>
+      <mesh position={[0, 0, 0.2]}>
+        <boxGeometry args={[0.2, 0.1, 0.2]} />
+        <meshStandardMaterial color="#888" metalness={0.9} />
+      </mesh>
+      {hovered && (
+        <Html position={[0, 0.2, 0]} center>
+          <div className="bg-black/90 text-red-500 font-mono text-[10px] p-1 border border-red-500 whitespace-nowrap">
+            [PICK UP] HEAVY-DUTY PLIERS
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
+
+function CoreDatabase() {
+  const [hovered, setHover] = useState(false);
+  const ref = useRef();
+
+  useFrame((state) => {
+    if (ref.current) {
+      ref.current.rotation.y += 0.01;
+    }
+  });
+
+  return (
+    <group position={[-5, 2, 5]} onClick={(e) => e.stopPropagation()} onPointerOver={() => setHover(true)} onPointerOut={() => setHover(false)}>
+      {/* Outer Glass Casing */}
+      <mesh>
+        <cylinderGeometry args={[1.2, 1.2, 4, 16]} />
+        <meshStandardMaterial color="#000" metalness={0.9} roughness={0.1} transparent opacity={0.4} />
+      </mesh>
+      
+      {/* Spinning Core */}
+      <mesh ref={ref}>
+        <cylinderGeometry args={[0.8, 0.8, 3.8, 8]} />
+        <meshStandardMaterial color="#00ffff" emissive="#00aaaa" emissiveIntensity={hovered ? 2 : 1} wireframe={true} />
+      </mesh>
+
+      {/* Database Rings */}
+      {[-1, 0, 1].map((y, i) => (
+        <mesh key={i} position={[0, y, 0]}>
+          <torusGeometry args={[1.3, 0.05, 8, 24]} />
+          <meshStandardMaterial color="#00ffff" emissive="#00ffff" emissiveIntensity={0.5} />
+        </mesh>
+      ))}
+
+      {hovered && (
+        <Html position={[0, 0, 1.5]} center>
+          <div 
+            className="bg-black/90 text-cyan-400 font-mono text-xs p-2 border border-cyan-500 shadow-[0_0_20px_rgba(0,255,255,0.2)]"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <h4 className="font-bold border-b border-cyan-900 mb-1">CORE_DB</h4>
+            <p className="text-[10px] text-neutral-400">golden_dataset.jsonl</p>
+            <p className="text-[10px] text-green-400 mt-1">STATUS: ENCRYPTED_SYNC</p>
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
+
+function Cables({ hasPliers }) {
+  // Cables connecting the DB [-5,0,5] to the Server Rack [4,0,0] to the Desk [-4,0,0]
+  const isWired = hasPliers; // simplified logic: if they have pliers, maybe they wired it. We will just show them pulsing if wired.
+
+  return (
+    <group>
+      {/* Cable 1: Server to DB */}
+      <Line
+        points={[ [4, 0.1, 0], [4, 0.1, 4], [-4, 0.1, 4], [-5, 0.1, 5] ]}
+        color={isWired ? "#00ffff" : "#444"}
+        lineWidth={3}
+      />
+      {/* Cable 2: Server to Desk */}
+      <Line
+        points={[ [4, 0.1, -1], [4, 0.1, -2], [-4, 0.1, -2], [-4, 0.1, 0] ]}
+        color={isWired ? "#00ffff" : "#444"}
+        lineWidth={3}
+      />
+      {/* Cable 3: Ceiling Conduit from DB to Desk */}
+      <Line
+        points={[ [-5, 4, 5], [-5, 6, 5], [-4, 6, 0], [-4, 4, 0] ]}
+        color="#00aaaa"
+        lineWidth={5}
+      />
+    </group>
+  );
+}
+
+function LeaderboardWall() {
+  return (
+    <group position={[-13.5, 4, 0]} rotation={[0, Math.PI / 2, 0]}>
+      {/* Screen Frame */}
+      <mesh>
+        <boxGeometry args={[16, 8, 0.5]} />
+        <meshStandardMaterial color="#111" metalness={0.9} roughness={0.1} />
+      </mesh>
+      
+      {/* Screen Surface */}
+      <mesh position={[0, 0, 0.26]}>
+        <planeGeometry args={[15.5, 7.5]} />
+        <meshBasicMaterial color="#000" />
+      </mesh>
+      
+      {/* Screen Content via HTML */}
+      {/* We use occlude so it hides behind other 3D objects */}
+      <Html position={[0, 0, 0.3]} transform distanceFactor={5} occlude>
+        <div 
+          className="w-[1200px] h-[600px] bg-black/90 border border-cyan-900 rounded p-12 text-cyan-400 font-mono flex flex-col shadow-[0_0_150px_rgba(0,255,255,0.15)]"
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-end border-b border-cyan-900 pb-6 mb-6">
+            <h2 className="text-5xl font-black tracking-widest text-white">GLOBAL AI EMAIL EVALUATION</h2>
+            <span className="text-2xl text-red-500 animate-pulse font-bold">● LIVE</span>
           </div>
 
-          {loading ? (
-            <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--accent-1)' }}>
-               <h2>Loading Live Evaluator Data...</h2>
-            </div>
-          ) : leaderboard.length === 0 ? (
-            <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-               <h2>No benchmarks run yet.</h2>
-            </div>
-          ) : (
-            <>
-              {/* Observability Panel: Multi-Model Comparison Radar Chart */}
-              {expandedRows.length > 0 && (
-                <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '2rem', marginBottom: '2rem', border: '1px solid var(--card-border)' }}>
-                  <h3 style={{ marginBottom: '1rem', textAlign: 'center', color: 'var(--text-primary)' }}>Dimensional Delta Analysis (Control System Observability)</h3>
-                  <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.9rem' }}>
-                    Visualizing multi-variable error margins across {expandedRows.length} selected model(s).
-                  </p>
-                  <div style={{ height: '500px' }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                        <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                        <PolarRadiusAxis angle={30} domain={[0, 10]} tick={{ fill: 'transparent' }} />
-                        {expandedRows.map((modelId, idx) => (
-                          <Radar 
-                            key={modelId}
-                            name={modelId} 
-                            dataKey={modelId} 
-                            stroke={colors[idx % colors.length]} 
-                            fill={colors[idx % colors.length]} 
-                            fillOpacity={0.3} 
-                          />
-                        ))}
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-                    {expandedRows.map((modelId, idx) => (
-                      <div key={modelId} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colors[idx % colors.length] }}></div>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{modelId}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <table className="leaderboard">
-                <thead>
-                  <tr>
-                    <th style={{ width: '10%' }}>Rank</th>
-                  <th style={{ width: '40%' }}>Model</th>
-                  <th style={{ width: '20%' }}>Size</th>
-                  <th style={{ width: '30%' }}>Overall Score (Out of 10)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* 1. Show models that have scores, sorted by score */}
-                {leaderboard.map((item, index) => (
-                  <React.Fragment key={item.model}>
-                    <tr 
-                      onClick={() => toggleRow(item.model)}
-                      style={{ cursor: 'pointer', background: expandedRows.includes(item.model) ? 'rgba(255,255,255,0.05)' : 'transparent' }}
-                    >
-                      <td>
-                        <span className="rank">#{index + 1}</span>
-                      </td>
-                      <td>
-                        <div className="model-name">
-                          {item.model}
-                          {index === 0 && <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399' }}>SOTA</span>}
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge">{item.parameters}</span>
-                      </td>
-                      <td>
-                        <div className="score">{item.score.toFixed(2)}</div>
-                        <div className="score-bar-container">
-                          <div 
-                            className="score-bar" 
-                            style={{ width: `${(item.score / 10) * 100}%` }}
-                          ></div>
-                        </div>
-                      </td>
-                    </tr>
-                    {expandedRows.includes(item.model) && item.paramScores && (
-                      <tr>
-                        <td colSpan="4" style={{ background: 'rgba(0,0,0,0.3)', padding: '2rem', borderTop: 'none' }}>
-                          <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Granular Parameter Breakdown (Out of 10)</h4>
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem' }}>
-                            {Object.entries(item.paramScores).map(([param, pScore]) => (
-                              <div key={param} style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)' }}>
-                                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', marginBottom: '0.5rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                  {param.replace('_', ' ')}
-                                </div>
-                                <div style={{ fontSize: '1.25rem', fontWeight: '700', color: pScore >= 8 ? '#34d399' : pScore >= 5 ? '#fbbf24' : '#ef4444' }}>
-                                  {pScore.toFixed(2)}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-                
-                {/* 2. Show active models that are pending benchmarking */}
-                {availableModels
-                  .filter(modelId => !leaderboard.find(l => l.model === modelId))
-                  .map((modelId) => (
-                    <tr key={modelId} style={{ opacity: 0.5 }}>
-                      <td>
-                        <span className="rank" style={{ color: 'var(--text-secondary)' }}>-</span>
-                      </td>
-                      <td>
-                        <div className="model-name">{modelId}</div>
-                      </td>
-                      <td>
-                        <span className="badge" style={{ background: 'transparent', border: '1px solid var(--text-secondary)', color: 'var(--text-secondary)' }}>Live on Groq</span>
-                      </td>
-                      <td>
-                        <div className="score" style={{ color: 'var(--text-secondary)', fontSize: '1rem', fontStyle: 'italic' }}>Pending Benchmark Data</div>
-                        <div className="score-bar-container">
-                           <div className="score-bar" style={{ width: '0%', background: 'transparent' }}></div>
-                        </div>
-                      </td>
-                    </tr>
-                ))}
-              </tbody>
-            </table>
-            </>
-          )}
-        </section>
-
-        {/* Interactive Sandbox Section */}
-        <section className="glass" style={{ padding: '2rem', marginTop: '4rem', marginBottom: '4rem' }}>
-          <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>Live Evaluator Sandbox</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-            Paste the Original Prompt and the AI-generated email below. Our elite Judge model will grade it against our 12 world-class parameters in real-time.
-          </p>
-          
-          <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem', fontSize: '1.2rem' }}>1. The Prompt (Optional - We will auto-reverse engineer if left blank)</h3>
-          <textarea 
-            value={promptInput}
-            onChange={(e) => setPromptInput(e.target.value)}
-            placeholder="Write a highly professional email to my team about the Q3 targets..."
-            style={{
-              width: '100%',
-              height: '100px',
-              backgroundColor: 'rgba(0,0,0,0.3)',
-              border: '1px solid var(--card-border)',
-              borderRadius: '12px',
-              padding: '1rem',
-              color: 'var(--text-primary)',
-              fontFamily: 'inherit',
-              fontSize: '1rem',
-              resize: 'vertical',
-              marginBottom: '1.5rem'
-            }}
-          />
-
-          <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem', fontSize: '1.2rem' }}>2. The Generated Email</h3>
-          <textarea 
-            value={emailInput}
-            onChange={(e) => setEmailInput(e.target.value)}
-            placeholder="Subject: Project Update\n\nHi Team,\n\nI wanted to reach out regarding..."
-            style={{
-              width: '100%',
-              height: '200px',
-              backgroundColor: 'rgba(0,0,0,0.3)',
-              border: '1px solid var(--card-border)',
-              borderRadius: '12px',
-              padding: '1rem',
-              color: 'var(--text-primary)',
-              fontFamily: 'inherit',
-              fontSize: '1rem',
-              resize: 'vertical',
-              marginBottom: '1.5rem'
-            }}
-          />
-          
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <select 
-              value={selectedModel}
-              onChange={(e) => setSelectedModel(e.target.value)}
-              style={{
-                padding: '1rem',
-                borderRadius: '8px',
-                background: 'rgba(0,0,0,0.5)',
-                color: 'white',
-                border: '1px solid var(--card-border)',
-                fontSize: '1rem',
-                cursor: 'pointer'
-              }}
-            >
-              {availableModels.length > 0 ? (
-                <>
-                  <option value="auto" style={{ fontWeight: 'bold', color: '#10b981' }}>⚡ Auto-Select (Intelligent Engine)</option>
-                  {availableModels.map(modelId => (
-                    <option key={modelId} value={modelId}>Judge: {modelId}</option>
-                  ))}
-                </>
-              ) : (
-                <>
-                  <option value="auto">⚡ Auto-Select (Intelligent Engine)</option>
-                  <option value="qwen/qwen3-32b">Judge: Qwen 32B</option>
-                  <option value="llama-3.1-8b-instant">Judge: Llama 3.1 8B</option>
-                  <option value="meta-llama/llama-4-scout-17b-16e-instruct">Judge: Llama 4 Scout 17B</option>
-                </>
-              )}
-            </select>
-
-            <button 
-              onClick={handleGradeEmail}
-              disabled={isGrading || !emailInput.trim()}
-              style={{
-                flex: 1,
-                background: isGrading ? '#475569' : 'var(--accent-gradient)',
-                color: '#fff',
-                border: 'none',
-                padding: '1rem 2rem',
-                borderRadius: '8px',
-                fontSize: '1.1rem',
-                fontWeight: '600',
-                cursor: isGrading ? 'not-allowed' : 'pointer',
-                transition: 'transform 0.2s',
-                boxShadow: '0 4px 15px rgba(59, 130, 246, 0.4)'
-              }}
-            >
-              {isGrading ? 'Evaluating (This takes ~5s)...' : 'Grade My Email'}
-            </button>
+          <div className="grid grid-cols-5 gap-4 text-2xl font-bold border-b border-cyan-900/50 pb-4 mb-4 text-neutral-500">
+            <div>RANK</div>
+            <div className="col-span-2">MODEL NAME</div>
+            <div>ELO SCORE</div>
+            <div>WIN RATE</div>
           </div>
 
-          {/* Intelligent Router Feedback (UAT) */}
-          {isGrading && evalResult?.routingState && (
-            <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.3)', textAlign: 'center' }}>
-              <div style={{ color: '#34d399', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '0.5rem' }}>
-                {evalResult.routingState}
-              </div>
-              <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                Analyzing contextual complexity, token density, and semantic intent...
-              </div>
-            </div>
-          )}
-
-          {evalResult && evalResult.error && (
-            <div style={{ color: '#ef4444', textAlign: 'center', marginTop: '2rem', padding: '1rem', border: '1px solid #ef4444', borderRadius: '8px' }}>
-              <h3>Evaluation Error</h3>
-              <p>{evalResult.error}</p>
-            </div>
-          )}
-
-          {evalResult && evalResult.scorecard && (
-            <div style={{ marginTop: '3rem', borderTop: '1px solid var(--card-border)', paddingTop: '2rem' }}>
-              
-              {/* Intelligent Routing Banner (Completed) */}
-              {evalResult.routingInfo && (
-                <div style={{ marginBottom: '2rem', padding: '1.5rem', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '12px', borderLeft: '4px solid #3b82f6', borderTop: '1px solid rgba(59, 130, 246, 0.2)', borderRight: '1px solid rgba(59, 130, 246, 0.2)', borderBottom: '1px solid rgba(59, 130, 246, 0.2)' }}>
-                  <h4 style={{ color: '#60a5fa', marginBottom: '0.5rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '1.5rem' }}>🤖</span> Intelligent Routing Executed
-                  </h4>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem', lineHeight: '1.5' }}>
-                    {evalResult.routingInfo.reasoning}
-                  </p>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', padding: '0.5rem 1rem', background: 'rgba(0,0,0,0.4)', borderRadius: '6px', fontSize: '0.9rem', color: 'var(--text-primary)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                    Auto-Routed to Judge:&nbsp;<strong style={{ color: '#3b82f6', marginLeft: '0.25rem' }}>{evalResult.routingInfo.model}</strong>
-                  </div>
+          <div className="flex-1 flex flex-col gap-2">
+             {[
+               { name: "gpt-4o (OpenAI)", elo: 1284, wr: "76%" },
+               { name: "claude-3.5-sonnet (Anthropic)", elo: 1251, wr: "71%" },
+               { name: "llama-3.1-70b (Meta)", elo: 1198, wr: "64%" },
+               { name: "qwen2-72b-instruct (Alibaba)", elo: 1145, wr: "58%" },
+               { name: "mixtral-8x7b-32768 (Mistral)", elo: 1089, wr: "51%" },
+               { name: "gemma2-9b-it (Google)", elo: 1042, wr: "48%" },
+               { name: "llama-3.1-8b (Meta)", elo: 980, wr: "41%" },
+             ].map((m, i) => (
+                <div key={i} className={`grid grid-cols-5 gap-4 text-3xl py-3 ${i === 0 ? 'text-yellow-400 font-bold' : ''} border-b border-cyan-900/20 items-center`}>
+                  <div className="opacity-80">#{i+1}</div>
+                  <div className="col-span-2 font-bold">{m.name}</div>
+                  <div className="font-light">{m.elo}</div>
+                  <div className="font-light">{m.wr}</div>
                 </div>
-              )}
+             ))}
+          </div>
+        </div>
+      </Html>
+    </group>
+  );
+}
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <h3 style={{ fontSize: '1.5rem' }}>Final Moderated Score:</h3>
-                  <span style={{ fontSize: '2.5rem', fontWeight: '800', color: '#10b981' }}>
-                    {evalResult.overall_score}/10
-                  </span>
-                </div>
-                <Link href={`/eval/${evalResult.id}`} style={{
-                  padding: '0.5rem 1rem', background: 'rgba(59, 130, 246, 0.2)', 
-                  color: '#60a5fa', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold'
-                }}>
-                  View Full Evidence Report &rarr;
-                </Link>
-              </div>
-              <p style={{ fontStyle: 'italic', color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-                Moderator Reasoning: "{evalResult.reasoning}"
-              </p>
+export default function Home() {
+  const [isClient, setIsClient] = useState(false);
+  const [lightsOn, setLightsOn] = useState(true);
+  const [hasPliers, setHasPliers] = useState(false);
+  const [dpr, setDpr] = useState(1); // Dynamic Device Pixel Ratio
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                {/* Visual Radar Chart */}
-                <div style={{ height: '400px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px', padding: '1rem' }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={
-                      Object.entries(evalResult.scorecard).map(([key, val]) => ({
-                        subject: key.replace('_', ' '),
-                        A: val,
-                        fullMark: 10
-                      }))
-                    }>
-                      <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                      <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                      <PolarRadiusAxis angle={30} domain={[0, 10]} tick={{ fill: 'transparent' }} />
-                      <Radar name="Email Score" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </div>
-              
-                {/* Numeric Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem', alignContent: 'start' }}>
-                  {Object.entries(evalResult.scorecard).map(([param, score]) => (
-                    <div key={param} style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--card-border)' }}>
-                      <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', marginBottom: '0.5rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {param.replace('_', ' ')}
-                      </div>
-                      <div style={{ fontSize: '1.5rem', fontWeight: '700', color: score >= 8 ? '#34d399' : score >= 5 ? '#fbbf24' : '#ef4444' }}>
-                        {score}/10
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </section>
+  useEffect(() => { setIsClient(true); }, []);
+  if (!isClient) return <div style={{ width: '100vw', height: '100vh', backgroundColor: 'black' }} />;
+
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: '#0a0a0a', overflow: 'hidden' }}>
+      
+      <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-white/50 rounded-full -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none mix-blend-difference" />
+      
+      <div className="absolute top-0 right-0 p-6 z-50 pointer-events-none flex flex-col items-end">
+        <div className={`font-mono text-xs p-2 border ${hasPliers ? 'border-red-500 text-red-500 bg-red-950/50' : 'border-neutral-800 text-neutral-600'}`}>
+          INVENTORY: {hasPliers ? '[PLIERS]' : '[EMPTY]'}
+        </div>
       </div>
-    </main>
+
+      <div className="absolute top-0 left-0 w-full p-6 z-10 flex justify-between items-start pointer-events-none">
+        <div>
+          <h1 className="text-3xl font-black text-white tracking-tighter">InboxEval</h1>
+          <p className="text-neutral-500 font-mono text-xs">FPS SPATIAL UI PROTOTYPE v1.2</p>
+        </div>
+      </div>
+
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-neutral-400 font-mono text-sm pointer-events-none text-center bg-black/80 p-2 rounded backdrop-blur-sm border border-neutral-800">
+        <strong>WASD</strong> to Move | <strong>Click</strong> to Interact | <strong>ESC</strong> to Unlock Mouse
+      </div>
+
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0 }}>
+        {/* The Canvas dpr dynamically scales resolution to maintain 60FPS on slow hardware */}
+        <Canvas style={{ width: '100vw', height: '100vh' }} camera={{ position: [0, 2, 8], fov: 60 }} dpr={dpr}>
+          <PerformanceMonitor onDecline={() => setDpr(0.5)} onIncline={() => setDpr(1.5)} />
+          
+          <color attach="background" args={['#0a0a0a']} />
+          <ambientLight intensity={lightsOn ? 1.2 : 0.2} />
+          {lightsOn && <pointLight position={[0, 10, 0]} intensity={1.5} color="#ffffff" distance={20} />}
+          {lightsOn && <spotLight position={[4, 8, 2]} angle={0.8} penumbra={0.5} intensity={1} color="#00ffff" />}
+          {lightsOn && <spotLight position={[-4, 6, 2]} angle={0.8} penumbra={0.5} intensity={1} color="#ffffff" />}
+          <gridHelper args={[30, 30, lightsOn ? '#00aaaa' : '#222', lightsOn ? '#333' : '#111']} position={[0, -0.01, 0]} />
+          
+          <Player />
+          <Cables hasPliers={hasPliers} />
+          <LeaderboardWall />
+          <ServerRack hasPliers={hasPliers} />
+          <Desk />
+          <CoreDatabase />
+          <Pliers hasPliers={hasPliers} setHasPliers={setHasPliers} />
+          <LightSwitch lightsOn={lightsOn} setLightsOn={setLightsOn} />
+          <AirVent lightsOn={lightsOn} />
+        </Canvas>
+      </div>
+    </div>
   );
 }

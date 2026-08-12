@@ -17,6 +17,7 @@ All architectural decisions, roadmaps, and calibration guides are heavily docume
 1. [**The Single Source of Truth: AI Email Eval Framework**](docs/ai_email_eval_framework.md): Start here. Contains the complete Go-to-Market strategy, the core 12-parameter evaluation pillars, the Pairwise Elo shift, the Constitutional AI architecture, and the future Vector DB Roadmap.
 2. [**The Calibration Guide**](docs/CALIBRATION_GUIDE.md): The exact rules and edge-cases for manually calibrating the Golden Dataset.
 3. [**The LLM Calibration Report**](docs/llama_calibration_report.md): A historical delta report proving how LLM judges score differently than humans, used to refine our prompts.
+4. [**The Platform Integration Roadmap**](docs/platform_integration_roadmap.md): The precise Go-to-Market strategy detailing how the Golden Dataset powers the SDK, MCP servers, and Next.js Telemetry leaderboard.
 
 ## 🛠️ Project Structure
 * `docs/`: The sole source of truth for project architecture.

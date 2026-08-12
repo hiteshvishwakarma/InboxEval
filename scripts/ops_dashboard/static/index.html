@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Golden Data Generator</title>
+  <style>
+    :root {
+      --bg: #0c0e12;
+      --panel: #14171e;
+      --elev: #1a1e27;
+      --line: #2a303c;
+      --text: #eceff4;
+      --muted: #8b93a7;
+      --faint: #5c6578;
+      --accent: #9aa4b5;
+      --ok: #a8b5a0;
+      --warn: #c4b89a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 1.5rem 1.75rem 2.5rem;
+      line-height: 1.4;
+    }
+    header { margin-bottom: 1.5rem; }
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+    .subtitle { color: var(--muted); font-size: 0.82rem; margin-top: 0.35rem; }
+    .ts { color: var(--faint); font-size: 0.75rem; margin-top: 0.25rem; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.1rem 1.2rem;
+    }
+    .panel h2 {
+      margin: 0 0 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    /* Prominent golden */
+    .golden-hero {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 0.85rem 0 1.1rem;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 1rem;
+    }
+    .golden-hero .eyebrow { font-size: 0.7rem; color: var(--faint); letter-spacing: 0.08em; text-transform: uppercase; }
+    .golden-hero .big {
+      font-size: 3rem;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .golden-hero .src { font-size: 0.8rem; color: var(--muted); }
+    .golden-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .golden-split .mini {
+      background: var(--elev);
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem;
+    }
+    .golden-split .mini .k { font-size: 0.68rem; color: var(--faint); }
+    .golden-split .mini .v { font-size: 1.25rem; font-weight: 500; font-variant-numeric: tabular-nums; margin-top: 0.15rem; }
+    .golden-split .mini .s { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.55rem;
+    }
+    @media (max-width: 700px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat {
+      background: var(--elev);
+      border-radius: 8px;
+      padding: 0.65rem 0.7rem;
+    }
+    .stat .k { font-size: 0.68rem; color: var(--faint); }
+    .stat .v { font-size: 1.15rem; font-weight: 500; font-variant-numeric: tabular-nums; margin-top: 0.2rem; }
+
+    /* Flow */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: stretch;
+      margin-bottom: 1rem;
+    }
+    .flow-step {
+      flex: 1;
+      min-width: 6.5rem;
+      background: var(--elev);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.55rem 0.6rem;
+      position: relative;
+    }
+    .flow-step.active {
+      border-color: var(--accent);
+    }
+    .flow-step.active::after {
+      content: "";
+      position: absolute;
+      top: 0.45rem;
+      right: 0.45rem;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text);
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.25; }
+      50% { opacity: 1; }
+    }
+    .flow-step .name { font-size: 0.78rem; font-weight: 500; }
+    .flow-step .where { font-size: 0.68rem; color: var(--faint); margin-top: 0.2rem; }
+
+    /* Radar */
+    .radar-wrap {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 1rem;
+      align-items: center;
+    }
+    @media (max-width: 700px) { .radar-wrap { grid-template-columns: 1fr; } }
+    .radar-legend { font-size: 0.78rem; color: var(--muted); }
+    .radar-legend table { width: 100%; border-collapse: collapse; }
+    .radar-legend td { padding: 0.28rem 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+    .radar-legend td:last-child { text-align: right; color: var(--text); }
+    .swatch { display: inline-block; width: 10px; height: 2px; margin-right: 0.4rem; vertical-align: middle; }
+    .swatch.corpus { background: var(--faint); }
+    .swatch.golden { background: var(--text); }
+
+    .batch-id {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+    .stages { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .stage {
+      flex: 1; min-width: 5rem;
+      background: var(--elev);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.55rem 0.6rem;
+    }
+    .stage.done { border-color: #3a4238; }
+    .stage.active { border-color: var(--accent); }
+    .stage.active .label::after {
+      content: " · live";
+      color: var(--warn);
+      font-weight: 500;
+    }
+    .stage .label { font-size: 0.68rem; color: var(--faint); }
+    .stage .count { font-size: 1.2rem; font-weight: 500; font-variant-numeric: tabular-nums; margin-top: 0.15rem; }
+    .stage .of { font-size: 0.72rem; color: var(--faint); }
+    .note { margin-top: 0.7rem; font-size: 0.78rem; color: var(--warn); }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+    .hw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @media (max-width: 980px) { .hw-grid { grid-template-columns: 1fr; } }
+
+    .card h3 { margin: 0 0 0.25rem; font-size: 0.92rem; font-weight: 500; }
+    .sub { font-size: 0.72rem; color: var(--faint); margin-bottom: 0.7rem; }
+    .row { margin-bottom: 0.5rem; }
+    .row .top { display: flex; justify-content: space-between; font-size: 0.78rem; gap: 0.5rem; }
+    .bar {
+      height: 3px; background: var(--line); border-radius: 2px; margin-top: 0.3rem; overflow: hidden;
+    }
+    .bar > i { display: block; height: 100%; background: var(--accent); }
+    .err { font-size: 0.75rem; color: var(--muted); margin-top: 0.45rem; line-height: 1.35; }
+    .source { font-size: 0.65rem; color: var(--faint); margin-top: 0.5rem; font-family: ui-monospace, Menlo, monospace; }
+    .live { font-size: 0.65rem; color: var(--ok); letter-spacing: 0.06em; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="page-title">Golden Data Generator</h1>
+    <div class="subtitle" id="engine-line">Engine V4 · Phase-1 harvest on Mac → evolve on GCP</div>
+    <div class="ts" id="ts">—</div>
+  </header>
+
+  <div class="panel" style="margin-bottom:1rem">
+    <h2>Pipeline</h2>
+    <div class="flow" id="flow"></div>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
+      <h2>Golden dataset</h2>
+      <div class="golden-hero">
+        <div class="eyebrow">Total golden records</div>
+        <div class="big" id="golden-big">—</div>
+        <div class="src" id="golden-src">—</div>
+        <div class="golden-split">
+          <div class="mini">
+            <div class="k">Mac mirror</div>
+            <div class="v" id="golden-mac">—</div>
+            <div class="s">local pipeline.db</div>
+          </div>
+          <div class="mini">
+            <div class="k">GCP Engine</div>
+            <div class="v" id="golden-gcp">—</div>
+            <div class="s" id="golden-gcp-sub">pipeline.db truth</div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-row" id="corpus-stats"></div>
+      <div class="stat-row" style="margin-top:0.55rem" id="session-stats"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Size skew · corpus vs golden</h2>
+      <div class="radar-wrap">
+        <svg id="radar" viewBox="0 0 220 220" width="220" height="220" aria-label="Size skew radar"></svg>
+        <div class="radar-legend">
+          <div style="margin-bottom:0.5rem">
+            <span class="swatch corpus"></span>Corpus share (normalized)
+            <br /><span class="swatch golden"></span>Golden share (normalized)
+          </div>
+          <table id="skew-table"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:1rem">
+    <h2>Current diversity session</h2>
+    <div class="batch-id" id="batch-id">—</div>
+    <div class="stages" id="stages"></div>
+    <div class="note" id="batch-note" hidden></div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel" id="mac-card"></div>
+    <div class="panel" id="gcp-card"></div>
+  </div>
+
+  <div class="hw-grid" style="margin-bottom:1rem">
+    <div class="panel" id="hw-mac"></div>
+    <div class="panel" id="hw-gcp"></div>
+    <div class="panel" id="hw-secondary"></div>
+  </div>
+
+  <script>
+    const STAGE_ORDER = ["claim", "step_01", "step_02b", "step_02a", "sync"];
+    const STAGE_LABEL = {
+      claim: "Claim", step_01: "Backtranslate", step_02b: "Vectorize",
+      step_02a: "Persona+DPBC", sync: "Sync",
+    };
+
+    function num(n) {
+      if (n == null || Number.isNaN(n)) return "—";
+      return Number(n).toLocaleString();
+    }
+    function fmt(v, suffix = "") {
+      if (v == null || Number.isNaN(v)) return "n/a";
+      return `${v}${suffix}`;
+    }
+    function bar(pct) {
+      if (pct == null || Number.isNaN(Number(pct))) return `<div class="bar"></div>`;
+      const p = Math.max(0, Math.min(100, Number(pct)));
+      return `<div class="bar"><i style="width:${p}%"></i></div>`;
+    }
+
+    function renderFlow(flow, batch) {
+      const phases = (flow && flow.phases) || [];
+      const current = batch && batch.current_stage;
+      const map = {
+        step_01: "p1_01", step_02b: "p1_02b", step_02a: "p1_02a", sync: "p1_sync", claim: "p1_claim",
+      };
+      const activeId = map[current];
+      const enriching = batch && batch.worker && batch.worker.enriching;
+      document.getElementById("flow").innerHTML = phases.map((p) => {
+        let active = p.id === activeId;
+        if (p.id === "p1_02a" && enriching) active = true;
+        if (p.id === "p2_engine") active = true; // Engine assumed running on GCP
+        return `<div class="flow-step ${active ? "active" : ""}">
+          <div class="name">${p.label}</div>
+          <div class="where">${p.where}</div>
+        </div>`;
+      }).join("");
+    }
+
+    function renderRadar(rows) {
+      const svg = document.getElementById("radar");
+      const sizes = (rows || []).filter((r) => r.emails > 0);
+      const n = sizes.length || 1;
+      const cx = 110, cy = 110, R = 78;
+      const maxE = Math.max(...sizes.map((r) => r.emails), 1);
+      const maxG = Math.max(...sizes.map((r) => r.golden), 1);
+
+      function pt(i, value, maxV) {
+        const ang = -Math.PI / 2 + (2 * Math.PI * i) / n;
+        const r = R * (0.12 + 0.88 * (maxV ? value / maxV : 0));
+        return [cx + r * Math.cos(ang), cy + r * Math.sin(ang)];
+      }
+      function poly(values, maxV) {
+        return values.map((v, i) => pt(i, v, maxV).join(",")).join(" ");
+      }
+
+      let rings = "";
+      for (let k = 1; k <= 4; k++) {
+        const rr = (R * k) / 4;
+        rings += `<circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" stroke="#2a303c" stroke-width="1"/>`;
+      }
+      let spokes = "";
+      let labels = "";
+      sizes.forEach((r, i) => {
+        const [x, y] = pt(i, maxE, maxE);
+        spokes += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#2a303c" stroke-width="1"/>`;
+        const [lx, ly] = pt(i, maxE * 1.18, maxE);
+        labels += `<text x="${lx}" y="${ly}" fill="#8b93a7" font-size="10" text-anchor="middle" dominant-baseline="middle">${r.size}</text>`;
+      });
+      const corpus = poly(sizes.map((r) => r.emails), maxE);
+      const golden = poly(sizes.map((r) => r.golden), maxG);
+      svg.innerHTML = `${rings}${spokes}
+        <polygon points="${corpus}" fill="rgba(92,101,120,0.25)" stroke="#5c6578" stroke-width="1.5"/>
+        <polygon points="${golden}" fill="rgba(236,239,244,0.12)" stroke="#eceff4" stroke-width="1.5"/>
+        ${labels}`;
+
+      document.getElementById("skew-table").innerHTML = sizes.map((r) => {
+        const gPct = r.emails ? ((100 * r.golden) / r.emails).toFixed(2) : "0";
+        return `<tr><td>${r.size}</td><td>${num(r.emails)} · ${num(r.golden)} golden (${gPct}%)</td></tr>`;
+      }).join("");
+    }
+
+    function renderHero(hero, gcp) {
+      if (!hero) return;
+      if (hero.engine) document.getElementById("engine-line").textContent = hero.engine;
+      document.getElementById("golden-big").textContent = num(hero.golden_gcp ?? hero.golden);
+      document.getElementById("golden-src").textContent =
+        hero.golden_gcp != null
+          ? `Primary: GCP Engine truth · Mac mirror ${num(hero.golden)}`
+          : (hero.golden_source || "Mac pipeline.db");
+      document.getElementById("golden-mac").textContent = num(hero.golden);
+      document.getElementById("golden-gcp").textContent = num(hero.golden_gcp ?? gcp?.golden);
+      const hr = hero.golden_last_hour_gcp ?? gcp?.golden_last_hour;
+      document.getElementById("golden-gcp-sub").textContent =
+        hr != null ? `+${hr} last hour · pipeline.db` : "pipeline.db truth";
+
+      document.getElementById("corpus-stats").innerHTML = [
+        ["Total emails", hero.total_emails],
+        ["Backtranslated", hero.backtranslated],
+        ["Persona", hero.persona_extracted],
+        ["DPBC", hero.dpbc_extracted],
+        ["Vectorized", hero.vectorized],
+        ["Session emails", hero.emails_in_sessions],
+      ].slice(0, 4).map(([k, v]) =>
+        `<div class="stat"><div class="k">${k}</div><div class="v">${num(v)}</div></div>`
+      ).join("");
+
+      document.getElementById("session-stats").innerHTML = [
+        ["Batches claimed", hero.batches_claimed],
+        ["Batches enriched", hero.batches_enriched],
+        ["Batches synced", hero.batches_synced],
+        ["Vectorized", hero.vectorized],
+      ].map(([k, v]) =>
+        `<div class="stat"><div class="k">${k}</div><div class="v">${num(v)}</div></div>`
+      ).join("");
+    }
+
+    function renderStages(batch) {
+      const claimed = batch.claimed || 0;
+      const stages = batch.stages || {};
+      const current = batch.current_stage;
+      document.getElementById("stages").innerHTML = STAGE_ORDER.map((key) => {
+        const n = stages[key] ?? 0;
+        let cls = "stage";
+        if (current === "done" || (current && STAGE_ORDER.indexOf(key) < STAGE_ORDER.indexOf(current))) cls += " done";
+        if (current === key) cls += " active";
+        return `<div class="${cls}"><div class="label">${STAGE_LABEL[key]}</div><div class="count">${n}</div><div class="of">/ ${claimed}</div></div>`;
+      }).join("");
+      const worker = batch.worker && batch.worker.enriching ? " · processing" : "";
+      document.getElementById("batch-id").textContent = batch.batch_id
+        ? `${batch.batch_id} · ${current || "—"}${worker}`
+        : "No active diversity batch";
+      const note = document.getElementById("batch-note");
+      if (batch.note) { note.hidden = false; note.textContent = batch.note; }
+      else { note.hidden = true; }
+    }
+
+    function renderFleet(id, title, data) {
+      const el = document.getElementById(id);
+      if (!data || !data.ok) {
+        el.innerHTML = `<h3>${title}</h3><div class="err">${(data && data.error) || "offline"}</div>`;
+        return;
+      }
+      const statusStr = Object.entries(data.status || {}).map(([k, v]) => `${k} ${num(v)}`).join(" · ");
+      el.innerHTML = `<h3>${title} <span class="live">live</span></h3>
+        <div class="sub">Golden ${num(data.golden)}${data.golden_last_hour != null ? ` · +${data.golden_last_hour}/h` : ""}</div>
+        <div class="row"><div class="top"><span>Enriched non-micro</span><span>${num(data.enriched_non_micro)}</span></div></div>
+        ${data.sync_backlog != null ? `<div class="row"><div class="top"><span>Sync backlog</span><span>${num(data.sync_backlog)}</span></div></div>` : ""}
+        ${data.pending != null ? `<div class="row"><div class="top"><span>Pending queue</span><span>${num(data.pending)}</span></div></div>` : ""}
+        ${data.pending_enrichment != null ? `<div class="row"><div class="top"><span>Pending enrich</span><span>${num(data.pending_enrichment)}</span></div></div>` : ""}
+        <div class="err" style="margin-top:0.7rem">${statusStr}</div>`;
+    }
+
+    function renderMachine(elId, data, fallback) {
+      const el = document.getElementById(elId);
+      if (!data || !data.ok) {
+        el.innerHTML = `<h3>${fallback}</h3><div class="err">${(data && data.error) || "offline"}</div>`;
+        return;
+      }
+      const models = (data.models || []).map((m) => m.name).filter(Boolean).join(", ") || "—";
+      const vramPct = (data.gpu_vram_total_mb && data.gpu_vram_used_mb != null)
+        ? (100 * data.gpu_vram_used_mb) / data.gpu_vram_total_mb : null;
+      const tps = data.tokens_per_sec != null
+        ? `${data.tokens_per_sec} tok/s`
+        : (data.tokens_per_sec_note || "n/a");
+      const extra = data.prompt_tokens_per_sec != null ? ` · prompt ${data.prompt_tokens_per_sec}` : "";
+      const run = data.requests_running != null ? ` · ${data.requests_running} inflight` : "";
+      el.innerHTML = `<h3>${data.label || fallback} <span class="live">live</span></h3>
+        <div class="sub">${data.role || ""}${data.gpu_name ? " · " + data.gpu_name : ""}</div>
+        ${data.cpu_pct != null ? `<div class="row"><div class="top"><span>CPU</span><span>${data.cpu_pct}%</span></div>${bar(data.cpu_pct)}</div>
+        <div class="row"><div class="top"><span>RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>` : ""}
+        ${data.gpu_vram_total_mb != null ? `
+        <div class="row"><div class="top"><span>GPU util</span><span>${fmt(data.gpu_util_pct, "%")}</span></div>${bar(data.gpu_util_pct)}</div>
+        <div class="row"><div class="top"><span>VRAM</span><span>${fmt(data.gpu_vram_used_mb != null ? Math.round(data.gpu_vram_used_mb) : null)} / ${Math.round(data.gpu_vram_total_mb)} MB</span></div>${bar(vramPct)}</div>
+        <div class="row"><div class="top"><span>Temp</span><span>${fmt(data.gpu_temp_c, "°C")}</span></div>${bar(data.gpu_temp_c)}</div>
+        <div class="row"><div class="top"><span>Power</span><span>${fmt(data.gpu_power_w, " W")}</span></div></div>` : ""}
+        ${data.ram_pct != null && data.cpu_pct == null ? `<div class="row"><div class="top"><span>Host RAM</span><span>${data.ram_used_gb} / ${data.ram_total_gb} GB</span></div>${bar(data.ram_pct)}</div>` : ""}
+        <div class="row"><div class="top"><span>Model</span><span>${models}</span></div></div>
+        <div class="row"><div class="top"><span>Throughput</span><span>${tps}${extra}${run}</span></div></div>
+        ${data.note ? `<div class="err">${data.note}</div>` : ""}
+        <div class="source">${data.metrics_source || ""}</div>`;
+    }
+
+    async function tick() {
+      try {
+        const snap = await (await fetch("/api/snapshot")).json();
+        if (snap.title) document.getElementById("page-title").textContent = snap.title;
+        document.getElementById("ts").textContent = "Updated " + (snap.ts || "").replace("T", " ").slice(0, 19) + " UTC";
+        renderHero(snap.hero, snap.gcp);
+        renderRadar((snap.hero && snap.hero.size_breakdown) || (snap.mac && snap.mac.size_breakdown) || []);
+        renderFlow(snap.flow, snap.batch);
+        renderStages(snap.batch || {});
+        renderFleet("mac-card", "Mac pipeline", snap.mac);
+        renderFleet("gcp-card", "GCP Engine", snap.gcp);
+        const hw = snap.hardware || {};
+        renderMachine("hw-mac", hw.mac, "Mac");
+        renderMachine("hw-gcp", hw.gcp, "GCP GPU");
+        renderMachine("hw-secondary", hw.secondary || hw.ollama, "Secondary GPU");
+      } catch (e) {
+        document.getElementById("ts").textContent = "Fetch error: " + e;
+      }
+    }
+
+    tick();
+    setInterval(tick, 5000);
+  </script>
+</body>
+</html>
